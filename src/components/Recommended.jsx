@@ -7,35 +7,38 @@ import VolleyballIcon from "@mui/icons-material/SportsVolleyballOutlined";
 import GiftIcon from "@mui/icons-material/CardGiftcardOutlined";
 import FlightIcon from "@mui/icons-material/FlightOutlined";
 
-function Recommended() {
-    return<div className="flex flex-col gap-x-2 gap-y-6 bg-white lg:ml-[100px] p-4 mx-10">
-            <h1 className="font-semibold">Recommended Categories</h1>
-            <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-x-4 gap-y-4">
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-sm items-center flex">
-                    <HomeIcon className="text-yellow-400 mr-2" sx={{ fontSize: 20 }}/>Home Help
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <CelebrationIcon className="text-pink-400 mr-2" sx={{ fontSize: 20 }}/>Plan an event
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <BoxIcon className="text-amber-700 mr-2" sx={{ fontSize: 20 }}/>Return a package
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <GiftIcon className="text-red-400 mr-2" sx={{ fontSize: 20 }}/>Send a gift
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <CalendarIcon className="text-green-400 mr-2" sx={{ fontSize: 20 }}/>Schedule an appointment
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <DocumentIcon className="text-cyan-400 mr-2" sx={{ fontSize: 20 }}/>Get a passport
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <VolleyballIcon className="text-violet-400 mr-2" sx={{ fontSize: 20 }}/>Find a kids activity
-                </div>
-                <div className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50  text-sm items-center flex">
-                    <FlightIcon className="text-blue-400 mr-2" sx={{ fontSize: 20 }}/>Plan a trip
-                </div>
-            </div>
-        </div>
+function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
+  const categories = [
+    { icon: <HomeIcon className="text-yellow-400 mr-2" sx={{ fontSize: 20 }} />, name: "Home Help" },
+    { icon: <CelebrationIcon className="text-pink-400 mr-2" sx={{ fontSize: 20 }} />, name: "Plan an event" },
+    { icon: <BoxIcon className="text-amber-700 mr-2" sx={{ fontSize: 20 }} />, name: "Return a package" },
+    { icon: <GiftIcon className="text-red-400 mr-2" sx={{ fontSize: 20 }} />, name: "Send a gift" },
+    { icon: <CalendarIcon className="text-green-400 mr-2" sx={{ fontSize: 20 }} />, name: "Schedule an appointment" },
+    { icon: <DocumentIcon className="text-cyan-400 mr-2" sx={{ fontSize: 20 }} />, name: "Get a passport" },
+    { icon: <VolleyballIcon className="text-violet-400 mr-2" sx={{ fontSize: 20 }} />, name: "Find a kids activity" },
+    { icon: <FlightIcon className="text-blue-400 mr-2" sx={{ fontSize: 20 }} />, name: "Plan a trip" },
+  ];
+
+  return (
+    <div className="flex flex-col gap-x-2 gap-y-6 bg-white lg:ml-[100px] p-4 mx-10">
+      <h1 className="font-semibold">Recommended Categories</h1>
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-x-4 gap-y-4">
+        {categories.map((category, index) => (
+          <div
+            key={index}
+            className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-sm items-center flex"
+            onClick={() => {
+              setSelectedCategory(category.name);
+              setIsCreateTaskOpen(true);
+            }}
+          >
+            {category.icon}
+            {category.name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-export default Recommended
+
+export default Recommended;

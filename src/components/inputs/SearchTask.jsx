@@ -6,7 +6,7 @@ function SearchTask({ className = "" }) {
     <input
         type="text"
         placeholder="Search tasks"
-        className="pl-10 pr-3 py-2 border bg-white border-gray-400 rounded-md w-full focus:outline-1 focus:border-gray-400"
+        className="pl-10 pr-3 py-2 border bg-white border-gray-400 rounded-md w-full focus:outline-1 focus:border-gray-400 z-0"
     />
     </div>
     
