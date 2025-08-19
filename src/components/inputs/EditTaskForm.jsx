@@ -19,7 +19,7 @@ const priorities = [
   { value: "high", label: "High" },
 ];
 
-export default function AddTask({ categoryName, onClose, onTaskAdded }) {
+export default function EditTask({ categoryName, onClose }) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [taskData, setTaskData] = useState({
     name: categoryName || "",
@@ -57,7 +57,6 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
 
   const handleSave = () => {
     console.log("Task Data:", taskData);
-    onTaskAdded?.();
     onClose();
     setTaskData({
       name: categoryName || "",
@@ -72,7 +71,7 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
   return (
     <>
       <Dialog open={true} fullWidth maxWidth="sm" onClose={onClose}>
-        <DialogTitle>Add New Task</DialogTitle>
+        <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>
           <TextField
             label="Task Name"
@@ -152,19 +151,19 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             variant="contained"
             style={{ backgroundColor: "#14532d" }}
           >
-            Add
+            Finish
           </Button>
         </DialogActions>
       </Dialog>
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={7000}
+        autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          Task added successfully!
+          Task edited successfully!
         </Alert>
       </Snackbar>
     </>

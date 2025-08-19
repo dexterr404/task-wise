@@ -3,6 +3,7 @@ import MyPicture from "../assets/me.jpg";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
 import ProfileMenu from "../features/ProfileMenu";
+import { Tooltip } from "@mui/material";
 
 function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -11,11 +12,12 @@ function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
     <div className="flex gap-3 items-center">
       {/* Notifications */}
       <div className="relative">
-        <NotificationsIcon
+        <Tooltip title="Notifications">
+          <NotificationsIcon
             className="cursor-pointer"
             onClick={() => setIsNotifOpen((prev) => !prev)}
         />
-
+        </Tooltip>
         <div className="bg-red-500 rounded-full text-white flex justify-center items-center text-xs w-4 h-4 absolute -top-1 -right-1">
             3
         </div>
@@ -30,15 +32,17 @@ function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
         )}
       {/* Profile */}
       <div className="relative">
-        <img
+        <Tooltip title="Profile">
+          <img
           src={MyPicture}
           className="w-10 h-10 rounded-full cursor-pointer"
           onClick={() => {
             setProfileMenuOpen((prev) => !prev);
           }}
         />
+        </Tooltip>
         {isProfileMenuOpen && (
-          <div className="absolute right-0 mt-2 z-100">
+          <div className="absolute top-full right-0 mt-2 z-100">
             <ProfileMenu />
           </div>
         )}
