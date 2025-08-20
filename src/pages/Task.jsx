@@ -9,6 +9,7 @@ import FilterMenu from "../components/dropdown/FilterMenu";
 import SortMenu from "../components/dropdown/SortMenu";
 import TaskCard from "../components/TaskCard";
 import { Snackbar,Alert } from "@mui/material";
+import tasks from "../../data/task";
 
 function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);
@@ -73,9 +74,11 @@ function Task() {
         <div className="flex flex-col mx-10 lg:ml-[100px]">
             <h1 className="font-semibold text-xs text-black mb-4">TODO</h1>
             <div className="flex justify-end flex-col gap-2">
-                <TaskCard/>
-                <TaskCard/>
-                <TaskCard/>
+                {
+                    tasks.map((task,index) => (
+                        <TaskCard key={index} task={task}/>
+                    ))
+                }
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@ import DoneTaskModal from "./modals/DoneTaskModal";
 import DuplicateTaskModal from "./modals/DuplicateTaskModal";
 import UpdateSubtaskModal from "./modals/UpdateSubtaskModal";
 
-export default function TodoOptionsMenu() {
+export default function TodoOptionsMenu({task}) {
   const[isEditOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
@@ -64,6 +64,7 @@ export default function TodoOptionsMenu() {
 
       <UpdateSubtaskModal
         open={isSubtaskModalOpen}
+        task={task}
         onClose={() => setIsSubtaskModalOpen(false)}
       />
       <Tooltip title="Mark as Done">
