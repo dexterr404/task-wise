@@ -3,7 +3,8 @@ import MyPicture from "../assets/me.jpg";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
 import ProfileMenu from "../features/ProfileMenu";
-import { Tooltip } from "@mui/material";
+import { IconButton,Tooltip } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -24,7 +25,19 @@ function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
         </div>
 
         {isNotifOpen && (
-        <div className="fixed right-4 top-17 z-50 max-md:left-0 max-md:right-0 max-md:w-screen max-md:px-2">
+        <div className="fixed right-4 top-17 z-50 max-md:left-0 max-md:right-0 max-md:w-screen max-md:px-2 shadow-md">
+            <div className="absolute top-1 right-2">
+              <IconButton
+              size="small"
+              onClick={() => setIsNotifOpen(false)}
+              sx={{
+                color: "gray",
+                "&:hover": { color: "red" }
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+            </div>
             <div className="max-h-80 overflow-y-auto"> 
                 <Notifications className="w-full" />
             </div>

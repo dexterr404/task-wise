@@ -22,21 +22,20 @@ function TaskCard(){
             <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>15 days left</span>
             <LinearWithValueLabel className='flex-1'/>
         </div>
-        <div className="relative">
-        <Tooltip title="Options">
+        <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
+        <div className="relative inline-flex">
+          <Tooltip title="Options">
             <MoreHorizIcon
-                className="cursor-pointer max-lg:absolute max-lg:top-2 max-lg:right-2"
-                onClick={(e) => setIsTodoOptionOpen((prev) => !prev)}
-                ref={(el) => setAnchorEl(el)} // store the icon DOM element
+              className="cursor-pointer"
+              onClick={() => setIsTodoOptionOpen((p) => !p)}
             />
-        </Tooltip>
-        {isTodoOptionOpen && (
-            <TodoOptionsMenu
-            anchorEl={anchorEl} // attach menu to icon
-            onClose={() => setIsTodoOptionOpen(false)}
-            />
-        )}
+          </Tooltip>
+
+          {isTodoOptionOpen && (
+            <TodoOptionsMenu onClose={() => setIsTodoOptionOpen(false)} />
+          )}
         </div>
+      </div>
     </div>
 }
 export default TaskCard

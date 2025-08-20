@@ -34,11 +34,12 @@ export default function FilterMenu() {
   };
 
   return (
-    <div className="absolute top-full z-100 bg-gray-200 p-3 mt-1 text-xs shadow-md rounded-md flex flex-col gap-2">
+    <div className="absolute top-full z-100 bg-gray-100 p-3 mt-1 text-xs shadow-md rounded-md flex flex-col gap-2">
       <label>
         <input
           type="checkbox"
           name="all"
+          className="mr-1"
           checked={filters.all}
           onChange={handleChange}
         />
@@ -48,6 +49,7 @@ export default function FilterMenu() {
         <input
           type="checkbox"
           name="inProgress"
+          className="mr-1"
           checked={filters.inProgress}
           onChange={handleChange}
         />
@@ -57,6 +59,7 @@ export default function FilterMenu() {
         <input
           type="checkbox"
           name="inReview"
+          className="mr-1"
           checked={filters.inReview}
           onChange={handleChange}
         />
@@ -66,6 +69,7 @@ export default function FilterMenu() {
         <input
           type="checkbox"
           name="done"
+          className="mr-1"
           checked={filters.done}
           onChange={handleChange}
         />
