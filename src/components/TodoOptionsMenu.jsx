@@ -5,14 +5,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import FlagIcon from "@mui/icons-material/Flag";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import EditTask from "./inputs/EditTaskForm";
-import DeleteTaskModal from "./modals/DeleteTaskModal";
-import DoneTaskModal from "./modals/DoneTaskModal";
-import DuplicateTaskModal from "./modals/DuplicateTaskModal";
-import UpdateSubtaskModal from "./modals/UpdateSubtaskModal";
+import EditTask from "../features/task/editTask/EditTaskForm";
+import DeleteTaskModal from "../features/task/deleteTask/DeleteTaskModal";
+import DoneTaskModal from "../features/task/updateTask/DoneTaskModal";
+import DuplicateTaskModal from "../features/task/duplicateTask/DuplicateTaskModal";
+import UpdateSubtaskModal from "../features/task/updateSubtask/UpdateSubtaskModal";
 
-export default function TodoOptionsMenu({task}) {
-  const[isEditOpen,setIsEditTaskOpen] = useState(false);
+export default function TodoOptionsMenu({task,onDelete,closeOption}) {
+  const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
   const[isDuplicateModalOpen,setIsDuplicateModalOpen] = useState(false);
@@ -33,6 +33,11 @@ export default function TodoOptionsMenu({task}) {
       </Tooltip>
       <DeleteTaskModal
         open={isDeleteModalOpen}
+        onDelete={() => {
+          setIsDeleteModalOpen(false);
+          onDelete();
+          closeOption();
+        }}
         onClose={() => setIsDeleteModalOpen(false)}
       />
 
@@ -46,9 +51,7 @@ export default function TodoOptionsMenu({task}) {
           <EditIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      {
-        isEditOpen && <EditTask onClose={() => setIsEditTaskOpen(false)}/>
-      }
+      <EditTask task={task} open={isEditTaskOpen} onClose={() => setIsEditTaskOpen(false)}/>
       <Tooltip title="Update Subtask">
         <IconButton
           sx={{

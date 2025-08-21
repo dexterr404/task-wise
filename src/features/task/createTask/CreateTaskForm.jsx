@@ -19,7 +19,7 @@ const priorities = [
   { value: "high", label: "High" },
 ];
 
-export default function EditTask({ categoryName, onClose }) {
+export default function AddTask({ categoryName, onClose, onTaskAdded }) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [taskData, setTaskData] = useState({
     name: categoryName || "",
@@ -57,6 +57,7 @@ export default function EditTask({ categoryName, onClose }) {
 
   const handleSave = () => {
     console.log("Task Data:", taskData);
+    onTaskAdded?.();
     onClose();
     setTaskData({
       name: categoryName || "",
@@ -71,13 +72,16 @@ export default function EditTask({ categoryName, onClose }) {
   return (
     <>
       <Dialog open={true} fullWidth maxWidth="sm" onClose={onClose}>
-        <DialogTitle>Edit Task</DialogTitle>
+        <DialogTitle>Add New Task</DialogTitle>
         <DialogContent>
           <TextField
             label="Task Name"
             name="name"
             fullWidth
             margin="dense"
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
             value={taskData.name}
             onChange={handleChange}
           />
@@ -88,6 +92,9 @@ export default function EditTask({ categoryName, onClose }) {
             margin="dense"
             multiline
             rows={3}
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
             value={taskData.description}
             onChange={handleChange}
           />
@@ -97,6 +104,9 @@ export default function EditTask({ categoryName, onClose }) {
             type="date"
             fullWidth
             margin="dense"
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
             InputLabelProps={{ shrink: true }}
             value={taskData.dueDate}
             onChange={handleChange}
@@ -109,6 +119,9 @@ export default function EditTask({ categoryName, onClose }) {
             margin="dense"
             value={taskData.priority}
             onChange={handleChange}
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
           >
             {priorities.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -145,25 +158,36 @@ export default function EditTask({ categoryName, onClose }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onClose} style={ {color: "#484848"} }>Cancel</Button>
+          <Button onClick={onClose} 
+          style={ 
+            {color: "#484848",
+              fontSize: "12px",
+              paddingX: "8px",
+              paddingY: "4px"
+            } }>Cancel</Button>
           <Button
             onClick={handleSave}
             variant="contained"
-            style={{ backgroundColor: "#14532d" }}
+            style={{ backgroundColor: "#14532d",
+            fontSize: "12px",
+            paddingX: "8px",
+            marginRight: "16px",
+            paddingY: "4px"
+             }}
           >
-            Finish
+            Add
           </Button>
         </DialogActions>
       </Dialog>
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        autoHideDuration={7000}
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          Task edited successfully!
+          Task added successfully!
         </Alert>
       </Snackbar>
     </>

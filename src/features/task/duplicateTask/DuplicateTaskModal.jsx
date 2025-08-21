@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 
-function DoneTaskModal({open,onClose}) {
+function DuplicateTaskModal({open,onClose}) {
   return (
     <Dialog
       open={open}
@@ -20,8 +20,8 @@ function DoneTaskModal({open,onClose}) {
       }}
     >
       <DialogTitle component="div">
-      <Typography variant="subtitle1" fontWeight={600}>
-        Done with the task?
+      <Typography variant="subtitle1" sx={{fontSize: "1rem"}}>
+        Duplicate the task?
       </Typography>
       </DialogTitle>
 
@@ -33,24 +33,30 @@ function DoneTaskModal({open,onClose}) {
           sx={{
             backgroundColor: "grey",
             color: "white",
+            fontSize: "12px",
+            paddingX: "8px",
+            paddingY: "4px",
             "&:hover": { opacity: 0.8, backgroundColor: "grey" },
           }}
         >
-          Not yet
+          Don't
         </Button>
         <Button
           sx={{
-            backgroundColor: "green",
+            backgroundColor: "blue",
             color: "white",
+            fontSize: "12px",
+            paddingX: "8px",
+            paddingY: "4px",
             ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "green" },
+            "&:hover": { opacity: 0.8, backgroundColor: "blue" },
           }}
         >
-          Done
+          Duplicate
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export default DoneTaskModal;
+export default DuplicateTaskModal;

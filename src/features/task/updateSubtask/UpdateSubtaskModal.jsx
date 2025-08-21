@@ -1,4 +1,4 @@
-import React from "react";
+import {useState} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,14 +7,11 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
+import StatusMenu from "../../../components/dropdownMenu/StatusMenu";
+import { statusColors } from "../../../../data/status";
 
 function UpdateSubtaskModal({open,onClose,task}) {
-  const statusColors = {
-    Done: "bg-green-700",
-    Ongoing: "bg-yellow-600",
-    Pending: "bg-gray-700",
-    Unfinished: "bg-red-700"
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
 
   return (
     <Dialog
@@ -27,7 +24,7 @@ function UpdateSubtaskModal({open,onClose,task}) {
       }}
     >
       <DialogTitle component="div">
-      <Typography variant="subtitle1" fontWeight={600}>
+      <Typography variant="subtitle1" sx={{marginBottom: "2rem",fontSize: "1.2rem"}}>
         Upate subtasks status here
       </Typography>
       <div className="flex flex-col justify-around text-sm gap-1 mt-3">
@@ -40,9 +37,22 @@ function UpdateSubtaskModal({open,onClose,task}) {
                   </div>
                   {t.title}
                 </div>
-                <div className={`cursor-pointer px-2 text-white py-1 rounded-md text-xs hover:opacity-90 active:opacity-70
-                  ${statusColors[t.status]}`}>
-                  {t.status}
+                <div className="relative">
+                  <div
+                      className={`cursor-pointer px-2 text-white py-1 rounded-md text-xs hover:opacity-90 active:opacity-70
+                        ${statusColors[t.status]}`}
+                      onClick={(e) => setAnchorEl(e.currentTarget)}
+                    >
+                      {t.status}
+                    </div>
+
+                    <StatusMenu
+                      anchorEl={anchorEl}
+                      onClose={() => setAnchorEl(null)}
+                      onSelect={(newStatus) => {
+                        setAnchorEl(null);
+                      }}
+                    />
                 </div>
               </div>
             ))
@@ -58,6 +68,9 @@ function UpdateSubtaskModal({open,onClose,task}) {
           sx={{
             backgroundColor: "grey",
             color: "white",
+            fontSize: "12px",
+            paddingX: "8px",
+            paddingY: "4px",
             "&:hover": { opacity: 0.8, backgroundColor: "grey" },
           }}
         >
@@ -65,10 +78,13 @@ function UpdateSubtaskModal({open,onClose,task}) {
         </Button>
         <Button
           sx={{
-            backgroundColor: "red",
+            backgroundColor: "yellowgreen",
             color: "white",
+            fontSize: "12px",
+            paddingX: "8px",
+            paddingY: "4px",
             ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "red" },
+            "&:hover": { opacity: 0.8, backgroundColor: "yellowgreen" },
           }}
         >
           Update

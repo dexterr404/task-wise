@@ -4,23 +4,16 @@ import TodoOptionsMenu from "./TodoOptionsMenu"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "./ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
+import { statusColors } from "../../data/status";
+import { priorityColors } from "../../data/priority";
 
-function TaskCard({task}){
+function TaskCard({task,onDelete}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const statusColors = {
-      Done: "bg-green-700",
-      Ongoing: "bg-yellow-600",
-      Pending: "bg-gray-700",
-      Unfinished: "bg-red-700"
-    };
-
-    const priorityColors = {
-      High: "bg-red-700",
-      Medium: "bg-yellow-600",
-      Low: "bg-green-700"
-    };
+    
+    const closeOption = () => {
+      setIsTodoOptionOpen(false)
+    }
 
     return<div className="flex items-center gap-4 bg-white shadow-md p-4 rounded-md max-lg:flex-col max-lg:items-start relative">
         <div className="flex flex-col">
@@ -49,6 +42,8 @@ function TaskCard({task}){
           {isTodoOptionOpen && (
             <TodoOptionsMenu 
             task={task}
+            onDelete={onDelete}
+            closeOption={closeOption}
             onClose={() => setIsTodoOptionOpen(false)} />
           )}
         </div>

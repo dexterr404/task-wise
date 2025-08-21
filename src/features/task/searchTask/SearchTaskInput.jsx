@@ -1,6 +1,6 @@
 import SearchIcon from "@mui/icons-material/Search";
 
-function SearchTask({ className = "" }) {
+function SearchTaskInput({ className = "" }) {
     return<div className={`relative ${className}`}>
     <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
     <input
@@ -12,4 +12,4 @@ function SearchTask({ className = "" }) {
     
 }
 
-export default SearchTask
+export default SearchTaskInput

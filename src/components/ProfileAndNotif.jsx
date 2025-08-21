@@ -2,7 +2,7 @@ import { useState } from "react";
 import MyPicture from "../assets/me.jpg";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
-import ProfileMenu from "../features/ProfileMenu";
+import ProfileMenu from "./dropdownMenu/ProfileMenu";
 import { IconButton,Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 

@@ -1,61 +1,91 @@
 const tasks = [
   {
-    title: "Schedule an appointment",
-    description: "Appointment",
-    deadline: "2025-10-21",
+    title: "Prepare for job interview",
+    description: "Technical interview for frontend developer role",
+    deadline: "2025-09-05",
     status: "Ongoing",
     priority: "High",
     subtasks: [
-      { title: "Book a trip to their place", status: "Done" },
-      { title: "Pay the downpayment", status: "Ongoing" }
+      { title: "Review React concepts", status: "Ongoing" },
+      { title: "Update portfolio", status: "Done" }
     ]
   },
   {
-    title: "Plan a birthday party",
-    description: "Birthday for a friend",
-    deadline: "2025-08-30",
+    title: "Travel itinerary",
+    description: "Plan 3-day trip to Cebu",
+    deadline: "2025-10-12",
+    status: "Ongoing",
+    priority: "Medium",
+    subtasks: [
+      { title: "Book flights", status: "Done" }
+    ]
+  },
+  {
+    title: "Grocery shopping",
+    description: "Weekly household supplies",
+    deadline: "2025-08-25",
     status: "Unfinished",
-    priority: "Medium",
-    subtasks: [
-      { title: "Book a venue", status: "Ongoing" },
-      { title: "Order cake and decorations", status: "Pending" },
-      { title: "Send invitations", status: "Done" }
-    ]
-  },
-  {
-    title: "Work project",
-    description: "Prepare presentation for client",
-    deadline: "2025-09-15",
-    status: "Ongoing",
-    priority: "High",
-    subtasks: [
-      { title: "Create slides", status: "Ongoing" },
-      { title: "Collect data from team", status: "Pending" },
-      { title: "Finalize report", status: "Pending" }
-    ]
-  },
-  {
-    title: "Fitness goal",
-    description: "Prepare for half marathon",
-    deadline: "2025-12-01",
-    status: "Done",
-    priority: "Medium",
-    subtasks: [
-      { title: "Weekly long runs", status: "Ongoing" },
-      { title: "Strength training", status: "Ongoing" },
-      { title: "Buy proper running shoes", status: "Done" }
-    ]
-  },
-  {
-    title: "Home improvement",
-    description: "Renovate the kitchen",
-    deadline: "2026-01-10",
-    status: "Pending",
     priority: "Low",
     subtasks: [
-      { title: "Hire contractor", status: "Pending" },
-      { title: "Choose design and materials", status: "Ongoing" },
-      { title: "Buy appliances", status: "Pending" }
+      { title: "Buy vegetables", status: "Done" },
+      { title: "Restock snacks", status: "Ongoing" }
+    ]
+  },
+  {
+    title: "Team presentation",
+    description: "Quarterly sales report",
+    deadline: "2025-09-18",
+    status: "Ongoing",
+    priority: "High",
+    subtasks: [
+      { title: "Compile sales data", status: "Done" },
+      { title: "Design slide deck", status: "Ongoing" }
+    ]
+  },
+  {
+    title: "Learn a new skill",
+    description: "Start online course on UI/UX design",
+    deadline: "2025-11-20",
+    status: "Ongoing",
+    priority: "Medium",
+    subtasks: [
+      { title: "Sign up for course", status: "Done" }
+    ]
+  },
+
+  // 🔥 New tasks
+  {
+    title: "Morning workout",
+    description: "Daily fitness routine - cardio & weights",
+    deadline: "2025-08-21",
+    status: "Done",
+    priority: "Low",
+    subtasks: [
+      { title: "Stretching", status: "Done" },
+      { title: "Cardio (20 mins)", status: "Done" },
+      { title: "Weights", status: "Done" }
+    ]
+  },
+  {
+    title: "Read a book",
+    description: "Finish 'Clean Code' by Robert C. Martin",
+    deadline: "2025-09-30",
+    status: "Ongoing",
+    priority: "Medium",
+    subtasks: [
+      { title: "Read Chapters 1–3", status: "Done" },
+      { title: "Read Chapters 4–6", status: "Ongoing" }
+    ]
+  },
+  {
+    title: "Personal website",
+    description: "Build and deploy personal portfolio",
+    deadline: "2025-10-15",
+    status: "Ongoing",
+    priority: "High",
+    subtasks: [
+      { title: "Setup project with Vite + React", status: "Done" },
+      { title: "Deploy to Netlify", status: "Ongoing" }
     ]
   }
 ];
