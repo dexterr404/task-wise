@@ -4,8 +4,8 @@ import TodoOptionsMenu from "./TodoOptionsMenu"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "./ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
-import { statusColors } from "../../data/status";
-import { priorityColors } from "../../data/priority";
+import { statusColors } from "../data/status";
+import { priorityColors } from "../data/priority";
 
 function TaskCard({task,onDelete}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);

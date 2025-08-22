@@ -9,7 +9,7 @@ import FilterMenu from "../components/dropdownMenu/FilterMenu";
 import SortMenu from "../components/dropdownMenu/SortMenu";
 import TaskCard from "../components/TaskCard";
 import { Snackbar,Alert } from "@mui/material";
-import tasks from "../../data/task";
+import tasks from "../data/task";
 
 function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);

@@ -1,4 +1,4 @@
-import React from "react";
+import {useState} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,10 +6,14 @@ import {
   Button,
   DialogContent,
   Typography,
+  Snackbar,
+  Alert
 } from "@mui/material";
 
 function DeleteTaskModal({open,onClose,onDelete}) {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   return (
+    <>
     <Dialog
       open={open}
       onClose={onClose}
@@ -51,12 +55,26 @@ function DeleteTaskModal({open,onClose,onDelete}) {
             ml: 1,
             "&:hover": { opacity: 0.8, backgroundColor: "red" },
           }}
-          onClick={onDelete}
+          onClick={() => {
+            onDelete();
+            setSnackbarOpen(true);
+          }}
         >
           Delete
         </Button>
       </DialogActions>
     </Dialog>
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={7000}
+    onClose={() => setSnackbarOpen(false)}
+    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+    >
+    <Alert severity="success" sx={{ width: "100%" }}>
+        Task deleted successfully!
+    </Alert>
+    </Snackbar>
+    </>
   );
 }
 

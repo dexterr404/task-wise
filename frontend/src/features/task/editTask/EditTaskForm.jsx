@@ -14,24 +14,33 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const priorities = [
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
 ];
 
-export default function AddTask({ categoryName, onClose, onTaskAdded }) {
+export default function EditTask({task,open,categoryName, onClose }) {
+  const {title,description,deadline,priority} = task;
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [taskData, setTaskData] = useState({
-    name: categoryName || "",
-    description: "",
-    dueDate: "",
-    priority: "medium",
+    name: title,
+    description: description,
+    deadline: deadline,
+    priority: priority,
     subtasks: [],
   });
 
   useEffect(() => {
-    setTaskData((prev) => ({ ...prev, name: categoryName || "" }));
-  }, [categoryName]);
+    if (task) {
+      setTaskData({
+        name: task.title || "",
+        description: task.description || "",
+        deadline: task.deadline || "",
+        priority: task.priority || "medium",
+        subtasks: task.subtasks || [],
+      });
+    }
+  }, [task]);
 
   const handleChange = (e) => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
@@ -41,6 +50,10 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
     const newSubtasks = [...taskData.subtasks];
     newSubtasks[index].title = value;
     setTaskData({ ...taskData, subtasks: newSubtasks });
+  };
+
+  const handleDeadlineChange = (value) => {
+    setTaskData({ ...taskData, deadline: value });
   };
 
   const handleAddSubtask = () => {
@@ -57,71 +70,72 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
 
   const handleSave = () => {
     console.log("Task Data:", taskData);
-    onTaskAdded?.();
     onClose();
     setTaskData({
       name: categoryName || "",
       description: "",
-      dueDate: "",
+      deadline: "",
       priority: "medium",
       subtasks: [],
     });
     setSnackbarOpen(true);
+    onClose();
   };
 
   return (
     <>
-      <Dialog open={true} fullWidth maxWidth="sm" onClose={onClose}>
-        <DialogTitle>Add New Task</DialogTitle>
+      <Dialog open={open} fullWidth maxWidth="sm" disableEnforceFocus={false} onClose={onClose}>
+        <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>
           <TextField
             label="Task Name"
             name="name"
-            fullWidth
-            margin="dense"
             InputProps={{
               style: { fontSize: 14 },
             }}
+            fullWidth
+            margin="dense"
             value={taskData.name}
             onChange={handleChange}
           />
           <TextField
             label="Description"
             name="description"
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
             fullWidth
             margin="dense"
             multiline
             rows={3}
-            InputProps={{
-              style: { fontSize: 14 },
-            }}
             value={taskData.description}
             onChange={handleChange}
           />
           <TextField
             label="Due Date"
-            name="dueDate"
+            name="deadline"
             type="date"
+            InputProps={
+            { min: new Date().toISOString().split("T")[0], 
+            style: { fontSize: 14 } 
+            }}
             fullWidth
             margin="dense"
-            InputProps={{
-              style: { fontSize: 14 },
-            }}
             InputLabelProps={{ shrink: true }}
-            value={taskData.dueDate}
-            onChange={handleChange}
+            value={taskData.deadline}
+            onChange={(e) => handleDeadlineChange(e.target.value)}
           />
           <TextField
             label="Priority"
             name="priority"
+            InputProps={{
+              style: { fontSize: 14 },
+            }}
             select
             fullWidth
             margin="dense"
             value={taskData.priority}
             onChange={handleChange}
-            InputProps={{
-              style: { fontSize: 14 },
-            }}
           >
             {priorities.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -142,7 +156,10 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
               }}
             >
               <TextField
-                label={`Subtask ${index + 1}`}
+                  label={`Subtask ${index + 1}`}
+                  InputProps={{
+                style: { fontSize: 14 },
+              }}
                 fullWidth
                 value={subtask.title}
                 onChange={(e) => handleSubtaskChange(index, e.target.value)}
@@ -159,35 +176,34 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
 
         <DialogActions>
           <Button onClick={onClose} 
-          style={ 
-            {color: "#484848",
-              fontSize: "12px",
-              paddingX: "8px",
-              paddingY: "4px"
-            } }>Cancel</Button>
+            style={
+            {color: "#484848", 
+            fontSize: "12px",
+            paddingX: "8px",
+            paddingY: "4px",} }>Cancel</Button>
           <Button
             onClick={handleSave}
             variant="contained"
-            style={{ backgroundColor: "#14532d",
+            style={{ 
+            backgroundColor: "orange",
             fontSize: "12px",
             paddingX: "8px",
             marginRight: "16px",
-            paddingY: "4px"
-             }}
+            paddingY: "4px", }}
           >
-            Add
+            Finish
           </Button>
         </DialogActions>
       </Dialog>
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={7000}
+        autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          Task added successfully!
+          Task edited successfully!
         </Alert>
       </Snackbar>
     </>

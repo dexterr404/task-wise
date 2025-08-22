@@ -51,7 +51,7 @@ export default function TodoOptionsMenu({task,onDelete,closeOption}) {
           <EditIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <EditTask task={task} open={isEditTaskOpen} onClose={() => setIsEditTaskOpen(false)}/>
+      <EditTask task={task} open={isEditTaskOpen} onClose={() => {setIsEditTaskOpen(false)}}/>
       <Tooltip title="Update Subtask">
         <IconButton
           sx={{

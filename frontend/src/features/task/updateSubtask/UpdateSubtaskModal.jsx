@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import StatusMenu from "../../../components/dropdownMenu/StatusMenu";
-import { statusColors } from "../../../../data/status";
+import { statusColors } from "../../../data/status";
 
 function UpdateSubtaskModal({open,onClose,task}) {
   const [anchorEl, setAnchorEl] = useState(null);
