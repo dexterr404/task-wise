@@ -122,7 +122,7 @@ export default function EditTask({task,open,categoryName, onClose }) {
             fullWidth
             margin="dense"
             InputLabelProps={{ shrink: true }}
-            value={taskData.deadline}
+            value={taskData.deadline.split("T")[0] }
             onChange={(e) => handleDeadlineChange(e.target.value)}
           />
           <TextField

@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom"
+import { Snackbar,Alert } from "@mui/material";
+
 import ProfileAndNotif from "../components/ProfileAndNotif";
 import SearchTaskInput from "../features/task/searchTask/SearchTaskInput";
 import Recommended from "../components/Recommended";
@@ -7,9 +11,8 @@ import SortIcon from "@mui/icons-material/Sort";
 import CreateTask from "../features/task/createTask/CreateTaskForm";
 import FilterMenu from "../components/dropdownMenu/FilterMenu";
 import SortMenu from "../components/dropdownMenu/SortMenu";
-import TaskCard from "../components/TaskCard";
-import { Snackbar,Alert } from "@mui/material";
-import tasks from "../data/task";
+import RateLimitedUI from "../components/RateLimitedUI";
+import TasksList from "../components/TasksList";
 
 function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);
@@ -18,16 +21,35 @@ function Task() {
     const [isFilterOpen,setIsFilterOpen] = useState(false);
     const [isSortOpen,setIsSortOpen] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [taskList, setTaskList] = useState(tasks);
+    const [tasks, setTasks] = useState([]);
+    const [isRateLimited, setIsRateLimited] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleDeleteTask = (index) => {
-        const updatedTasks = taskList.filter((_, i) => i !== index);
-        setTaskList(updatedTasks);
-    };
+    useEffect(() => {
+        const fetchTask = async() => {
+            setIsLoading(true);
+            try {
+                const res = await axios.get("http://192.168.0.118:5001/api/tasks");
+                setTasks(res.data);
+                setIsRateLimited(false);
+            } catch (error) {
+                console.log("Error fetching tasks", error)
+                if(error.response.status === 429){
+                    setIsRateLimited(true);
+                }
+                else{
+                    console.log("Failed to load tasks");
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        }
 
+        fetchTask();
+        
+    }, []);
 
-
-    return<div className="flex flex-col h-100% bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
+    return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-semibold text-xl">My Task</h1>
             <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
@@ -36,6 +58,9 @@ function Task() {
         <div className="flex justify-center">
             <SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
         </div>
+        {
+            isRateLimited && <RateLimitedUI/>
+        }
         <Recommended setIsCreateTaskOpen={setIsCreateTaskOpen} setSelectedCategory={setSelectedCategory}/>
         <div className="flex justify-between items-center mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
             <div className="flex gap-2">
@@ -56,11 +81,12 @@ function Task() {
                 <button className=" bg-white border-gray-300 px-3 py-1 border-1 rounded-md text-sm font-semibold cursor-pointer hover:bg-gray-50">...</button>
             </div>
             <div>
-                <button className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-80"
+                <Link to={"create"}
+                className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-80"
                 onClick={() => {
                     setSelectedCategory("");
                     setIsCreateTaskOpen(true);
-                }}>+ Add New Task</button>
+                }}>+ Add New Task</Link>
             </div>
             <Snackbar
                 open={snackbarOpen}
@@ -77,16 +103,13 @@ function Task() {
                 <CreateTask categoryName={selectedCategory} 
                 onClose={() => setIsCreateTaskOpen(false)} 
                 onTaskAdded={() => setSnackbarOpen(true)}/>
+                
             }
         </div>
         <div className="flex flex-col mx-10 lg:ml-[100px]">
             <h1 className="font-semibold text-xs text-black mb-4">TODO</h1>
             <div className="flex justify-end flex-col gap-2">
-                {
-                    taskList.map((task,index) => (
-                        <TaskCard key={index} task={task} onDelete={() => handleDeleteTask(index)}/>
-                    ))
-                }
+                <TasksList isLoading={isLoading} tasks={tasks}/>
             </div>
         </div>
     </div>

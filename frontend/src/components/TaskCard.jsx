@@ -9,7 +9,6 @@ import { priorityColors } from "../data/priority";
 
 function TaskCard({task,onDelete}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
     
     const closeOption = () => {
       setIsTodoOptionOpen(false)
@@ -22,9 +21,9 @@ function TaskCard({task,onDelete}){
         </div>
         <div className="flex items-center text-xs gap-2 min-w-[160px]">
             <div className={`px-3 py-1 text-white rounded-md
-              ${statusColors[task.status]}`}>{task.status}</div>
+              ${statusColors[task.status] || `bg-gray-700`}`}>{task.status}</div>
             <div className={`px-3 py-1  text-white rounded-md
-              ${priorityColors[task.priority]}`}>{task.priority}</div>
+              ${priorityColors[task.priority] || `bg-gray-700`}`}>{task.priority}</div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:w-full">
             <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>15 days left</span>

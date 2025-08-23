@@ -40,7 +40,6 @@ export default function TodoOptionsMenu({task,onDelete,closeOption}) {
         }}
         onClose={() => setIsDeleteModalOpen(false)}
       />
-
       <Tooltip title="Edit">
         <IconButton
         sx={{

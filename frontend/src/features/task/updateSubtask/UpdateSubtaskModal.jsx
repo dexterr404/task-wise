@@ -40,7 +40,7 @@ function UpdateSubtaskModal({open,onClose,task}) {
                 <div className="relative">
                   <div
                       className={`cursor-pointer px-2 text-white py-1 rounded-md text-xs hover:opacity-90 active:opacity-70
-                        ${statusColors[t.status]}`}
+                        ${statusColors[t.status] || `bg-gray-700`}`}
                       onClick={(e) => setAnchorEl(e.currentTarget)}
                     >
                       {t.status}

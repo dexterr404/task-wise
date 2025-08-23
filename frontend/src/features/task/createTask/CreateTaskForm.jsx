@@ -12,6 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {Link} from 'react-router-dom'
 
 const priorities = [
   { value: "low", label: "Low" },
@@ -156,15 +157,17 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             + Add Subtask
           </Button>
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={onClose} 
+          <Link to={"/Task"}>
+          <Button
+          onClick={onClose} 
           style={ 
             {color: "#484848",
               fontSize: "12px",
               paddingX: "8px",
               paddingY: "4px"
-            } }>Cancel</Button>
+            } }>Cancel</Button>     
+          </Link>
           <Button
             onClick={handleSave}
             variant="contained"

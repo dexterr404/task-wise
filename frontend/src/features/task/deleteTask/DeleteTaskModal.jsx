@@ -9,6 +9,7 @@ import {
   Snackbar,
   Alert
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function DeleteTaskModal({open,onClose,onDelete}) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -32,6 +33,7 @@ function DeleteTaskModal({open,onClose,onDelete}) {
       <DialogContent />
 
       <DialogActions sx={{ justifyContent: "flex-end" }}>
+        <Link to={"/Task"}>
         <Button
           onClick={onClose}
           sx={{
@@ -44,7 +46,9 @@ function DeleteTaskModal({open,onClose,onDelete}) {
           }}
         >
           Cancel
-        </Button>
+        </Button>  
+        </Link>
+        <Link to={"/Task"}>
         <Button
           sx={{
             backgroundColor: "red",
@@ -62,6 +66,7 @@ function DeleteTaskModal({open,onClose,onDelete}) {
         >
           Delete
         </Button>
+        </Link>
       </DialogActions>
     </Dialog>
     <Snackbar
