@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom"
-import { Snackbar,Alert } from "@mui/material";
+import { Toaster } from "react-hot-toast";
 
 import ProfileAndNotif from "../components/ProfileAndNotif";
 import SearchTaskInput from "../features/task/searchTask/SearchTaskInput";
@@ -20,7 +20,6 @@ function Task() {
     const [isProfileMenuOpen,setProfileMenuOpen] = useState(false);
     const [isFilterOpen,setIsFilterOpen] = useState(false);
     const [isSortOpen,setIsSortOpen] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
     const [isRateLimited, setIsRateLimited] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +49,7 @@ function Task() {
     }, []);
 
     return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
+        <Toaster position="top-center" reverseOrder={false} />
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-semibold text-xl">My Task</h1>
             <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
@@ -88,22 +88,9 @@ function Task() {
                     setIsCreateTaskOpen(true);
                 }}>+ Add New Task</Link>
             </div>
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={3000}
-                onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                >
-                <Alert severity="success" sx={{ width: "100%" }}>
-                    Task added successfully!
-                </Alert>
-            </Snackbar>
             {
                 isCreateTaskOpen && 
-                <CreateTask categoryName={selectedCategory} 
-                onClose={() => setIsCreateTaskOpen(false)} 
-                onTaskAdded={() => setSnackbarOpen(true)}/>
-                
+                <CreateTask categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)}/>
             }
         </div>
         <div className="flex flex-col mx-10 lg:ml-[100px]">

@@ -7,32 +7,32 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Snackbar,
-  Alert,
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {Link} from 'react-router-dom'
+import {toast} from 'react-hot-toast';
+import axios from "axios";
 
 const priorities = [
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
 ];
 
-export default function AddTask({ categoryName, onClose, onTaskAdded }) {
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+export default function AddTask({ categoryName,onClose }) {
   const [taskData, setTaskData] = useState({
     name: categoryName || "",
     description: "",
     dueDate: "",
-    priority: "medium",
+    priority: "Medium",
     subtasks: [],
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setTaskData((prev) => ({ ...prev, name: categoryName || "" }));
-  }, [categoryName]);
+  }, []);
 
   const handleChange = (e) => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
@@ -47,7 +47,7 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
   const handleAddSubtask = () => {
     setTaskData({
       ...taskData,
-      subtasks: [...taskData.subtasks, { title: "", completed: false }],
+      subtasks: [...taskData.subtasks, { title: "", status: "Not Started" }],
     });
   };
 
@@ -56,27 +56,51 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
     setTaskData({ ...taskData, subtasks: newSubtasks });
   };
 
-  const handleSave = () => {
-    console.log("Task Data:", taskData);
-    onTaskAdded?.();
-    onClose();
-    setTaskData({
-      name: categoryName || "",
-      description: "",
-      dueDate: "",
-      priority: "medium",
-      subtasks: [],
-    });
-    setSnackbarOpen(true);
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const {name,description,dueDate,priority,subtasks} = taskData;
+    if (
+      !name.trim() ||
+      !description.trim() ||
+      !dueDate.trim() ||
+      !priority.trim()
+    ) {
+      toast.error("Fill all the required fields!");
+      return;
+    }
+
+    //Filter and transform empty subtasks
+    const validSubtasks = subtasks
+    .filter(sub => sub.title && sub.title.trim() !== "")
+    .map(sub => ({ ...sub, title: sub.title.trim()}));
+
+    setIsLoading(true);
+    try {
+      await axios.post("http://localhost:5001/api/tasks/", {
+        title: name,
+        description,
+        deadline: dueDate,
+        priority,
+        status: "Not Started",
+        subtasks: validSubtasks
+      })
+      toast.success("Task added successfully!");
+    } catch (error) {
+      console.error("Error adding task:", error.response?.data || error.message);
+      toast.error("Failed to add task");
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   return (
     <>
-      <Dialog open={true} fullWidth maxWidth="sm" onClose={onClose}>
+      <Dialog open={true} fullWidth maxWidth="sm">
         <DialogTitle>Add New Task</DialogTitle>
         <DialogContent>
           <TextField
-            label="Task Name"
+            label="*Task Name"
             name="name"
             fullWidth
             margin="dense"
@@ -87,7 +111,7 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             onChange={handleChange}
           />
           <TextField
-            label="Description"
+            label="*Description"
             name="description"
             fullWidth
             margin="dense"
@@ -100,7 +124,7 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             onChange={handleChange}
           />
           <TextField
-            label="Due Date"
+            label="*Due Date"
             name="dueDate"
             type="date"
             fullWidth
@@ -144,6 +168,9 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             >
               <TextField
                 label={`Subtask ${index + 1}`}
+                InputProps={{
+                style: { fontSize: 14 },
+                }}
                 fullWidth
                 value={subtask.title}
                 onChange={(e) => handleSubtaskChange(index, e.target.value)}
@@ -154,13 +181,13 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             </div>
           ))}
           <Button size="small" onClick={handleAddSubtask} sx={{ mt: 1 }} style={ {fontWeight: "bold"} }>
-            + Add Subtask
+            + Add Subtask <span className="text-[8px] text-gray-500 ml-1">(Not required)</span>
           </Button>
         </DialogContent>
         <DialogActions>
           <Link to={"/Task"}>
           <Button
-          onClick={onClose} 
+          onClick={onClose}
           style={ 
             {color: "#484848",
               fontSize: "12px",
@@ -177,21 +204,12 @@ export default function AddTask({ categoryName, onClose, onTaskAdded }) {
             marginRight: "16px",
             paddingY: "4px"
              }}
-          >
-            Add
+          >{
+            isLoading ? <div>Loading</div> : <div>Add</div>
+          }
           </Button>
         </DialogActions>
       </Dialog>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={7000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Task added successfully!
-        </Alert>
-      </Snackbar>
     </>
   );
 }
