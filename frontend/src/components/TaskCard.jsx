@@ -6,6 +6,7 @@ import LinearWithValueLabel from "./ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
 import { statusColors } from "../data/status";
 import { priorityColors } from "../data/priority";
+import countRemainingDays from "../utils/countRemainingDays";
 
 function TaskCard({task,fetchTask}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
@@ -26,7 +27,9 @@ function TaskCard({task,fetchTask}){
               ${priorityColors[task.priority] || `bg-gray-700`}`}>{task.priority}</div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:w-full">
-            <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>15 days left</span>
+            <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>
+            {`${countRemainingDays(task.deadline)}`}
+            </span>
             <LinearWithValueLabel className='flex-1'/>
         </div>
         <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
@@ -49,4 +52,5 @@ function TaskCard({task,fetchTask}){
       </div>
     </div>
 }
+
 export default TaskCard

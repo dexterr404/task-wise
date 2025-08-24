@@ -52,7 +52,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
           <EditIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <EditTask task={task} open={isEditTaskOpen} onClose={() => {setIsEditTaskOpen(false)}}/>
+      <EditTask task={task} open={isEditTaskOpen} onClose={() => {setIsEditTaskOpen(false)}} fetchTask={() => fetchTask()}/>
       <Tooltip title="Update Subtask">
         <IconButton
           sx={{
@@ -83,6 +83,8 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         </IconButton>
       </Tooltip>
       <DoneTaskModal
+      task={task}
+      fetchTask={() => fetchTask()}
       open={isDoneModalOpen}
       onClose={() => setIsDoneModalOpen(false)} />
 
@@ -98,7 +100,9 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         </IconButton>
       </Tooltip>
       <DuplicateTaskModal 
+      task={task}
       open={isDuplicateModalOpen}
+      fetchTask={() => fetchTask()}
       onClose={() => setIsDuplicateModalOpen(false)}/>
     </div>
 }

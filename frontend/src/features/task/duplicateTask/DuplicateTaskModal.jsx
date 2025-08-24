@@ -1,4 +1,4 @@
-import React from "react";
+import {useState} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,8 +7,33 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-function DuplicateTaskModal({open,onClose}) {
+function DuplicateTaskModal({open,onClose,fetchTask,task}) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDuplicate = async() => {
+    setIsLoading(true);
+    const {title,description,deadline,priority,subtasks} = task;
+
+    try {
+        await axios.post("http://localhost:5001/api/tasks", {
+        title,
+        description,
+        deadline,
+        priority,
+        subtasks
+        });
+        toast.success("Task duplicated successfully");
+      } catch (error) {
+        toast.error("Failed to duplicate task");
+      } finally {
+        setIsLoading(false);
+        fetchTask();
+      }
+    }
+
   return (
     <Dialog
       open={open}
@@ -42,6 +67,7 @@ function DuplicateTaskModal({open,onClose}) {
           Don't
         </Button>
         <Button
+          onClick={() => handleDuplicate()}
           sx={{
             backgroundColor: "blue",
             color: "white",

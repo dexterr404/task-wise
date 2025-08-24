@@ -89,7 +89,9 @@ function Task() {
             </div>
             {
                 isCreateTaskOpen && 
-                <CreateTask categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)} fetchTask={() => fetchTask()}/>
+                <CreateTask categoryName={selectedCategory} 
+                onClose={()=>setIsCreateTaskOpen(false)} 
+                fetchTask={() => fetchTask()}/>
             }
         </div>
         <div className="flex flex-col mx-10 lg:ml-[100px]">

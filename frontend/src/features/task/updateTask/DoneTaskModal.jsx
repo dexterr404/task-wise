@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,8 +7,34 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-function DoneTaskModal({open,onClose}) {
+function DoneTaskModal({open,onClose,task,fetchTask}) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDone = async() => {
+    const {name,description,deadline,priority,subtasks} = task;
+
+    setIsLoading(true);
+    try {
+      await axios.put(`http://localhost:5001/api/tasks/${task._id}`,{
+        title: name,
+        description,
+        deadline,
+        priority,
+        status: "Done",
+        subtasks
+      });
+      fetchTask();
+      toast.success("Done task");
+    } catch (error) {
+      toast.error("Failed to update status");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <Dialog
       open={open}
@@ -42,6 +68,7 @@ function DoneTaskModal({open,onClose}) {
           Not yet
         </Button>
         <Button
+          onClick={() => handleDone()}
           sx={{
             backgroundColor: "green",
             color: "white",
@@ -52,7 +79,7 @@ function DoneTaskModal({open,onClose}) {
             "&:hover": { opacity: 0.8, backgroundColor: "green" },
           }}
         >
-          Done
+          {isLoading ? <span>Updating</span> : <span>Done</span>}
         </Button>
       </DialogActions>
     </Dialog>

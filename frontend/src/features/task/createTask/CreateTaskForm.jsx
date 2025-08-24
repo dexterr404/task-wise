@@ -20,7 +20,7 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function AddTask({ categoryName,onClose,fetchTask }) {
+export default function CreateTask({ categoryName,onClose,fetchTask }) {
   const [taskData, setTaskData] = useState({
     name: categoryName || "",
     description: "",
@@ -84,14 +84,14 @@ export default function AddTask({ categoryName,onClose,fetchTask }) {
         status: "Not Started",
         subtasks: validSubtasks
       })
+      fetchTask();
+      onClose();
       toast.success("Task added successfully!");
     } catch (error) {
       console.error("Error adding task:", error.response?.data || error.message);
       toast.error("Failed to add task");
     } finally {
       setIsLoading(false);
-      fetchTask();
-      onClose();
     }
   };
 
@@ -206,7 +206,7 @@ export default function AddTask({ categoryName,onClose,fetchTask }) {
             paddingY: "4px"
              }}
           >{
-            isLoading ? <div>Loading</div> : <div>Add</div>
+            isLoading ? <div>Create</div> : <div>Create</div>
           }
           </Button>
         </DialogActions>

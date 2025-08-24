@@ -20,7 +20,8 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
     setIsLoading(true);
     try {
       await axios.delete(`http://localhost:5001/api/tasks/${taskId}`);
-      toast.error("Task deleted successfully")
+      toast.success("Task deleted successfully")
+      onDelete();
     } catch (error) {
       toast.error("Failed to delete task");
     } finally {
@@ -74,8 +75,7 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
             ml: 1,
             "&:hover": { opacity: 0.8, backgroundColor: "red" },
           }}
-          onClick={(e) => {
-            onDelete();
+          onClick={() => {
             handleDelete();
           }}
         >

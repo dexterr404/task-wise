@@ -7,11 +7,11 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Snackbar,
-  Alert,
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -19,9 +19,9 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function EditTask({task,open,categoryName, onClose }) {
+export default function EditTask({task,open,onClose,fetchTask }) {
   const {title,description,deadline,priority} = task;
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [taskData, setTaskData] = useState({
     name: title,
     description: description,
@@ -36,7 +36,7 @@ export default function EditTask({task,open,categoryName, onClose }) {
         name: task.title || "",
         description: task.description || "",
         deadline: task.deadline || "",
-        priority: task.priority || "medium",
+        priority: task.priority,
         subtasks: task.subtasks || [],
       });
     }
@@ -68,18 +68,41 @@ export default function EditTask({task,open,categoryName, onClose }) {
     setTaskData({ ...taskData, subtasks: newSubtasks });
   };
 
-  const handleSave = () => {
-    console.log("Task Data:", taskData);
-    onClose();
-    setTaskData({
-      name: categoryName || "",
-      description: "",
-      deadline: "",
-      priority: "medium",
-      subtasks: [],
-    });
-    setSnackbarOpen(true);
-    onClose();
+  const handleSave = async() => {
+    const {name,description,deadline,priority,subtasks,status} = taskData;
+
+    if(!name.trim() || 
+    !description.trim() || 
+    !deadline.trim() || 
+    !priority.trim()
+    ) {
+      toast.error("Fill all the required fields!");
+      return
+    }
+
+    const validSubtasks = subtasks
+    .filter( sub => sub.title && sub.title.trim() !== "")
+    .map( sub => ({...sub, title: sub.title.trim()}));
+
+    setIsLoading(true);
+    try {
+        await axios.put(`http://localhost:5001/api/tasks/${task._id}`,{
+        title: name,
+        description,
+        deadline,
+        priority,
+        status,
+        subtasks: validSubtasks
+      });
+      toast.success("Task updated successfully");
+      fetchTask();
+      onClose();
+    } catch (error) {
+      console.error("Error adding task:", error.response?.data || error.message);
+      toast.error("Failed to update task");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -191,21 +214,10 @@ export default function EditTask({task,open,categoryName, onClose }) {
             marginRight: "16px",
             paddingY: "4px", }}
           >
-            Finish
+            {isLoading ? <span>Updating </span>: <span>Update</span>}
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Task edited successfully!
-        </Alert>
-      </Snackbar>
     </>
   );
 }
