@@ -20,7 +20,7 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function AddTask({ categoryName,onClose }) {
+export default function AddTask({ categoryName,onClose,fetchTask }) {
   const [taskData, setTaskData] = useState({
     name: categoryName || "",
     description: "",
@@ -90,6 +90,7 @@ export default function AddTask({ categoryName,onClose }) {
       toast.error("Failed to add task");
     } finally {
       setIsLoading(false);
+      fetchTask();
       onClose();
     }
   };

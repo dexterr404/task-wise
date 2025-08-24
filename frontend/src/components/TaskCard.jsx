@@ -7,7 +7,7 @@ import TimeIcon from "@mui/icons-material/AccessTime";
 import { statusColors } from "../data/status";
 import { priorityColors } from "../data/priority";
 
-function TaskCard({task,onDelete}){
+function TaskCard({task,fetchTask}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     
     const closeOption = () => {
@@ -41,9 +41,9 @@ function TaskCard({task,onDelete}){
           {isTodoOptionOpen && (
             <TodoOptionsMenu 
             task={task}
-            onDelete={onDelete}
             closeOption={closeOption}
-            onClose={() => setIsTodoOptionOpen(false)} />
+            onClose={() => setIsTodoOptionOpen(false)}
+            fetchTask={() => fetchTask()}/>
           )}
         </div>
       </div>

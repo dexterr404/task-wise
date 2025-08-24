@@ -24,8 +24,7 @@ function Task() {
     const [isRateLimited, setIsRateLimited] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchTask = async() => {
+    const fetchTask = async() => {
             setIsLoading(true);
             try {
                 const res = await axios.get("http://192.168.0.118:5001/api/tasks");
@@ -44,8 +43,8 @@ function Task() {
             }
         }
 
+    useEffect(() => {
         fetchTask();
-        
     }, []);
 
     return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
@@ -90,13 +89,13 @@ function Task() {
             </div>
             {
                 isCreateTaskOpen && 
-                <CreateTask categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)}/>
+                <CreateTask categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)} fetchTask={() => fetchTask()}/>
             }
         </div>
         <div className="flex flex-col mx-10 lg:ml-[100px]">
             <h1 className="font-semibold text-xs text-black mb-4">TODO</h1>
             <div className="flex justify-end flex-col gap-2">
-                <TasksList isLoading={isLoading} tasks={tasks}/>
+                <TasksList isLoading={isLoading} tasks={tasks} fetchTask={() => fetchTask()}/>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@ import DoneTaskModal from "../features/task/updateTask/DoneTaskModal";
 import DuplicateTaskModal from "../features/task/duplicateTask/DuplicateTaskModal";
 import UpdateSubtaskModal from "../features/task/updateSubtask/UpdateSubtaskModal";
 
-export default function TodoOptionsMenu({task,onDelete,closeOption}) {
+export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
@@ -32,11 +32,13 @@ export default function TodoOptionsMenu({task,onDelete,closeOption}) {
         </IconButton>
       </Tooltip>
       <DeleteTaskModal
+        taskId={task._id}
+        fetchTask={() => fetchTask()}
         open={isDeleteModalOpen}
         onDelete={() => {
           setIsDeleteModalOpen(false);
-          onDelete();
           closeOption();
+          fetchTask();
         }}
         onClose={() => setIsDeleteModalOpen(false)}
       />

@@ -10,9 +10,24 @@ import {
   Alert
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import {toast} from "react-hot-toast"
 
-function DeleteTaskModal({open,onClose,onDelete}) {
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+function DeleteTaskModal({open,onClose,onDelete,taskId}) {
+  const [isloading, setIsLoading] = useState(false);
+
+  const handleDelete = async() => {
+    setIsLoading(true);
+    try {
+      await axios.delete(`http://localhost:5001/api/tasks/${taskId}`);
+      toast.error("Task deleted successfully")
+    } catch (error) {
+      toast.error("Failed to delete task");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <>
     <Dialog
@@ -59,9 +74,9 @@ function DeleteTaskModal({open,onClose,onDelete}) {
             ml: 1,
             "&:hover": { opacity: 0.8, backgroundColor: "red" },
           }}
-          onClick={() => {
+          onClick={(e) => {
             onDelete();
-            setSnackbarOpen(true);
+            handleDelete();
           }}
         >
           Delete
@@ -69,16 +84,6 @@ function DeleteTaskModal({open,onClose,onDelete}) {
         </Link>
       </DialogActions>
     </Dialog>
-    <Snackbar
-    open={snackbarOpen}
-    autoHideDuration={7000}
-    onClose={() => setSnackbarOpen(false)}
-    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-    >
-    <Alert severity="success" sx={{ width: "100%" }}>
-        Task deleted successfully!
-    </Alert>
-    </Snackbar>
     </>
   );
 }
