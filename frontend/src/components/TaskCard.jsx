@@ -18,7 +18,7 @@ function TaskCard({task,fetchTask}){
     return<div className="flex items-center gap-4 bg-white shadow-md p-4 rounded-md max-lg:flex-col max-lg:items-start relative">
         <div className="flex flex-col">
             <h3 className="font-semibold text-black lg:w-[260px]">{task.title}</h3>
-            <p className="text-xs">{task.description}</p>
+            <p className="text-xs lg:w-[260px]">{task.description}</p>
         </div>
         <div className="flex items-center text-xs gap-2 min-w-[160px]">
             <div className={`px-3 py-1 text-white rounded-md

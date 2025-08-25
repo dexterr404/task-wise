@@ -111,7 +111,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
         <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>
           <TextField
-            label="Task Name"
+            label="*Task Name"
             name="name"
             InputProps={{
               style: { fontSize: 14 },
@@ -122,7 +122,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
             onChange={handleChange}
           />
           <TextField
-            label="Description"
+            label="*Description"
             name="description"
             InputProps={{
               style: { fontSize: 14 },
@@ -135,7 +135,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
             onChange={handleChange}
           />
           <TextField
-            label="Due Date"
+            label="*Due Date"
             name="deadline"
             type="date"
             InputProps={
@@ -149,7 +149,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
             onChange={(e) => handleDeadlineChange(e.target.value)}
           />
           <TextField
-            label="Priority"
+            label="*Priority"
             name="priority"
             InputProps={{
               style: { fontSize: 14 },

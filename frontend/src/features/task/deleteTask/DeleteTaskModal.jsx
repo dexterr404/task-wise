@@ -6,10 +6,7 @@ import {
   Button,
   DialogContent,
   Typography,
-  Snackbar,
-  Alert
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-hot-toast"
 
@@ -45,11 +42,9 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
         Do you really want to delete task?
       </Typography>
       </DialogTitle>
-
       <DialogContent />
 
-      <DialogActions sx={{ justifyContent: "flex-end" }}>
-        <Link to={"/Task"}>
+      <DialogActions sx={{ justifyContent: "flex-end"}}>
         <Button
           onClick={onClose}
           sx={{
@@ -63,8 +58,6 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
         >
           Cancel
         </Button>  
-        </Link>
-        <Link to={"/Task"}>
         <Button
           sx={{
             backgroundColor: "red",
@@ -79,9 +72,8 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
             handleDelete();
           }}
         >
-          Delete
+          { isloading ? <span>Deleting</span> : <span>Delete</span>}
         </Button>
-        </Link>
       </DialogActions>
     </Dialog>
     </>

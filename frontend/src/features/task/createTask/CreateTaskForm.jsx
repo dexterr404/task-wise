@@ -138,7 +138,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
             onChange={handleChange}
           />
           <TextField
-            label="Priority"
+            label="*Priority"
             name="priority"
             select
             fullWidth
