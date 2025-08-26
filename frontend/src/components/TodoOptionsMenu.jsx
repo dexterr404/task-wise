@@ -3,11 +3,13 @@ import { IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import FlagIcon from "@mui/icons-material/Flag";
+import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EditTask from "../features/task/editTask/EditTaskForm";
 import DeleteTaskModal from "../features/task/deleteTask/DeleteTaskModal";
 import DoneTaskModal from "../features/task/updateTask/DoneTaskModal";
+import NotDoneTaskModal from "../features/task/unDoneTask/NotDoneTaskModal";
 import DuplicateTaskModal from "../features/task/duplicateTask/DuplicateTaskModal";
 import UpdateSubtaskModal from "../features/task/updateSubtask/UpdateSubtaskModal";
 
@@ -15,6 +17,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
+  const[isNotDoneModalOpen,setIsNotDoneModalOpen] = useState(false);
   const[isDuplicateModalOpen,setIsDuplicateModalOpen] = useState(false);
   const[isSubtaskModalOpen,setIsSubtaskModalOpen] = useState(false);
 
@@ -68,6 +71,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
 
       <UpdateSubtaskModal
         open={isSubtaskModalOpen}
+        fetchTask={fetchTask}
         task={task}
         onClose={() => setIsSubtaskModalOpen(false)}
       />
@@ -87,7 +91,22 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
       fetchTask={() => fetchTask()}
       open={isDoneModalOpen}
       onClose={() => setIsDoneModalOpen(false)} />
-
+      <Tooltip title="Undone">
+        <IconButton 
+        sx={{
+          color: "gray",
+          "&:hover": { color: "#f1c915" }
+        }}
+        onClick={() => {setIsNotDoneModalOpen((prev) => !prev)}}
+        size="small">
+          <CancelIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <NotDoneTaskModal 
+      task={task}
+      open={isNotDoneModalOpen}
+      fetchTask={() => fetchTask()}
+      onClose={() => setIsNotDoneModalOpen(false)}/>
       <Tooltip title="Duplicate">
         <IconButton 
         sx={{

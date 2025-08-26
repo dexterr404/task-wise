@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { updateTask } from "../../../api/taskService";
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -59,7 +59,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
   const handleAddSubtask = () => {
     setTaskData({
       ...taskData,
-      subtasks: [...taskData.subtasks, { title: "", completed: false }],
+      subtasks: [...taskData.subtasks, { title: "", status: "Not Started" }],
     });
   };
 
@@ -86,24 +86,17 @@ export default function EditTask({task,open,onClose,fetchTask }) {
 
     setIsLoading(true);
     try {
-        await axios.put(`http://localhost:5001/api/tasks/${task._id}`,{
-        title: name,
-        description,
-        deadline,
-        priority,
-        status,
-        subtasks: validSubtasks
-      });
-      toast.success("Task updated successfully");
-      fetchTask();
-      onClose();
-    } catch (error) {
-      console.error("Error adding task:", error.response?.data || error.message);
-      toast.error("Failed to update task");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        await updateTask(task._id,name,description,deadline,priority,validSubtasks,status);
+        toast.success("Task updated successfully");
+        fetchTask();
+        onClose();
+      } catch (error) {
+        console.error("Error adding task:", error.response?.data || error.message);
+        toast.error("Failed to update task");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   return (
     <>
@@ -207,6 +200,7 @@ export default function EditTask({task,open,onClose,fetchTask }) {
           <Button
             onClick={handleSave}
             variant="contained"
+            disabled={isLoading}
             style={{ 
             backgroundColor: "orange",
             fontSize: "12px",

@@ -30,7 +30,7 @@ function TaskCard({task,fetchTask}){
             <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>
             {`${countRemainingDays(task.deadline)}`}
             </span>
-            <LinearWithValueLabel className='flex-1'/>
+            <LinearWithValueLabel task={task} className='flex-1'/>
         </div>
         <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
         <div className="relative inline-flex">

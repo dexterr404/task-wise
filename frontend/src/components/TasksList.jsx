@@ -26,7 +26,7 @@ const TasksList = ( {tasks,isLoading,fetchTask}) => {
     }
 
     return (
-        <div className="flex flex-col gap-3 py-2">
+        <div className="flex flex-col bg-white px-4 py-6 gap-3">
             {
                 tasks.map((task) => (
                     <TaskCard key={task._id} task={task} fetchTask={() => fetchTask()}/>

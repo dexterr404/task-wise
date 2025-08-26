@@ -10,7 +10,7 @@ import {
 import StatusMenu from "../../../components/dropdownMenu/StatusMenu";
 import { statusColors } from "../../../data/status";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { updateSubTask } from "../../../api/taskService";
 
 function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,6 +29,20 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
     }
   }, [task]);
 
+  const handleStatus = () => {
+    const subtaskStatuses = taskData.subtasks.map(s => s.status);
+
+    let mainStatus = "Not Started";
+
+    if (subtaskStatuses.some(s => s === "Ongoing" || s === "Done")) {
+      mainStatus = "Ongoing"
+    } else{
+      mainStatus = "Not Started"
+    }
+
+    return mainStatus
+  }
+ 
   const handleUpdateSubtaskStatus = (newStatus) => {
     if (selectedSubtaskIndex !== null) {
       const newSubtasks = [...taskData.subtasks];
@@ -49,19 +63,18 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
 
   const handleSave = async () => {
     setIsLoading(true);
+    const status = handleStatus();
     try {
-      await axios.put(`http://localhost:5001/api/tasks/${task._id}`, {
-        ...task,
-        subtasks: taskData.subtasks,
-      });
+      await updateSubTask(task._id,task,status,taskData.subtasks);
+      
       toast.success("Subtasks updated successfully");
-      fetchTask && fetchTask();
       onClose();
     } catch (err) {
       console.error(err);
       toast.error("Failed to update subtasks");
     } finally {
       setIsLoading(false);
+      fetchTask();
     }
   };
 

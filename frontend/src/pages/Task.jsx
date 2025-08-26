@@ -1,5 +1,4 @@
 import { useState,useEffect } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom"
 import { Toaster } from "react-hot-toast";
 
@@ -14,6 +13,8 @@ import SortMenu from "../components/dropdownMenu/SortMenu";
 import RateLimitedUI from "../components/RateLimitedUI";
 import TasksList from "../components/TasksList";
 
+import { fetchAllTasks } from "../api/taskService";
+
 function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -23,31 +24,30 @@ function Task() {
     const [tasks, setTasks] = useState([]);
     const [isRateLimited, setIsRateLimited] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [sort,setSort] = useState("none");
+    const [filters, setFilters] = useState([]);
 
-    const fetchTask = async() => {
-            setIsLoading(true);
-            try {
-                const res = await axios.get("http://192.168.0.118:5001/api/tasks");
-                setTasks(res.data);
-                setIsRateLimited(false);
-            } catch (error) {
-                console.log("Error fetching tasks", error)
-                if(error.response.status === 429){
-                    setIsRateLimited(true);
-                }
-                else{
-                    console.log("Failed to load tasks");
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        }
+    const fetchTask = async () => {
+    setIsLoading(true);
+    try {
+        const res = await fetchAllTasks(sort, filters);
+        setTasks(res);
+        setIsRateLimited(false);
+    } catch (error) {
+        if (error.response?.status === 429) setIsRateLimited(true);
+        else console.log("Failed to load tasks", error);
+    } finally {
+        setIsLoading(false);
+    }
+    };
 
     useEffect(() => {
-        fetchTask();
-    }, []);
+    fetchTask();
+    }, [sort, filters]);
 
-    return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
+    const handleSortChange = (option) => setSort(option);
+
+    return<div className="flex flex-col bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
         <Toaster position="top-center" reverseOrder={false} />
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-semibold text-xl">My Task</h1>
@@ -64,24 +64,28 @@ function Task() {
         <div className="flex justify-between items-center mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
             <div className="flex gap-2">
                 <div className="relative">
-                    <button className=" bg-white border-gray-300 px-3 py-1 border-1  rounded-md text-sm font-semibold cursor-pointer hover:bg-gray-50 flex items-center relative"
+                    <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1  rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center relative"
                     onClick={() => {setIsFilterOpen((prev) => !prev)}}><FilterListIcon/>Filter</button>
                     {
-                        isFilterOpen && <FilterMenu/>
+                        isFilterOpen && <FilterMenu onChange={setFilters}/>
                     }
                 </div>
                 <div className="relative">
-                    <button className=" bg-white border-gray-300 px-3 py-1 border-1 rounded-md text-sm font-semibold cursor-pointer hover:bg-gray-50 flex items-center"
+                    <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1 rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center"
                     onClick={() => {setIsSortOpen((prev) => !prev)}}><SortIcon/>Sort</button>
                     {
-                        isSortOpen && <SortMenu/>
+                        isSortOpen && <SortMenu onChange={(value) => {
+                            handleSortChange(value);
+                            setSort(value);
+                        }
+                        }
+                        sort={sort}/>
                     }
                 </div>
-                <button className=" bg-white border-gray-300 px-3 py-1 border-1 rounded-md text-sm font-semibold cursor-pointer hover:bg-gray-50">...</button>
             </div>
             <div>
                 <Link to={"create"}
-                className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-80"
+                className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-95 active:opacity-90"
                 onClick={() => {
                     setSelectedCategory("");
                     setIsCreateTaskOpen(true);

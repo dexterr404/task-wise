@@ -7,8 +7,8 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import {toast} from "react-hot-toast"
+import { deleteTask } from "../../../api/taskService";
 
 function DeleteTaskModal({open,onClose,onDelete,taskId}) {
   const [isloading, setIsLoading] = useState(false);
@@ -16,7 +16,7 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
   const handleDelete = async() => {
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:5001/api/tasks/${taskId}`);
+      await deleteTask(taskId);
       toast.success("Task deleted successfully")
       onDelete();
     } catch (error) {
@@ -71,8 +71,9 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
           onClick={() => {
             handleDelete();
           }}
+          disabled={isloading}
         >
-          { isloading ? <span>Deleting</span> : <span>Delete</span>}
+          { isloading ? <span className="text-white">Deleting</span> : <span>Delete</span>}
         </Button>
       </DialogActions>
     </Dialog>

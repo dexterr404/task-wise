@@ -12,7 +12,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import {Link} from 'react-router-dom'
 import {toast} from 'react-hot-toast';
-import axios from "axios";
+import { createTask } from "../../../api/taskService";
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -76,14 +76,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
 
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:5001/api/tasks/", {
-        title: name,
-        description,
-        deadline: dueDate,
-        priority,
-        status: "Not Started",
-        subtasks: validSubtasks
-      })
+      await createTask(name,description,dueDate,priority,validSubtasks);
       fetchTask();
       onClose();
       toast.success("Task added successfully!");
@@ -199,6 +192,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
           <Button
             onClick={handleSave}
             variant="contained"
+            disabled={isLoading}
             style={{ backgroundColor: "#14532d",
             fontSize: "12px",
             paddingX: "8px",
@@ -206,7 +200,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
             paddingY: "4px"
              }}
           >{
-            isLoading ? <div>Create</div> : <div>Create</div>
+            isLoading ? <div className="text-white">Creating</div> : <div>Create</div>
           }
           </Button>
         </DialogActions>

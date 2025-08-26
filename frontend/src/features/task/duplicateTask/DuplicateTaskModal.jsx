@@ -7,8 +7,8 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { duplicateTask } from "../../../api/taskService";
 
 function DuplicateTaskModal({open,onClose,fetchTask,task}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,16 +18,11 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
     const {title,description,deadline,priority,subtasks} = task;
 
     try {
-        await axios.post("http://localhost:5001/api/tasks", {
-        title,
-        description,
-        deadline,
-        priority,
-        subtasks
-        });
+        await duplicateTask(title,description,deadline,priority,subtasks);
         toast.success("Task duplicated successfully");
       } catch (error) {
         toast.error("Failed to duplicate task");
+        console.log(error);
       } finally {
         setIsLoading(false);
         fetchTask();
@@ -68,6 +63,7 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
         </Button>
         <Button
           onClick={() => handleDuplicate()}
+          disabled={isLoading}
           sx={{
             backgroundColor: "blue",
             color: "white",
@@ -78,7 +74,7 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
             "&:hover": { opacity: 0.8, backgroundColor: "blue" },
           }}
         >
-          Duplicate
+          { isLoading ? <span className="text-white">Duplicating</span> : <span>Duplicate</span>}
         </Button>
       </DialogActions>
     </Dialog>

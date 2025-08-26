@@ -1,17 +1,33 @@
 import Task from "../models/Task.js";
 
-export const getAllTasks = async(req,res) => {
-    try {
-        const task = await Task.find().sort({ createdAt: -1});
-        res.status(200).json(task);
+export const getAllTasks = async (req, res) => {
+  try {
+    const { filter, sort } = req.query;
+    let filterOption = {};
+    let sortOption = {};
+
+    // Handle filtering by status
+    if (filter) {
+      const statuses = filter.split(","); // e.g. "In Progress,Done"
+      filterOption.status = { $in: statuses };
     }
-    catch (error) {
-        console.error("Error in geAllTask controller", error);
-        res.status(500).json({
-            message: "Internal server error"
-        });
-    }
-}
+
+    // Handle sorting
+    if (sort === "alphabetical") sortOption.title = 1;
+    else if (sort === "status") sortOption.status = 1;
+    else if (sort === "deadline") sortOption.deadline = 1;
+    else sortOption.createdAt = -1;
+
+    const tasks = await Task.find(filterOption)
+      .collation({ locale: "en" })
+      .sort(sortOption);
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Error in getAllTasks controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const getTaskById = async(req,res) => {
     try {
