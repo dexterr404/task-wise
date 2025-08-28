@@ -1,13 +1,41 @@
-import defaultImage from "../../assets/Default Profiles/gamer.png";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import { useState } from "react";
+import { useSelector,useDispatch } from "react-redux"
+import { updateProfile } from "../../api/userService";
+import { addUser } from "./userSlice";
 import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
-import { useSelector } from "react-redux"
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import toast from "react-hot-toast";
+import defaultImage from "../../assets/Default Profiles/gamer.png";
 
-function UserProfileDetailsModal({ open, onClose }) {
+
+function EditProfileModal({ open, onClose }) {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+
+  const [name, setName] = useState(user.name);
+  const [image, setImage] = useState('default.img');
+  const [isLoading, setIsLoading] = useState(false);
+  
+
+  const handleSave = async() => {
+    setIsLoading(true)
+    try {
+      await updateProfile(name,image,user.id);
+
+      dispatch(addUser({ name, image }));
+
+      toast.success("Profile successfully updated");
+      onClose();
+    } catch (error) {
+      toast.error("Failed to udpate profile");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
 
   return (
     <Dialog
@@ -27,7 +55,6 @@ function UserProfileDetailsModal({ open, onClose }) {
       </div>
 
       <DialogContent sx={{ p: 3 }}>
-
         <div className="flex justify-center py-3">
           <div className="relative">
             <img className="w-28 h-28 rounded-full object-cover" src={defaultImage} />
@@ -48,6 +75,7 @@ function UserProfileDetailsModal({ open, onClose }) {
           <div className="flex flex-col gap-1">
             <p className="text-sm">Fullname</p>
             <input
+              onChange={(e) => setName(e.target.value)}
               className="border border-gray-300 px-2 py-1 rounded-lg text-sm"
               placeholder={user?.name || "Your Name"}
             />
@@ -64,6 +92,7 @@ function UserProfileDetailsModal({ open, onClose }) {
         <div className="flex justify-center mt-6">
           <Button
             variant="contained"
+            onClick={() => handleSave()}
             startIcon={<SaveIcon />}
             sx={{
               textTransform: "none",
@@ -79,7 +108,7 @@ function UserProfileDetailsModal({ open, onClose }) {
               },
             }}
           >
-            Save Changes
+            {isLoading ? <span>Saving</span> : <span>Save Changes</span>}
           </Button>
         </div>
       </DialogContent>
@@ -87,4 +116,4 @@ function UserProfileDetailsModal({ open, onClose }) {
   );
 }
 
-export default UserProfileDetailsModal
+export default EditProfileModal

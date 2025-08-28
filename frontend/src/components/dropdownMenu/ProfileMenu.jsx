@@ -2,7 +2,7 @@ import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import UserProfileDetailsModal from "../../features/user/UserProfileDetails";
+import EditProfileModal from "../../features/user/EditProfileModal";
 import LogoutModal from "../../features/auth/LogoutModal";
 import ManageAccounts from '@mui/icons-material/ManageAccounts';
 import Logout from '@mui/icons-material/Logout';    
@@ -21,7 +21,7 @@ export default function ProfileMenu({ className = "",setTasks }) {
           <Logout fontSize="medium"/><span className="ml-1">Logout</span>
         </MenuItem>
       </MenuList>
-      <UserProfileDetailsModal
+      <EditProfileModal
           open={isProfileOpen}
           onClose={() => setIsProfileOpen(false)}
         />
