@@ -6,7 +6,7 @@ import ProfileMenu from "./dropdownMenu/ProfileMenu";
 import { IconButton,Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
+function ProfileAndNotif({setTasks, setProfileMenuOpen, isProfileMenuOpen }) {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   return (
@@ -56,7 +56,7 @@ function ProfileAndNotif({ setProfileMenuOpen, isProfileMenuOpen }) {
         </Tooltip>
         {isProfileMenuOpen && (
           <div className="absolute top-full right-0 mt-2 z-100">
-            <ProfileMenu />
+            <ProfileMenu setTasks={setTasks} />
           </div>
         )}
       </div>

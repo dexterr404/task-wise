@@ -1,26 +1,35 @@
-import * as React from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import UserProfileDetailsModal from "../../features/user/UserProfileDetails";
+import LogoutModal from "../../features/auth/LogoutModal";
+import ManageAccounts from '@mui/icons-material/ManageAccounts';
+import Logout from '@mui/icons-material/Logout';    
 
-export default function ProfileMenu({ className = "" }) {
-  const handleMenuItemClick = (action) => {
-    console.log(action);
-  };
+export default function ProfileMenu({ className = "",setTasks }) {
+   const [isProfileOpen, setIsProfileOpen] = useState(false);
+   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
   return (
-    <Paper className={className} sx={{ "& *": { fontSize: "13px" } }}>
+    <Paper className={className} sx={{ "& *": { fontSize: "14px" } }}>
       <MenuList>
-        <MenuItem onClick={() => handleMenuItemClick("Profile")}>
-          Profile
+        <MenuItem onClick={() => setIsProfileOpen(true)}>
+          <ManageAccounts fontSize="medium"/><span className="ml-1">Profile</span>
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("My account")}>
-          My account
-        </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("Logout")}>
-          Logout
+        <MenuItem onClick={() => setIsLogoutOpen(true)}>
+          <Logout fontSize="medium"/><span className="ml-1">Logout</span>
         </MenuItem>
       </MenuList>
+      <UserProfileDetailsModal
+          open={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+        />
+      <LogoutModal 
+          open={isLogoutOpen}
+          setTasks={setTasks}
+          onClose={() => setIsLogoutOpen(false)}
+      />
     </Paper>
   );
 }

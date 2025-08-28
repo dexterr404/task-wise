@@ -25,7 +25,7 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
       <h1 className="font-semibold">Recommended Categories</h1>
       <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-x-4 gap-y-4">
         {categories.map((category, index) => (
-          <Link
+          <div
             to={"create"}
             key={index}
             className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-sm items-center flex"
@@ -36,7 +36,7 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
           >
             {category.icon}
             {category.name}
-          </Link>
+          </div>
         ))}
       </div>
     </div>

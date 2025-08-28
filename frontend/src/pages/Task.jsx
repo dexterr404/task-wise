@@ -1,13 +1,12 @@
 import { useState,useEffect } from "react";
-import { Link } from "react-router-dom"
 import { Toaster } from "react-hot-toast";
 
 import ProfileAndNotif from "../components/ProfileAndNotif";
-import SearchTaskInput from "../features/task/searchTask/SearchTaskInput";
+import SearchTaskInput from "../features/task/SearchTaskInput";
 import Recommended from "../components/Recommended";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SortIcon from "@mui/icons-material/Sort";
-import CreateTask from "../features/task/createTask/CreateTaskForm";
+import CreateTask from "../features/task/CreateTaskForm";
 import FilterMenu from "../components/dropdownMenu/FilterMenu";
 import SortMenu from "../components/dropdownMenu/SortMenu";
 import RateLimitedUI from "../components/RateLimitedUI";
@@ -27,6 +26,8 @@ function Task() {
     const [sort,setSort] = useState("none");
     const [filters, setFilters] = useState([]);
 
+    const token = localStorage.getItem('token');
+
     const fetchTask = async () => {
     setIsLoading(true);
     try {
@@ -42,17 +43,19 @@ function Task() {
     };
 
     useEffect(() => {
-    fetchTask();
-    }, [sort, filters]);
+        if (!token) return;
+        fetchTask();
+
+    }, [sort, filters,token]);
 
     const handleSortChange = (option) => setSort(option);
 
-    return<div className="flex flex-col bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
+    return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
         <Toaster position="top-center" reverseOrder={false} />
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-semibold text-xl">My Task</h1>
             <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
-            <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
+            <ProfileAndNotif setTasks={setTasks} setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </div>
         <div className="flex justify-center">
             <SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
@@ -84,12 +87,12 @@ function Task() {
                 </div>
             </div>
             <div>
-                <Link to={"create"}
+                <button
                 className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-95 active:opacity-90"
                 onClick={() => {
                     setSelectedCategory("");
                     setIsCreateTaskOpen(true);
-                }}>+ Add New Task</Link>
+                }}>+ Add New Task</button>
             </div>
             {
                 isCreateTaskOpen && 

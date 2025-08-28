@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv"
 
 import taskRoutes from "./routes/taskRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
+import authRoutes from "./routes/authRoutes.js"
 import { connectDB } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js"
 
@@ -21,8 +23,10 @@ app.use(
 app.use(express.json());
 app.use(rateLimiter);
 
-
+app.use("/api/users",userRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/tasks",taskRoutes);
+
 
 connectDB().then(() => {
     app.listen(PORT, () => {

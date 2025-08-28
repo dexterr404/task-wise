@@ -6,12 +6,12 @@ import FlagIcon from "@mui/icons-material/Flag";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import EditTask from "../features/task/editTask/EditTaskForm";
-import DeleteTaskModal from "../features/task/deleteTask/DeleteTaskModal";
-import DoneTaskModal from "../features/task/updateTask/DoneTaskModal";
-import NotDoneTaskModal from "../features/task/unDoneTask/NotDoneTaskModal";
-import DuplicateTaskModal from "../features/task/duplicateTask/DuplicateTaskModal";
-import UpdateSubtaskModal from "../features/task/updateSubtask/UpdateSubtaskModal";
+import EditTask from "../features/task/EditTaskForm";
+import DeleteTaskModal from "../features/task/DeleteTaskModal";
+import DoneTaskModal from "../features/task/DoneTaskModal";
+import NotDoneTaskModal from "../features/task/NotDoneTaskModal";
+import DuplicateTaskModal from "../features/task/DuplicateTaskModal";
+import UpdateSubtaskModal from "../features/task/UpdateSubtaskModal";
 
 export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);

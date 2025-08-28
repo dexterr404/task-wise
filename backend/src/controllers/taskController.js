@@ -3,7 +3,7 @@ import Task from "../models/Task.js";
 export const getAllTasks = async (req, res) => {
   try {
     const { filter, sort } = req.query;
-    let filterOption = {};
+    let filterOption = { user: req.user._id };
     let sortOption = {};
 
     // Handle filtering by status
@@ -31,7 +31,7 @@ export const getAllTasks = async (req, res) => {
 
 export const getTaskById = async(req,res) => {
     try {
-        const task = await Task.findById(req.params.id);
+        const task = await Task.findById({ _id: req.params.id, user: req.user._id });
         if(!task) return res.status(404).json({message: "Task not found"});
 
         res.status(200).json(task);
@@ -44,7 +44,7 @@ export const getTaskById = async(req,res) => {
 export const createTask = async(req,res) => {
     try {
         const {title, description, deadline, status, priority, subtasks} = req.body;
-        const newTask = new Task({title, description, deadline, status, priority, subtasks})
+        const newTask = new Task({title, description, deadline, status, priority, subtasks, user: req.user._id})
 
         await newTask.save();
         res.status(201).json({message: "Note created successfully"})
@@ -55,31 +55,31 @@ export const createTask = async(req,res) => {
     }
 }
 
-export const updateTask = async(req,res) => {
-    try{
-        const {title, description, deadline, status, priority, subtasks} = req.body;
-        const updatedTask = await Task.findByIdAndUpdate(req.params.id,
-            {title, description, deadline, status, priority, subtasks},
-            {new: true}
-        );
-        if(!updatedTask) return res.status(404).json({message: "Task not found"});
+export const updateTask = async (req, res) => {
+  try {
+    const { title, description, deadline, status, priority, subtasks } = req.body;
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      { title, description, deadline, status, priority, subtasks },
+      { new: true }
+    );
+    if (!updatedTask) return res.status(404).json({ message: "Task not found" });
 
-        res.status(200).json({message: "Task updated successfully"});
-    }
-    catch (error) {
-        console.error("Error in updateNote controller", error);
-        res.status(500).json({message: "Internal server error"});
-    }
-}
+    res.status(200).json({ message: "Task updated successfully" });
+  } catch (error) {
+    console.error("Error in updateTask controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-export const deleteTask = async(req,res) => {
-    try{
-        const deletedTask = await Task.findByIdAndDelete(req.params.id);
-        if(!deletedTask) return res.status(404).json({message: "Task not found"});
-        res.status(200).json({message: "Task deleted successfully"});
-    }
-    catch (error) {
-        console.error("Error in deleteNote controller", error);
-        res.status(500).json({message: "Internal server error"});
-    }
-}
+export const deleteTask = async (req, res) => {
+  try {
+    const deletedTask = await Task.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    if (!deletedTask) return res.status(404).json({ message: "Task not found" });
+
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteTask controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
