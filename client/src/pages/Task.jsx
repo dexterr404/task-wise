@@ -50,10 +50,10 @@ function Task() {
 
     const handleSortChange = (option) => setSort(option);
 
-    return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4">
+    return<div className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4 font-inter">
         <Toaster position="top-center" reverseOrder={false} />
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
-            <h1 className="font-semibold text-xl">My Task</h1>
+            <h1 className="font-bold text-black text-xl">My Task</h1>
             <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
             <ProfileAndNotif setTasks={setTasks} setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </div>
