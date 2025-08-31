@@ -2,7 +2,7 @@ import { IconButton } from '@mui/material';
 import { CheckCircle, Autorenew, Assignment, Pending ,NorthEast} from "@mui/icons-material";
 import GrowthIndicator from './GrowthIndicator';
 
-function MetricsCard() {
+function MetricsCard({total,done,ongoing,pending}) {
     return<div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 w-full">
             <div className="flex flex-col p-4 gap-4 shadow-lg border-lg bg-white rounded-lg cursor-pointer hover:bg-gray-50 active:bg-gray-50 hover:-translate-y-1 active:-translate-y-1 transform transition-transform duration-200 ease-in-out">
             <div className="flex justify-between">
@@ -14,7 +14,7 @@ function MetricsCard() {
                 </div>
             </div>
             <div className="text-5xl font-bold text-slate-700 ml-2">
-                24
+                {total}
             </div>
             <div className="flex gap-2 items-center">
                 <GrowthIndicator value={5}/>
@@ -30,7 +30,7 @@ function MetricsCard() {
             </div>
         </div>
         <div className="text-5xl font-bold text-slate-700 ml-2">
-            10
+            {done}
         </div>
         <GrowthIndicator value={-3}/>
     </div>
@@ -44,7 +44,7 @@ function MetricsCard() {
             </div>
         </div>
         <div className="text-5xl font-bold text-slate-700 ml-2">
-            12
+            {ongoing}
         </div>
         <GrowthIndicator value={2}/>
     </div>
@@ -58,7 +58,7 @@ function MetricsCard() {
             </div>
         </div>
         <div className="text-5xl font-bold text-slate-700 ml-2">
-            2
+            {pending}
         </div>
         <GrowthIndicator value={-4}/>
     </div>
