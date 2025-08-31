@@ -18,7 +18,7 @@ const settings = {
 export default function TaskDistributiont() {
   return (
     <div className='flex flex-col gap-4 p-4 bg-white shadow-md rounded-lg'>
-      <div className='border-gray-200 px-10'>
+      <div className='border-gray-200 px-6'>
         <h1 className='font-semibold text-sm'>Overall progress</h1>
       </div>
       <div className='relative flex justify-center items-center'>
