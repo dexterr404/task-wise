@@ -1,12 +1,5 @@
-
 import { PieChart } from '@mui/x-charts/PieChart';
-
-const data = [
-  { label: 'Ongoing', value: 8, color: '#0088FE' },
-  { label: 'Done', value: 12, color: '#00C49F' },
-  { label: 'Not Started', value: 1, color: '#FFBB28' },
-  { label: 'Unfinished', value: 1, color: '#FF8042' },
-];
+import { useDonutTaskData } from '../../hooks/useDonutTaskData';
 
 const settings = {
   margin: { right: 5 },
@@ -16,6 +9,8 @@ const settings = {
 };
 
 export default function TaskDistributiont() {
+  const {data,donePercentage} = useDonutTaskData();
+
   return (
     <div className='flex flex-col gap-4 p-4 bg-white shadow-md rounded-lg'>
       <div className='border-gray-200 px-6'>
@@ -23,10 +18,10 @@ export default function TaskDistributiont() {
       </div>
       <div className='relative flex justify-center items-center'>
         <PieChart
-          series={[{ innerRadius: 85, outerRadius: 100, paddingAngle: 0, data }]}
+          series={[{ innerRadius: 90, outerRadius: 100, paddingAngle: 0, data }]}
           {...settings}
         />
-        <span className='absolute inset-0 flex items-center justify-center text-4xl font-semibold text-green-900'>60%</span>
+        <span className='absolute inset-0 flex items-center justify-center text-6xl font-semibold text-slate-700'>{donePercentage}%</span>
       </div>
       <div className='flex flex-col px-10'>
         {
