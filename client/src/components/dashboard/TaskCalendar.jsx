@@ -1,28 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
+import { useCalendarTaskData } from "../../hooks/useCalendarTaskData";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../../styles/TaskCalendar.css";
+
 import { Box, Typography, Badge } from "@mui/material";
 import { PushPin } from "@mui/icons-material";
 
-// Example task data: each task has a date and title
-const taskData = [
-  { date: new Date(2025, 8, 1), title: "Team meeting" },
-  { date: new Date(2025, 8, 2), title: "Code review" },
-  { date: new Date(2025, 8, 3), title: "Design mockup deadline" },
-  { date: new Date(2025, 8, 5), title: "Project deadline" },
-  { date: new Date(2025, 8, 7), title: "Sprint planning" },
-  { date: new Date(2025, 8, 10), title: "Client presentation" },
-  { date: new Date(2025, 8, 12), title: "Deploy update" },
-  { date: new Date(2025, 8, 15), title: "Performance review" },
-  { date: new Date(2025, 8, 18), title: "Bug bash" },
-  { date: new Date(2025, 8, 20), title: "Team lunch" },
-  { date: new Date(2025, 8, 20), title: "Quarterly report" },
-  { date: new Date(2025, 8, 20), title: "Release retrospective" },
-];
 
 export default function TaskCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const taskData = useCalendarTaskData();
 
   // Check if a date has tasks
   const getTasksForDate = (date) => {
