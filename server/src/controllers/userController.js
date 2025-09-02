@@ -53,6 +53,28 @@ export const updateUser = async (req, res) => {
   }
 };
 
+export const updateFocus = async(req,res) => {
+  try {
+    const { focus } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id, 
+      { focus },
+      { new: true },
+    ).select("-password");
+
+    if(!updatedUser){
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      focus: updatedUser.focus
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error"})
+  }
+}
+
 
 // Delete user
 export const deleteUser = async (req, res) => {

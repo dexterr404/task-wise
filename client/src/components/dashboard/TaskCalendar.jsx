@@ -68,10 +68,10 @@ export default function TaskCalendar() {
         <span className="font-bold text-sm">
           Tasks on {currentDate.toDateString()}:
         </span>
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-1 overflow-hidden">
           {getTasksForDate(currentDate).length > 0 ? (
             getTasksForDate(currentDate).map((task, idx) => (
-              <span className="text-sm ml-4 flex gap-3">
+              <span className="text-sm ml-4 flex gap-3 break-words">
                 <PushPin className="text-red-700 rotate-45" fontSize="small"/> {task.title}
               </span>
             ))

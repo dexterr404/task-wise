@@ -59,7 +59,7 @@ function ProfileAndNotif({setTasks, setProfileMenuOpen, isProfileMenuOpen }) {
         </Tooltip>
         {isProfileMenuOpen && (
           <div className="absolute top-full right-0 mt-2 z-100">
-            <ProfileMenu setTasks={setTasks} />
+            <ProfileMenu/>
           </div>
         )}
       </div>

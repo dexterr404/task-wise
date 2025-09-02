@@ -14,7 +14,6 @@ function LogoutModal({open,onClose,setTasks}) {
     try {
          localStorage.removeItem("token");
         console.log("logged out");
-        setTasks([]);
         navigate("/login");
     } catch (error) {
         toast.error("Error logging out");

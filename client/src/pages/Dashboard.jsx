@@ -17,6 +17,7 @@ function Dashboard() {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [isRateLimited, setIsRateLimited] = useState(false);
+    const [isProfileMenuOpen,setProfileMenuOpen] = useState(false);
 
     const token = localStorage.getItem("token");
     const { total, done, ongoing, pending } = useSelector(selectTaskStats);
@@ -50,7 +51,7 @@ function Dashboard() {
         <div className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-bold text-black text-xl">Dashboard</h1>
             <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
-            <ProfileAndNotif/>
+            <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </div>
         <div className="flex justify-center">
             <SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>

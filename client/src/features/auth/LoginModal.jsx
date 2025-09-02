@@ -34,10 +34,10 @@ function LoginModal() {
         const data = await loginUser(email, password);
 
         dispatch(loginSuccess({ token: data.token }));
-        dispatch(addUser({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage}));
+        dispatch(addUser({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus}));
 
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage }));
+        localStorage.setItem("user", JSON.stringify({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus }));
     
         navigate("/Dashboard");
     } catch (error) {
