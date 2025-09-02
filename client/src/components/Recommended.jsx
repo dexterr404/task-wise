@@ -1,12 +1,11 @@
-import { Link } from "react-router-dom"
 import HomeIcon from "@mui/icons-material/HomeOutlined";
 import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
 import CelebrationIcon from "@mui/icons-material/Celebration";
 import DocumentIcon from "@mui/icons-material/DescriptionOutlined";
 import BoxIcon from "@mui/icons-material/Inventory2Outlined";
-import VolleyballIcon from "@mui/icons-material/SportsVolleyballOutlined";
 import GiftIcon from "@mui/icons-material/CardGiftcardOutlined";
 import FlightIcon from "@mui/icons-material/FlightOutlined";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
   const categories = [
@@ -16,7 +15,7 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
     { icon: <GiftIcon className="text-red-400 mr-2" sx={{ fontSize: 20 }} />, name: "Send a gift" },
     { icon: <CalendarIcon className="text-green-400 mr-2" sx={{ fontSize: 20 }} />, name: "Schedule an appointment" },
     { icon: <DocumentIcon className="text-cyan-400 mr-2" sx={{ fontSize: 20 }} />, name: "Get a passport" },
-    { icon: <VolleyballIcon className="text-violet-400 mr-2" sx={{ fontSize: 20 }} />, name: "Find a kids activity" },
+    { icon: <AssignmentIcon className="text-violet-400 mr-2" sx={{ fontSize: 20 }} />, name: "Prepare for an exam" },
     { icon: <FlightIcon className="text-blue-400 mr-2" sx={{ fontSize: 20 }} />, name: "Plan a trip" },
   ];
 

@@ -14,14 +14,14 @@ export default function TaskDistributiont() {
   return (
     <div className='flex flex-col gap-4 p-4 bg-white shadow-md rounded-lg'>
       <div className='border-gray-200 px-6'>
-        <h1 className='font-semibold text-sm'>Overall progress</h1>
+        <h1 className='font-semibold text-sm'>Overall Progress</h1>
       </div>
       <div className='relative flex justify-center items-center'>
         <PieChart
           series={[{ innerRadius: 90, outerRadius: 100, paddingAngle: 0, data }]}
           {...settings}
         />
-        <span className='absolute inset-0 flex items-center justify-center text-6xl font-semibold text-slate-700'>{donePercentage}%</span>
+        <span className='absolute inset-0 flex items-center justify-center text-4xl font-semibold text-slate-700'>{donePercentage}%</span>
       </div>
       <div className='flex flex-col px-10'>
         {

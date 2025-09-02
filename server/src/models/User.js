@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true},
     email: { type: String, required: true},
     password: {type: String, required: true},
+    focus: { type: mongoose.Schema.Types.ObjectId, ref: "Task", default: null },
     profileImage: {type: String, default: ""},
     notification: [notificationSchema]
 }, { timestamps: true });

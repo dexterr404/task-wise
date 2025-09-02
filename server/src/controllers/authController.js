@@ -15,7 +15,7 @@ export const registerUser = async(req,res) => {
         if(userExists)
             return res.status(400).json({message: "User already exists"});
 
-        const user = await User.create({name,email,password});
+        const user = await User.create({name,email,password,focus: null});
 
         res.status(200).json({
             _id: user._id,
@@ -45,6 +45,7 @@ export const loginUser = async(req,res) => {
             name: user.name,
             email: user.email,
             profileImage: user.profileImage,
+            focus: user.focus,
             token: generateToken(user._id)
         })
     } catch (error) {

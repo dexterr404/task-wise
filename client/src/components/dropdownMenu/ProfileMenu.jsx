@@ -7,7 +7,7 @@ import LogoutModal from "../../features/auth/LogoutModal";
 import ManageAccounts from '@mui/icons-material/ManageAccounts';
 import Logout from '@mui/icons-material/Logout';    
 
-export default function ProfileMenu({ className = "",setTasks }) {
+export default function ProfileMenu({ className = "" }) {
    const [isProfileOpen, setIsProfileOpen] = useState(false);
    const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
@@ -27,7 +27,6 @@ export default function ProfileMenu({ className = "",setTasks }) {
         />
       <LogoutModal 
           open={isLogoutOpen}
-          setTasks={setTasks}
           onClose={() => setIsLogoutOpen(false)}
       />
     </Paper>

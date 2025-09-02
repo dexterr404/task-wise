@@ -42,5 +42,13 @@ export const selectTaskStats = createSelector([selectTasks], (tasks) => {
     return { total, done, ongoing, pending};
 });
 
+
+
+export const selectPendingTasks = createSelector([selectTasks], (tasks) => {
+    const pendingTasks = tasks.filter( t => t.status === "Ongoing" || t.status === "Not Started");
+
+    return pendingTasks;
+}) 
+
 export const { setTasks, addTask, deleteTask, updateTask, updateSubtask } = taskSlice.actions;
 export default taskSlice.reducer;
