@@ -11,6 +11,7 @@ import TaskDistribution from "../components/dashboard/TaskDistributionGraph.jsx"
 import TaskWithCountdown from "../components/dashboard/CountdownTimer.jsx"
 import TaskCalendar from "../components/dashboard/TaskCalendar.jsx"
 import RateLimitedUI from "../components/RateLimitedUI.jsx"
+import Insight from "../components/dashboard/DailyDigest.jsx";
 
 
 function Dashboard() {
@@ -62,9 +63,9 @@ function Dashboard() {
         <div className="mx-10 pb-10 lg:ml-[100px]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-5">
+                    <Insight />
                     <TaskCalendar />
                 </div>
-                
                 <div className="flex flex-col gap-5">
                     <TaskDistribution />
                     

@@ -45,7 +45,7 @@ function CountdownTimer({ deadline,focusId }) {
     <div className="flex gap-7 max-sm:flex-col mx-auto">
       {["days", "hours", "minutes", "seconds"].map((unit) => (
         <Box key={unit} textAlign="center">
-          <Typography variant="h6" fontWeight="bold" fontFamily="var(--font-orbitron)">
+          <Typography variant="h6" fontSize="32px" fontWeight="800" fontFamily="var(--font-work-sans)">
             {timeLeft[unit].toString().padStart(2, "0")}
           </Typography>
           <Typography variant="caption" color="black">
@@ -64,7 +64,7 @@ export default function TaskWithCountdown() {
   const deadline = useTaskDeadline(focusId);
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-xl px-8 py-4 relative shadow-lg">
+    <div className="flex flex-col w-full bg-white rounded-xl px-8 py-4 relative shadow-lg cursor-pointer hover:bg-gray-50 active:bg-gray-50 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
       <span className="text-sm font-semibold mb-2">Focus deadline</span>
       <CountdownTimer deadline={deadline} focusId={focusId} />
       <div className="absolute top-1 right-4">

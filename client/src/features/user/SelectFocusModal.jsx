@@ -76,8 +76,8 @@ function SelectFocusModal({open,onClose,setFocusId}) {
                 pendingTasks.map((task) => (
                   <div 
                   key={task._id}
-                  className="grid grid-cols-[7fr_1fr_1fr] py-2 px-2 gap-1 rounded-xl hover:shadow-lg transition-shadow shadow-md place-items-center text-sm text-left">
-                    <div className="break-words place-self-start pl-3 w-full overflow-hidden pr-1">
+                  className="grid grid-cols-[6fr_1fr_1fr] py-2 px-2 gap-1 rounded-md hover:shadow-lg transition-shadow shadow-md  text-sm text-left">
+                    <div className="break-wordstext-xs place-self-start pl-3 w-full overflow-hidden pr-1">
                       {task.title}
                     </div>
                     <div className="text-sm font-semibold">
@@ -86,8 +86,8 @@ function SelectFocusModal({open,onClose,setFocusId}) {
                     <Tooltip title="Focus">
                       <Button 
                       onClick={() => handleFocusPick(task._id)}
-                      variant="contained" sx={{backgroundColor: `${activeFocus === task._id ? "#b91c1c" : "black"}`, minWidth: "0px", padding: "5px" }}>
-                        <CenterFocusStrong fontSize="8px"/>
+                      variant="contained" sx={{backgroundColor: `${activeFocus === task._id ? "#b91c1c" : "white"}`, minWidth: "0px", padding: "5px" }}>
+                        <CenterFocusStrong fontSize="8px" sx={{color: `${activeFocus === task._id ? "white" : "black" }`}}/>
                       </Button>
                     </Tooltip>
                   </div>

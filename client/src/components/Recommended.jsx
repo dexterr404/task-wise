@@ -27,7 +27,7 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
           <div
             to={"create"}
             key={index}
-            className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-sm items-center flex"
+            className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-xs items-center flex"
             onClick={() => {
               setSelectedCategory(category.name);
               setIsCreateTaskOpen(true);

@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 import taskRoutes from "./routes/taskRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import aiRoutes from "./routes/aiRoutes.js"
 import { connectDB } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js"
 
@@ -26,6 +27,7 @@ app.use(rateLimiter);
 app.use("/api/users",userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks",taskRoutes);
+app.use("/api/ai", aiRoutes);
 
 
 connectDB().then(() => {

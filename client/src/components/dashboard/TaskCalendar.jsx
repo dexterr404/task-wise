@@ -38,7 +38,7 @@ export default function TaskCalendar() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md py-4">
+    <div className="bg-white rounded-lg shadow-md py-4 hover:bg-gray-50 active:bg-gray-50 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
       <span className="text-sm font-semibold font-inter px-10">Schedule Calendar</span>
       <Calendar
       value={currentDate}
@@ -71,8 +71,8 @@ export default function TaskCalendar() {
         <div className="flex flex-col mt-1 overflow-hidden">
           {getTasksForDate(currentDate).length > 0 ? (
             getTasksForDate(currentDate).map((task, idx) => (
-              <span className="text-sm ml-4 flex gap-3 break-words">
-                <PushPin className="text-red-700 rotate-45" fontSize="small"/> {task.title}
+              <span key={idx} className="text-xs ml-4 flex items-center gap-1 break-words">
+                <PushPin className="text-red-700 rotate-45" sx={{fontSize: "12px"}}/> {task.title}
               </span>
             ))
           ) : (

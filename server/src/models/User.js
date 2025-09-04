@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     focus: { type: mongoose.Schema.Types.ObjectId, ref: "Task", default: null },
     profileImage: {type: String, default: ""},
+    insights: {
+        insights: [String],
+        createdAt: { type: Date, default: Date.now }
+    },
     notification: [notificationSchema]
 }, { timestamps: true });
 

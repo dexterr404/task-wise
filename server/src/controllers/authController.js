@@ -46,7 +46,8 @@ export const loginUser = async(req,res) => {
             email: user.email,
             profileImage: user.profileImage,
             focus: user.focus,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
+            insights: user.insights
         })
     } catch (error) {
         res.status(500).json({message: "Server error", error})

@@ -1,11 +1,11 @@
 import { useState,useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import { Button } from "@mui/material";
 
 import ProfileAndNotif from "../components/ProfileAndNotif";
 import SearchTaskInput from "../features/task/SearchTaskInput";
 import Recommended from "../components/Recommended";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import SortIcon from "@mui/icons-material/Sort";
+import { FilterList, Sort, Add } from "@mui/icons-material";
 import CreateTask from "../features/task/CreateTaskForm";
 import FilterMenu from "../components/dropdownMenu/FilterMenu";
 import SortMenu from "../components/dropdownMenu/SortMenu";
@@ -68,14 +68,14 @@ function Task() {
             <div className="flex gap-2">
                 <div className="relative">
                     <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1  rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center relative"
-                    onClick={() => {setIsFilterOpen((prev) => !prev)}}><FilterListIcon/>Filter</button>
+                    onClick={() => {setIsFilterOpen((prev) => !prev)}}><FilterList fontSize="small"/>Filter</button>
                     {
                         isFilterOpen && <FilterMenu onChange={setFilters}/>
                     }
                 </div>
                 <div className="relative">
                     <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1 rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center"
-                    onClick={() => {setIsSortOpen((prev) => !prev)}}><SortIcon/>Sort</button>
+                    onClick={() => {setIsSortOpen((prev) => !prev)}}><Sort fontSize="small"/>Sort</button>
                     {
                         isSortOpen && <SortMenu onChange={(value) => {
                             handleSortChange(value);
@@ -87,12 +87,12 @@ function Task() {
                 </div>
             </div>
             <div>
-                <button
-                className="bg-green-900 text-white font-semibold px-3 py-1 rounded-md text-sm cursor-pointer hover:opacity-95 active:opacity-90"
+                <Button
+                variant="contained" sx={{backgroundColor: "#115e59", color: "white", fontSize: "12px", textTransform: "none"}}
                 onClick={() => {
                     setSelectedCategory("");
                     setIsCreateTaskOpen(true);
-                }}>+ Add New Task</button>
+                }}><Add fontSize="small"/>Add New Task</Button>
             </div>
             {
                 isCreateTaskOpen && 
