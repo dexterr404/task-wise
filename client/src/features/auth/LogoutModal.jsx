@@ -2,17 +2,23 @@ import { useState } from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { logout } from "./authSlice";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../user/userSlice";
 
 
 function LogoutModal({open,onClose,setTasks}) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async() => {
     setIsLoading(true);
     try {
          localStorage.removeItem("token");
+         localStorage.removeItem("user");
+         dispatch(logout());
+         dispatch(clearUser())
         console.log("logged out");
         navigate("/login");
     } catch (error) {

@@ -15,7 +15,7 @@ function TaskCard({task,fetchTask}){
       setIsTodoOptionOpen(false)
     }
 
-    return<div className="flex items-center gap-4 bg-white shadow-md p-4 rounded-md max-lg:flex-col max-lg:items-start relative">
+    return<div className="flex items-center gap-4 bg-white cursor-pointer hover:bg-gray-50 hover:-translate-y-1 transform transition-transform ease-in-out duration-200 shadow-md p-4 rounded-md max-lg:flex-col max-lg:items-start relative">
         <div className="flex flex-col">
             <h3 className="font-semibold text-black lg:w-[260px] text-sm break-words">{task.title}</h3>
             <p className="text-xs lg:w-[260px]">{task.description}</p>
@@ -27,7 +27,7 @@ function TaskCard({task,fetchTask}){
               ${priorityColors[task.priority] || `bg-gray-700`}`}>{task.priority}</div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:w-full">
-            <span className="flex items-center text-sm gap-1"><TimeIcon sx={{ fontSize: 18 }}/>
+            <span className="flex items-center text-xs gap-1"><TimeIcon sx={{ fontSize: 18 }}/>
             {`${countRemainingDays(task.deadline)}`}
             </span>
             <LinearWithValueLabel task={task} className='flex-1'/>
