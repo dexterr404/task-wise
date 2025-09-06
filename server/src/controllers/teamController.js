@@ -5,7 +5,7 @@ export const addTeam = async(req,res) => {
         const { name,description } = req.body;
         const newTeam = new Team({ name, description, owner: req.user._id, members: [], tasks: [] });
         await newTeam.save();
-        res.status(200).json({ message: "Team created succesfully"});
+        res.status(201).json(newTeam);
     } catch (error) {
         res.status(500).json({ message: "Internal server error"});
         console.log("Error in addTeam controller", error);
@@ -39,6 +39,24 @@ export const deleteTeam = async(req,res) => {
         res.status(200).json({message: "Team deleted successfully"});
     } catch (error) {
         console.error("Error in deleteTeam controller", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const updateTeam = async(req,res) => {
+    try {
+        const {id} = req.params;
+        const { name, description } = req.body;
+        const updatedTeam = await Team.findByIdAndUpdate(
+            { _id: id },
+            {  name, description },
+            { new: true}
+        );
+        if(!updatedTeam) return res.status(404).json({message: "Team not found"});
+
+        res.status(200).json({updatedTeam});
+    } catch (error) {
+        console.error("Error in updateTeam controller", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
