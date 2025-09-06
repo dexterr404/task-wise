@@ -32,3 +32,15 @@ export async function deleteTeam(teamId) {
     });
     return res.data;
 }
+
+export async function updateTeam(teamId,name,description) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`http://192.168.0.118:5001/api/teams/${teamId}`,{
+        name,description
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return res.data;
+}
