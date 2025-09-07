@@ -23,7 +23,7 @@ const teamSchema = new mongoose.Schema({
             },
             role: {
                 type: String,
-                enum: ["owner","admin","user"],
+                enum: ["owner","admin","member"],
                 default: "member"
             },
             joinedAt: {
@@ -38,6 +38,9 @@ const teamSchema = new mongoose.Schema({
             ref: "Task"
         }
     ],
+    inviteToken: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: Date.now,
