@@ -1,16 +1,16 @@
-import { useDispatch } from "react-redux"
+import { useDispatch,useSelector } from "react-redux"
 import { loginSuccess } from "./authSlice.js"
 import { addUser } from "../user/userSlice.js"
 import { loginUser } from "../../api/authService.js"
 
 import { Button,IconButton } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
+import { useNavigate,useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Visibility,VisibilityOff } from "@mui/icons-material";
 import  GoogleIcon  from "../../assets/google-icon.svg"
 import TaskIcon from "../../assets/task-icon.png"
-import toast from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 function LoginModal() {
     const [showPassword, setShowPassword] = useState(false);
@@ -18,8 +18,10 @@ function LoginModal() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const navigate = useNavigate();
+    const user = useSelector((state) => state.user);
 
+    const navigate = useNavigate();
+    const location = useLocation();
     const dispatch = useDispatch();
 
     const handleLogin = async (email, password) => {
@@ -39,8 +41,6 @@ function LoginModal() {
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus, insights: data.insights }));
-    
-        navigate("/Dashboard");
     } catch (error) {
         console.log(error);
         if (error.response?.data?.message) {
@@ -53,8 +53,21 @@ function LoginModal() {
     }
     };
 
+    useEffect(() => {
+        if (user && user.id) {
+        const params = new URLSearchParams(location.search);
+        const redirect = params.get("redirect");
+        if (redirect) {
+            navigate(redirect, { replace: true });
+        } else {
+            navigate("/dashboard", { replace: true });
+        }
+        }
+    }, [user, navigate, location.search]);
+
     return (
     <div className="flex flex-col h-dvh items-center justify-center">
+        <Toaster position="top-center" reverseOrder={false} />
         <div className="flex flex-col bg-white max-sm:px-4 px-24 py-18 shadow-lg rounded-lg items-center gap-4">
             <div className="flex flex-col justify-center items-center mb-6">
                 <img width="24" height="24" src={TaskIcon} alt="task-icon"/>
