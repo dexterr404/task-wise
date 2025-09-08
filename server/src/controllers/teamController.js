@@ -1,5 +1,6 @@
 import Team from "../models/Team.js"
 import crypto from "crypto";
+import { sendInviteEmail } from "../services/emailService.js";
 
 //Create new team
 export const addTeam = async(req,res) => {
@@ -141,3 +142,22 @@ export const joinTeamByToken = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//Send a team email invitation
+export const sendTeamInviteEmail = async(req,res) => {
+    const { teamId } = req.params;
+    const { email } = req.body;
+
+    try {
+        const team = await Team.findById(teamId);
+        if(!team) return res.status(404).json({ message: "Team not found" });
+
+        const inviteLink = `${process.env.APP_BASE_URL}/teams/invite/${team.inviteToken}`;
+
+        await sendInviteEmail(email, inviteLink, team.name);
+
+        return res.status(200).json({ message: "Invite sent successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to send invite email!" });
+    }
+}
