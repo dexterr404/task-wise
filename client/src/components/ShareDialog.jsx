@@ -65,7 +65,7 @@ function ShareDialog({ open, onClose, inviteToken }) {
         {/*Teams invite link*/}
         <TextField
           fullWidth
-          disabled="true"
+          disabled={true}
           size="small"
           value={inviteUrl}
           InputProps={{ readOnly: true, sx: { fontSize: "14px", paddingTop: "0px", paddingBottom: "0px", paddingLeft: "8px" } }}
