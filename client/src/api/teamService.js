@@ -76,3 +76,11 @@ export async function joinTeamByToken(inviteToken) {
   );
   return res.data.message;
 }
+
+//Send team email invitation
+export async function sendTeamInviteEmail(teamId,email) {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/teams/invite/${teamId}/invite-email`,
+        {email}
+    );
+    return res.data.message;
+}
