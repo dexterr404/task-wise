@@ -67,9 +67,21 @@ export const getTeamsById = async(req,res) => {
 export const deleteTeam = async(req,res) => {
     try {
         const {id} = req.params
-        const team = await Team.findOneAndDelete({_id: id});
+        const userId = req.user._id;
+
+        //Find the team first
+        const team = await Team.findById(id);
         if(!team) return res.status(404).json({message: "Team not found"});
-        res.status(200).json({message: "Team deleted successfully"});
+
+        //Only allow the owner to delete
+        if(team.owner.toString() !== userId.toString()){
+            return res.status(403).json({ message: "You are not allowed to delete this team" });
+        }
+
+         // Delete the team
+        await team.deleteOne();
+        res.status(200).json({ message: "Team deleted successfully" });
+        
     } catch (error) {
         console.error("Error in deleteTeam controller", error);
         res.status(500).json({ message: "Internal server error" });

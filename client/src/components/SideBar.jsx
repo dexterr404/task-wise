@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Diversity3, Dashboard, Task, Add, MoreVert} from "@mui/icons-material";
+import { Diversity3, Dashboard, Task, Add, MoreVert, Person} from "@mui/icons-material";
 import StringAvatar from "../components/StringAvatar";
 import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import CreateTeamModal from "../features/team/CreateTeamModal";
 import { getTeams } from "../api/teamService";
 import TeamsOptionsMenu from "./TeamsOptionsMenu";
+import { IconButton } from "@mui/material";
 
 function SideBar() {
   const [isNavOpen, setNavOpen] = useState(true);
@@ -15,6 +16,7 @@ function SideBar() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const location = useLocation();
 
+  //Make sure to open the sidebar at large screens and can toggle in smaller screens
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -26,6 +28,7 @@ function SideBar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  //Fetch all the teams from backend at mount
   useEffect(() => {
     const fetchTeams = async() => {
       try {
@@ -36,18 +39,21 @@ function SideBar() {
       }
     }
     fetchTeams();
-  },[])
+  },[selectedTeam])
 
+  //Set the selected team and its option menu 
   const handleClick = (event, team) => {
     setAnchorEl(event.currentTarget);
     setSelectedTeam(team);
   };
 
+  //Close the team's option menu when user clicked elsewhere
   const handleClose = () => {
     setAnchorEl(null);
     setSelectedTeam(null);
   };
 
+  //Make sure the sidebar is able to be toggled
   return isNavOpen ? (
     <aside className="fixed left-0 top-0 h-full w-[250px] bg-white px-12 py-20 z-100 border-r-2 border-gray-100">
       <div className="relative h-full flex flex-col gap-10">
@@ -84,14 +90,16 @@ function SideBar() {
                     ? "bg-gray-200 text-black"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}>
-                <Task fontSize="small"/>Tasks
+                <Person fontSize="small"/>Personal
               </li>
             </Link>
             <li className="flex items-center cursor-default gap-2 px-2 py-1 rounded-md transition text-gray-600">
               <Diversity3 fontSize="small"/>Teams
             </li>
             <div className="text-xs text-gray-600">
-              <ul className="flex flex-col gap-1 justify-center">
+              <ul className="flex flex-col gap-1 max-h-[200px] w-45 overflow-x-hidden overflow-y-auto scroll-hint scrollbar-auto-hide">
+
+                {/*Mapping out the user's joined teams*/}
                 {teams.map((team) => (
                   <Link to={`/teams/${team._id}`} key={team._id}>
                   <li
@@ -100,26 +108,38 @@ function SideBar() {
                         ? "bg-gray-200 text-black"
                         : "text-gray-600 hover:bg-gray-100"
                     }`}>
-                    <div className="flex gap-1.5 items-center">
-                      <StringAvatar fontSize="small" name={team.name} />{team.name}
+                    <div className="flex gap-1.5 items-center ">
+                      <StringAvatar fontSize="small" name={team.name} />
+                      <span className="max-w-[90px] break-words line-clamp-3">
+                        {team.name}
+                      </span>
                     </div>
                     <div>
-                      <MoreVert 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleClick(e, team);
-                      }} fontSize="small" />
+                      <IconButton  
+                          onClick={(e) => {
+                          e.preventDefault();
+                          handleClick(e, team);
+                        }}>
+                        <MoreVert fontSize="small" />
+                      </IconButton>
                     </div>
                   </li>
                   </Link>
                 ))}
               </ul>
-              <TeamsOptionsMenu 
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                team={selectedTeam}
-                />
+
+              {/*Make sure that there is a team before opening team options */}
+              {
+                selectedTeam && (
+                  <TeamsOptionsMenu 
+                  setTeams={setTeams}
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  team={selectedTeam}
+                  />
+                )
+              }
               <div 
                 onClick={() => setCreateTeam(true)}
                 className="flex items-center gap-1 mt-2 pl-4 cursor-pointer hover:text-gray-400">
@@ -130,7 +150,7 @@ function SideBar() {
           </ul>
         </nav>
       </div>
-      <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)}/>
+      <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)} setSelectedTeam={setSelectedTeam} setTeams={setTeams}/>
     </aside>
   ) : (
     <div
