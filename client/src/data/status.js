@@ -1,5 +1,6 @@
 export const statusColors = {
-      Done: "bg-green-700",
-      Ongoing: "bg-yellow-600",
-      Unfinished: "bg-red-700"
-    };
+  Done: "bg-emerald-500",
+  Ongoing: "bg-amber-400",
+  Unfinished: "bg-rose-500",
+  "Not Started": "bg-slate-600"
+};

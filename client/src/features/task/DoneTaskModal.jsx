@@ -42,29 +42,15 @@ function DoneTaskModal({open,onClose,task,fetchTask}) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
-          }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
         >
-          Not yet
+          Cancel
         </Button>
         <Button
           onClick={() => handleDone()}
           disabled={isLoading}
-          sx={{
-            backgroundColor: "green",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "green" },
-          }}
+          variant="contained"
+          sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span className="text-white">Updating</span> : <span>Done</span>}
         </Button>

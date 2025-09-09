@@ -131,29 +131,15 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            px: "8px",
-            py: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
-          }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
         >
           Cancel
         </Button>
         <Button
           onClick={handleSave}
           disabled={isLoading}
-          sx={{
-            backgroundColor: "yellowgreen",
-            color: "white",
-            fontSize: "12px",
-            px: "8px",
-            py: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "yellowgreen" },
-          }}
+          variant="contained"
+          sx={{ fontSize: "12px", backgroundColor: "#7CB342", "&:hover": { backgroundColor: "#9CCC65" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? "Updating..." : "Update"}
         </Button>

@@ -3,14 +3,17 @@ import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography} from "
 import {toast} from "react-hot-toast"
 import { deleteTeam } from "../../api/teamService";
 
-function DeleteTeamModal({open,onClose,team}) {
+function DeleteTeamModal({open,onClose,team,setTeams,closeOption}) {
   const [isLoading, setIsLoading] = useState(false);
 
+  //Delete Task from database
   const handleDelete = async() => {
     setIsLoading(true);
     try {
         await deleteTeam(team._id);
         toast.success("Team successfully deleted");
+        setTeams((prev) => prev.filter((t) => t._id !== team._id));
+        closeOption();
         onClose();
     } catch (error) {
         console.log("Error:", error.message);

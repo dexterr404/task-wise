@@ -27,7 +27,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
           size="small"
           sx={{
             color: "gray",
-            "&:hover": { color: "red" }
+            "&:hover": { color: "#b71c1c" }
           }}
           onClick={() => setIsDeleteModalOpen((prev) => !prev)}
         >
@@ -49,7 +49,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         <IconButton
         sx={{
           color: "gray",
-          "&:hover": { color: "orange" }
+          "&:hover": { color: "#e68900" }
         }} 
         size="small" onClick={() => {setIsEditTaskOpen((prev) => !prev)}}>
           <EditIcon fontSize="small" />
@@ -60,7 +60,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         <IconButton
           sx={{
             color: "gray",
-            "&:hover": { color: "yellowgreen" }
+            "&:hover": { color: "#7CB342" }
           }}
           onClick={() => setIsSubtaskModalOpen(true)}
           size="small"
@@ -79,7 +79,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         <IconButton 
         sx={{
           color: "gray",
-          "&:hover": { color: "green" }
+          "&:hover": { color: "#2E7D32" }
         }}
         onClick={() => {setIsDoneModalOpen((prev) => !prev)}}
         size="small">
@@ -95,7 +95,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         <IconButton 
         sx={{
           color: "gray",
-          "&:hover": { color: "#f1c915" }
+          "&:hover": { color: "#d4af0d" }
         }}
         onClick={() => {setIsNotDoneModalOpen((prev) => !prev)}}
         size="small">
@@ -111,7 +111,7 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask}) {
         <IconButton 
         sx={{
           color: "gray",
-          "&:hover": { color: "blue" }
+          "&:hover": { color: "#1976D2" }
         }}
         onClick={() => setIsDuplicateModalOpen((prev) => !prev)}
         size="small">

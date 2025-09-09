@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tooltip } from "@mui/material"
+import { Tooltip,IconButton, Icon } from "@mui/material"
 import TodoOptionsMenu from "./TodoOptionsMenu"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "./ProgressBar";
@@ -17,7 +17,7 @@ function TaskCard({task,fetchTask}){
 
     return<div className="flex items-center gap-4 bg-white cursor-pointer hover:bg-gray-50 hover:-translate-y-1 transform transition-transform ease-in-out duration-200 shadow-md p-4 rounded-md max-lg:flex-col max-lg:items-start relative">
         <div className="flex flex-col">
-            <h3 className="font-semibold text-black lg:w-[260px] text-sm break-words">{task.title}</h3>
+            <h1 className="text-black lg:w-[260px] text-sm break-words">{task.title}</h1>
             <p className="text-xs lg:w-[260px]">{task.description}</p>
         </div>
         <div className="flex items-center text-xs gap-2 min-w-[160px]">
@@ -35,10 +35,12 @@ function TaskCard({task,fetchTask}){
         <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
         <div className="relative inline-flex">
           <Tooltip title="Options">
-            <MoreHorizIcon
-              className="cursor-pointer"
-              onClick={() => setIsTodoOptionOpen((p) => !p)}
-            />
+            <IconButton sx={{ padding: "1px"}}>
+              <MoreHorizIcon
+                className="cursor-pointer"
+                onClick={() => setIsTodoOptionOpen((p) => !p)}
+              />
+            </IconButton>
           </Tooltip>
 
           {isTodoOptionOpen && (
