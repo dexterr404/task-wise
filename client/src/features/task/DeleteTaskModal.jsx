@@ -40,27 +40,13 @@ function DeleteTaskModal({open,onClose,onDelete,taskId}) {
       <DialogActions sx={{ justifyContent: "flex-end"}}>
         <Button
           onClick={onClose}
-          sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
-          }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
         >
           Cancel
         </Button>  
         <Button
-          sx={{
-            backgroundColor: "red",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "red" },
-          }}
+        variant="contained"
+         sx={{ fontSize: "12px", backgroundColor: "#b71c1c", "&:hover": { backgroundColor: "#d32f2f" }, textTransform: "none", marginRight: "14px" }}
           onClick={() => {
             handleDelete();
           }}

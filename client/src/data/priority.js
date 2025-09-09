@@ -1,5 +1,5 @@
 export const priorityColors = {
-      High: "bg-red-700",
-      Medium: "bg-yellow-600",
-      Low: "bg-green-700"
-    };
+  High: "bg-rose-500",
+  Medium: "bg-amber-400",
+  Low: "bg-emerald-500"
+};

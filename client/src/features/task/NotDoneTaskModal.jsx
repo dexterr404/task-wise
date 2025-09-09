@@ -42,29 +42,15 @@ function NotDoneTaskModal({open,onClose,task,fetchTask}) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
-          }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
         >
           Not yet
         </Button>
         <Button
           onClick={() => handleDone()}
           disabled={isLoading}
-          sx={{
-            backgroundColor: "#f1c915",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "#f1c915" },
-          }}
+          variant="contained"
+          sx={{ fontSize: "12px", backgroundColor: "#d4af0d", "&:hover": { backgroundColor: "#f1c915" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span>Updating</span> : <span>Not Done</span>}
         </Button>

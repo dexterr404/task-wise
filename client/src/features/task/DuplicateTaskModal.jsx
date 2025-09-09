@@ -6,6 +6,7 @@ import { duplicateTask } from "../../api/taskService";
 function DuplicateTaskModal({open,onClose,fetchTask,task}) {
   const [isLoading, setIsLoading] = useState(false);
 
+  //Duplicate task in database
   const handleDuplicate = async() => {
     setIsLoading(true);
     const {title,description,deadline,priority,subtasks} = task;
@@ -43,29 +44,15 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
-          }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
         >
           Don't
         </Button>
         <Button
           onClick={() => handleDuplicate()}
           disabled={isLoading}
-          sx={{
-            backgroundColor: "blue",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "blue" },
-          }}
+          variant="contained"
+          sx={{ fontSize: "12px", backgroundColor: "#1976D2", "&:hover": { backgroundColor: "#2196F3" }, textTransform: "none", marginRight: "14px" }}
         >
           { isLoading ? <span className="text-white">Duplicating</span> : <span>Duplicate</span>}
         </Button>

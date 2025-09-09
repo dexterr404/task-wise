@@ -3,7 +3,7 @@ import { useState } from "react";
 import { addTeam } from "../../api/teamService";
 import toast from "react-hot-toast";
 
-function CreateTeamModal({ open, onClose }) {
+function CreateTeamModal({ open, onClose, setTeams, setSelectedTeam }) {
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,9 @@ function CreateTeamModal({ open, onClose }) {
     }
     setIsLoading(true);
     try {
-        await addTeam(teamName,description);
+        const newTeam = await addTeam(teamName,description);
+        setTeams((prev) => [...prev, newTeam]);
+        setSelectedTeam(newTeam);
         toast.success("Team successfully created");
         setTeamName("");
         setDescription("");
@@ -50,6 +52,7 @@ function CreateTeamModal({ open, onClose }) {
             marginBottom: "10px",
             "& .MuiInputBase-input": {
             fontSize: "14px",
+            color: "black"
             },
             "& .MuiInputLabel-root": {
             fontSize: "14px",
@@ -84,6 +87,7 @@ function CreateTeamModal({ open, onClose }) {
         sx={{
             "& .MuiInputBase-input": {
             fontSize: "14px",
+            color: "black"
             },
             "& .MuiInputLabel-root": {
             fontSize: "14px",
@@ -112,7 +116,7 @@ function CreateTeamModal({ open, onClose }) {
         <Button
           onClick={handleCreateTeam}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#388E3C", textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? "Creating" : "Create"}
         </Button>

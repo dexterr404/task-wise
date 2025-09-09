@@ -16,12 +16,14 @@ function SelectFocusModal({open,onClose,setFocusId}) {
 
   const pendingTasks = useSelector(selectPendingTasks);
 
+  //Update ui when focus changes
   useEffect(() => {
     if (user.focus) {
       setActiveFocus(user.focus);
     }
   }, [user.focus]);
 
+  //The task can be unfocused if clicked when it is already focused
   const handleFocusPick = (taskId) => {
   if (activeFocus === taskId) {
     setActiveFocus("");
@@ -32,7 +34,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
   }
 };
   
-
+  //Update the focus of user in database
   const handleFocusChange = async(taskId) => {
     setIsLoading(true);
     try {
@@ -56,7 +58,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, paddingBottom: "4px" },
+        sx: { borderRadius: 2, paddingY: "14px" },
       }}
     >
       <DialogTitle component="div">
@@ -64,6 +66,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
         <CenterFocusStrong fontSize="small"/> <div className="text-sm">Select Focus</div>
       </div>
       </DialogTitle>
+      {/*Different ui if there is a task or no task to be focused*/}
       {
         pendingTasks.length === 0 ? (
           <DialogContent>
@@ -86,7 +89,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
                     <Tooltip title="Focus">
                       <Button 
                       onClick={() => handleFocusPick(task._id)}
-                      variant="contained" sx={{backgroundColor: `${activeFocus === task._id ? "#b91c1c" : "white"}`, minWidth: "0px", padding: "5px" }}>
+                      variant="contained" sx={{backgroundColor: `${activeFocus === task._id ? "#1D4ED8" : "white"}`, minWidth: "0px", padding: "5px" }}>
                         <CenterFocusStrong fontSize="8px" sx={{color: `${activeFocus === task._id ? "white" : "black" }`}}/>
                       </Button>
                     </Tooltip>
@@ -101,12 +104,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
         <Button
           onClick={onClose}
           sx={{
-            backgroundColor: "grey",
-            color: "white",
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",
-            "&:hover": { opacity: 0.8, backgroundColor: "grey" },
+             fontSize: "12px", textTransform: "none", color: "gray"
           }}
         >
           Cancel
@@ -114,15 +112,9 @@ function SelectFocusModal({open,onClose,setFocusId}) {
         <Button
           onClick={() => handleFocusChange(taskId)}
           disabled={isLoading}
+          variant="contained"
           sx={{
-            backgroundColor: "#b91c1c",
-            color: "white",
-            fontSize: "12px",
-            marginRight: "18px",
-            paddingX: "8px",
-            paddingY: "4px",
-            ml: 1,
-            "&:hover": { opacity: 0.8, backgroundColor: "#b91c1c" },
+            fontSize: "12px", backgroundColor: "#1D4ED8", textTransform: "none", marginRight: "14px"
           }}
         >
           {isLoading ? <span className="text-white">Selecting</span> : <span>Select</span>}
