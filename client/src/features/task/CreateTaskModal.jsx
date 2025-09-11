@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import {Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton} from "@mui/material";
+import { toast } from 'react-hot-toast';
+import { Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton } from "@mui/material";
+
 import DeleteIcon from "@mui/icons-material/Delete";
-import {Link} from 'react-router-dom'
-import {toast} from 'react-hot-toast';
-import { createTask } from "../../api/taskService.js"
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -11,18 +10,20 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function CreateTask({ categoryName,onClose,fetchTask }) {
-  const [taskData, setTaskData] = useState({
-    name: categoryName || "",
-    description: "",
-    dueDate: "",
-    priority: "Medium",
-    subtasks: [],
-  });
+export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
+  const initialTaskData = {
+      title: "",
+      description: "",
+      deadline: "",
+      priority: "Medium",
+      subtasks: [],
+    };
+
+  const [taskData, setTaskData] = useState(initialTaskData);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setTaskData((prev) => ({ ...prev, name: categoryName || "" }));
+    setTaskData((prev) => ({ ...prev, title: categoryName || "" }));
   }, []);
 
   const handleChange = (e) => {
@@ -49,11 +50,11 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const {name,description,dueDate,priority,subtasks} = taskData;
+    const {title,description,deadline,priority,subtasks} = taskData;
     if (
-      !name.trim() ||
+      !title.trim() ||
       !description.trim() ||
-      !dueDate.trim() ||
+      !deadline.trim() ||
       !priority.trim()
     ) {
       toast.error("Fill all the required fields!");
@@ -67,8 +68,8 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
 
     setIsLoading(true);
     try {
-      await createTask(name,description,dueDate,priority,validSubtasks);
-      fetchTask();
+      await onCreateTask({title,description,deadline,priority,subtasks:validSubtasks});
+      setTaskData(initialTaskData);
       onClose();
       toast.success("Task added successfully!");
     } catch (error) {
@@ -81,18 +82,20 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
 
   return (
     <>
-      <Dialog open={true} fullWidth maxWidth="sm">
+      <Dialog open={open} fullWidth maxWidth="sm" PaperProps={{
+        sx: { borderRadius: 2, p: 1 },
+      }}>
         <DialogTitle>Add New Task</DialogTitle>
         <DialogContent>
           <TextField
             label="*Task Name"
-            name="name"
+            name="title"
             fullWidth
             margin="dense"
             InputProps={{
               style: { fontSize: 14 },
             }}
-            value={taskData.name}
+            value={taskData.title}
             onChange={handleChange}
           />
           <TextField
@@ -110,7 +113,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
           />
           <TextField
             label="*Due Date"
-            name="dueDate"
+            name="deadline"
             type="date"
             fullWidth
             margin="dense"
@@ -118,7 +121,7 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
               style: { fontSize: 14 },
             }}
             InputLabelProps={{ shrink: true }}
-            value={taskData.dueDate}
+            value={taskData.deadline}
             onChange={handleChange}
           />
           <TextField
@@ -170,26 +173,16 @@ export default function CreateTask({ categoryName,onClose,fetchTask }) {
           </Button>
         </DialogContent>
         <DialogActions>
-          <Link to={"/Task"}>
           <Button
           onClick={onClose}
-          style={ 
-            {color: "#484848",
-              fontSize: "12px",
-              paddingX: "8px",
-              paddingY: "4px"
-            } }>Cancel</Button>     
-          </Link>
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+          Cancel
+          </Button>     
           <Button
             onClick={handleSave}
             variant="contained"
             disabled={isLoading}
-            style={{ backgroundColor: "#14532d",
-            fontSize: "12px",
-            paddingX: "8px",
-            marginRight: "16px",
-            paddingY: "4px"
-             }}
+            sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
           >{
             isLoading ? <div className="text-white">Creating</div> : <div>Create</div>
           }

@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Tooltip,IconButton, Icon } from "@mui/material"
-import TodoOptionsMenu from "./TodoOptionsMenu"
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import LinearWithValueLabel from "./ProgressBar";
-import TimeIcon from "@mui/icons-material/AccessTime";
-import { statusColors } from "../data/status";
-import { priorityColors } from "../data/priority";
-import countRemainingDays from "../utils/countRemainingDays";
+import { Tooltip,IconButton } from "@mui/material"
+import { statusColors } from "../../data/status";
+import { priorityColors } from "../../data/priority";
 
-function TaskCard({task,fetchTask}){
+import countRemainingDays from "../../utils/countRemainingDays";
+import PersonalTaskMenu from "../PersonalTaskMenu"
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import LinearWithValueLabel from "../ui/ProgressBar";
+import TimeIcon from "@mui/icons-material/AccessTime";
+
+function TaskCard({task,fetchTask,onDelete,onEdit}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     
     const closeOption = () => {
@@ -44,11 +45,14 @@ function TaskCard({task,fetchTask}){
           </Tooltip>
 
           {isTodoOptionOpen && (
-            <TodoOptionsMenu 
+            <PersonalTaskMenu 
             task={task}
             closeOption={closeOption}
             onClose={() => setIsTodoOptionOpen(false)}
-            fetchTask={() => fetchTask()}/>
+            fetchTask={() => fetchTask()}
+            onDelete={onDelete}
+            onEdit={(updatedData) => onEdit(updatedData)}
+            />
           )}
         </div>
       </div>

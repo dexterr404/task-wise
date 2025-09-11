@@ -2,7 +2,7 @@ import { Dialog,DialogTitle,DialogContent,DialogActions,Button,TextField,Divider
 import { useState } from "react";
 import { Group, Link } from "@mui/icons-material";
 import toast from "react-hot-toast";
-import { sendTeamInviteEmail } from "../api/teamService.js";
+import { sendTeamInviteEmail } from "../../api/teamService.js";
 
 function ShareDialog({ open, onClose, inviteToken,teamId }) {
 

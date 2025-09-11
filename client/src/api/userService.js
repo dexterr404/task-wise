@@ -1,10 +1,23 @@
 import axios from "axios"
 
+export async function getUser(id) {
+  const token = localStorage.getItem("token");
+
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return res.data
+}
+
 export async function updateProfile(id, formData) {
   const token = localStorage.getItem("token");
   
   const res = await axios.put(
-    `http://192.168.0.118:5001/api/users/${id}`,
+    `${import.meta.env.VITE_API_URL}/api/users/${id}`,
     formData,
     {
       headers: {
@@ -19,7 +32,7 @@ export async function updateProfile(id, formData) {
 export async function updateFocus(id, focus) {
   const token = localStorage.getItem("token");
 
-  const res = await axios.put(`http://192.168.0.118:5001/api/users/focus/${id}`,
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/users/focus/${id}`,
     { focus },
     {
       headers: {

@@ -2,8 +2,9 @@ import TaskCard from './TaskCard'
 import { CircularProgress } from '@mui/material'
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 
-const TasksList = ( {tasks,isLoading,fetchTask}) => {
+const TasksList = ( {tasks,isLoading,fetchTask,onDelete,onEdit}) => {
 
+    //Show loading if fetching
     if(isLoading) {
         return (
             <div className="w-full h-full flex gap-3 py-15 justify-center items-center">
@@ -13,6 +14,7 @@ const TasksList = ( {tasks,isLoading,fetchTask}) => {
         )
     }
 
+    //UI for no task
     if(tasks.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center h-full py-10 gap-2">
@@ -29,7 +31,10 @@ const TasksList = ( {tasks,isLoading,fetchTask}) => {
         <div className="flex flex-col bg-white px-4 pt-6 pb-30 gap-3">
             {
                 tasks.map((task) => (
-                    <TaskCard key={task._id} task={task} fetchTask={() => fetchTask()}/>
+                    <TaskCard key={task._id} task={task} fetchTask={() => fetchTask()}
+                    onDelete={() => onDelete(task._id)}
+                    onEdit={(updatedData) => onEdit(task._id, updatedData)}
+                    />
                 ))
             }
         </div>

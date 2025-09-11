@@ -1,19 +1,18 @@
 import {useState} from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography} from "@mui/material";
 import {toast} from "react-hot-toast"
-import { deleteTask } from "../../api/taskService";
 
-function DeleteTaskModal({open,onClose,onDelete,taskId}) {
+function DeleteTaskModal({open,onClose,onDelete}) {
   const [isloading, setIsLoading] = useState(false);
 
   const handleDelete = async() => {
     setIsLoading(true);
     try {
-      await deleteTask(taskId);
+      await onDelete();
       toast.success("Task deleted successfully")
-      onDelete();
     } catch (error) {
       toast.error("Failed to delete task");
+      console.log("Error deleting task", error);
     } finally {
       setIsLoading(false);
     }

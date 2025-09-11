@@ -1,18 +1,19 @@
 import { useState,useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Button } from "@mui/material";
-
-import ProfileAndNotif from "../components/ProfileAndNotif";
-import SearchTaskInput from "../features/task/SearchTaskInput";
-import Recommended from "../components/Recommended";
 import { FilterList, Sort, Add } from "@mui/icons-material";
-import CreateTask from "../features/task/CreateTaskForm";
+import { fetchAllTasks,createTask,deleteTask,editTask } from "../api/taskService";
+import { useSelector } from "react-redux";
+import { useQuery,useMutation,useQueryClient } from "@tanstack/react-query";
+
+import ProfileAndNotif from "../components/personal/ProfileAndNotif";
+import SearchTaskInput from "../features/task/SearchTaskInput";
+import Recommended from "../components/personal/Recommended";
+import CreateTask from "../features/task/CreateTaskModal";
 import FilterMenu from "../components/dropdownMenu/FilterMenu";
 import SortMenu from "../components/dropdownMenu/SortMenu";
 import RateLimitedUI from "../components/RateLimitedUI";
-import TasksList from "../components/TasksList";
-
-import { fetchAllTasks } from "../api/taskService";
+import TasksList from "../components/personal/TasksList";
 
 function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);
@@ -22,23 +23,58 @@ function Task() {
     const [isSortOpen,setIsSortOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
     const [isRateLimited, setIsRateLimited] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [sort,setSort] = useState("none");
     const [filters, setFilters] = useState([]);
-
+    const user = useSelector((state) => state.user);
     const token = localStorage.getItem('token');
 
+    const queryClient = useQueryClient();
+
+    //Fetch tasks
+    const { data, isLoading: isQueryLoading, refetch } = useQuery({
+        queryKey: ["personalTasks", user.id, sort, filters],
+        queryFn: () => fetchAllTasks(user.id, sort, filters),
+        keepPreviousData: true,
+    });
+
+    //Mutation ui to add a task
+    const addTaskMutation = useMutation({
+        mutationFn: ({ userId, title, description, deadline, priority, subtasks }) =>
+            createTask( userId, title, description, deadline, priority, subtasks),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["personalTasks", user.id]);
+        }
+    });
+
+    //Mutate ui when data mutated by deleting
+    const deleteTaskMutation = useMutation({
+        mutationFn: ({ userId, taskId }) =>
+            deleteTask(userId, taskId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['personalTasks', user.id]);
+        }
+    })
+
+    //Mutate ui when data mutated by updating
+    const editTaskMutation = useMutation({
+        mutationFn: ({ userId, taskId, title, description, deadline, priority, subtasks, status}) =>
+            editTask(userId, taskId, title, description, deadline, priority, subtasks, status),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['personalTasks', user.id])
+        }
+    })
+
+
+
     const fetchTask = async () => {
-    setIsLoading(true);
     try {
-        const res = await fetchAllTasks(sort, filters);
+        const res = await fetchAllTasks(user.id, sort, filters);
         setTasks(res);
         setIsRateLimited(false);
     } catch (error) {
         if (error.response?.status === 429) setIsRateLimited(true);
         else console.log("Failed to load tasks", error);
     } finally {
-        setIsLoading(false);
     }
     };
 
@@ -94,17 +130,16 @@ function Task() {
                     setIsCreateTaskOpen(true);
                 }}><Add fontSize="small"/>Add New Task</Button>
             </div>
-            {
-                isCreateTaskOpen && 
-                <CreateTask categoryName={selectedCategory} 
-                onClose={()=>setIsCreateTaskOpen(false)} 
-                fetchTask={() => fetchTask()}/>
-            }
+            <CreateTask open={isCreateTaskOpen} categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)} 
+            fetchTask={() => fetchTask()} onCreateTask={(taskData) => addTaskMutation.mutateAsync({ userId: user.id, ...taskData })}/> 
         </div>
         <div className="flex flex-col mx-10 lg:ml-[100px]">
             <h1 className="font-semibold text-xs text-black mb-4">TODO</h1>
             <div className="flex justify-end flex-col gap-2">
-                <TasksList isLoading={isLoading} tasks={tasks} fetchTask={() => fetchTask()}/>
+                <TasksList
+                 onEdit={(taskId,updatedData) => editTaskMutation.mutateAsync({ userId: user.id, taskId, ...updatedData })}
+                 onDelete={(taskId) => deleteTaskMutation.mutateAsync({ userId: user.id, taskId })}
+                 isLoading={isQueryLoading} tasks={data} fetchTask={() => fetchTask()}/>
             </div>
         </div>
     </div>

@@ -2,10 +2,10 @@ import { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Menu, MenuItem } from "@mui/material";
 import { Delete, Edit, Info } from "@mui/icons-material";
-import DeleteTeamModal from "../features/team/DeleteTeamModal";
-import EditTeamModal from "../features/team/EditTeamModal";
-import DetailsTeamModal from "../features/team/DetailsTeamModal";
-import { getUserRole } from "../hooks/getUserRole.js";
+import DeleteTeamModal from "../../features/team/DeleteTeamModal.jsx";
+import EditTeamModal from "../../features/team/EditTeamModal.jsx";
+import DetailsTeamModal from "../../features/team/DetailsTeamModal.jsx";
+import { getUserRole } from "../../hooks/useUserRole.js";
 
 function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams }) {
     const user = useSelector((state) => state.user);

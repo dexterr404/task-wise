@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import {Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton} from "@mui/material";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import toast from "react-hot-toast";
-import { updateTask } from "../../api/taskService";
+
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -10,21 +11,22 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function EditTask({task,open,onClose,fetchTask }) {
-  const {title,description,deadline,priority} = task;
+export default function EditTask({task,open,onClose,onEdit,closeMenu }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [taskData, setTaskData] = useState({
-    name: title,
-    description: description,
-    deadline: deadline,
-    priority: priority,
-    subtasks: [],
-  });
 
+  const [taskData, setTaskData] = useState(() => ({
+    title: task?.title || "",
+    description: task?.description || "",
+    deadline: task?.deadline || "",
+    priority: task?.priority || "",
+    subtasks: task?.subtasks || [],
+  }));
+
+  //Reset state when task changes
   useEffect(() => {
     if (task) {
       setTaskData({
-        name: task.title || "",
+        title: task.title || "",
         description: task.description || "",
         deadline: task.deadline || "",
         priority: task.priority,
@@ -60,9 +62,9 @@ export default function EditTask({task,open,onClose,fetchTask }) {
   };
 
   const handleSave = async() => {
-    const {name,description,deadline,priority,subtasks,status} = taskData;
+    const {title,description,deadline,priority,subtasks,status} = taskData;
 
-    if(!name.trim() || 
+    if(!title.trim() || 
     !description.trim() || 
     !deadline.trim() || 
     !priority.trim()
@@ -71,19 +73,20 @@ export default function EditTask({task,open,onClose,fetchTask }) {
       return
     }
 
+    //Clean and remove blanked subtasks
     const validSubtasks = subtasks
     .filter( sub => sub.title && sub.title.trim() !== "")
     .map( sub => ({...sub, title: sub.title.trim()}));
 
     setIsLoading(true);
     try {
-        await updateTask(task._id,name,description,deadline,priority,validSubtasks,status);
-        toast.success("Task updated successfully");
-        fetchTask();
+        await onEdit({title,description,deadline,priority,subtasks:validSubtasks,status});
+        toast.success("Task edited successfully");
+        closeMenu();
         onClose();
       } catch (error) {
-        console.error("Error adding task:", error.response?.data || error.message);
-        toast.error("Failed to update task");
+        console.error("Error editing task:", error.message);
+        toast.error("Failed to edit task");
       } finally {
         setIsLoading(false);
       }
@@ -91,18 +94,22 @@ export default function EditTask({task,open,onClose,fetchTask }) {
 
   return (
     <>
-      <Dialog open={open} fullWidth maxWidth="sm" disableEnforceFocus={false} onClose={onClose}>
+      <Dialog open={open} fullWidth maxWidth="sm"
+      PaperProps={{
+        sx: { borderRadius: 2, p: 1 },
+      }}
+       disableEnforceFocus={false} onClose={onClose}>
         <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>
           <TextField
             label="*Task Name"
-            name="name"
+            name="title"
             InputProps={{
               style: { fontSize: 14 },
             }}
             fullWidth
             margin="dense"
-            value={taskData.name}
+            value={taskData.title}
             onChange={handleChange}
           />
           <TextField
@@ -183,23 +190,14 @@ export default function EditTask({task,open,onClose,fetchTask }) {
 
         <DialogActions>
           <Button onClick={onClose} 
-            style={
-            {color: "#484848", 
-            fontSize: "12px",
-            paddingX: "8px",
-            paddingY: "4px",} }>Cancel</Button>
+            sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>Cancel</Button>
           <Button
             onClick={handleSave}
             variant="contained"
             disabled={isLoading}
-            style={{ 
-            backgroundColor: "orange",
-            fontSize: "12px",
-            paddingX: "8px",
-            marginRight: "16px",
-            paddingY: "4px", }}
+            sx={{ fontSize: "12px", backgroundColor: "#e68900", "&:hover": { backgroundColor: "orange" }, textTransform: "none", marginRight: "14px" }}
           >
-            {isLoading ? <span>Updating </span>: <span>Update</span>}
+            {isLoading ? <span>Editing </span>: <span>Edit</span>}
           </Button>
         </DialogActions>
       </Dialog>

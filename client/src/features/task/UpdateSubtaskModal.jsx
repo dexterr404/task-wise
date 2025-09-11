@@ -4,6 +4,7 @@ import StatusMenu from "../../components/dropdownMenu/StatusMenu";
 import { statusColors } from "../../data/status";
 import toast from "react-hot-toast";
 import { updateSubTask } from "../../api/taskService";
+import { useSelector } from "react-redux";
 
 function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -12,6 +13,8 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
 
   // keep local editable copy of subtasks
   const [taskData, setTaskData] = useState({ subtasks: [] });
+
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (task) {
@@ -58,7 +61,7 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
     setIsLoading(true);
     const status = handleStatus();
     try {
-      await updateSubTask(task._id,task,status,taskData.subtasks);
+      await updateSubTask(user.id,task._id,task,status,taskData.subtasks);
       
       toast.success("Subtasks updated successfully");
       onClose();

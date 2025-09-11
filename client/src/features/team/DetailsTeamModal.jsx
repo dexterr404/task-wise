@@ -21,7 +21,7 @@ export function DetailsTeamModal({ open, onClose, team }) {
         {/* Team Name */}
         <div>
           <Typography variant="subtitle2" color="text.secondary">
-            Name
+            Name:
           </Typography>
           <Typography  variant="subtitle2" color="text.secondary">{team.name}</Typography>
         </div>
@@ -32,11 +32,11 @@ export function DetailsTeamModal({ open, onClose, team }) {
             <Avatar
               alt={team.owner.name}
               src={team.owner.profileImage}
-              sx={{ width: 30, height: 30 }}
+              sx={{ width: 32, height: 32 }}
             />
             <div className="flex flex-col">
               <Typography variant="subtitle2" color="text.secondary">
-                Owner
+                Owner:
               </Typography>
               <Typography  variant="subtitle2" color="text.secondary">{team.owner.name}</Typography>
             </div>
@@ -56,7 +56,7 @@ export function DetailsTeamModal({ open, onClose, team }) {
             </AvatarGroup>
             <div>
               <Typography variant="subtitle2" color="text.secondary">
-                Members
+                Members:
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {team.members.length} {team.members.length === 1 ? "member" : "members"}
@@ -69,7 +69,7 @@ export function DetailsTeamModal({ open, onClose, team }) {
         {team.description && (
           <div>
             <Typography variant="subtitle2" color="text.secondary">
-              Description
+              Description:
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {team.description}
@@ -80,7 +80,7 @@ export function DetailsTeamModal({ open, onClose, team }) {
         {/* Date Created */}
         <div>
           <Typography variant="subtitle2" color="text.secondary">
-              Date Created
+              Date Created:
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {new Date(team.createdAt).toLocaleDateString()}

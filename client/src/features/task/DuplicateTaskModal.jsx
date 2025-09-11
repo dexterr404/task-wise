@@ -2,9 +2,12 @@ import {useState} from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
 import toast from "react-hot-toast";
 import { duplicateTask } from "../../api/taskService";
+import { useSelector } from "react-redux";
 
 function DuplicateTaskModal({open,onClose,fetchTask,task}) {
   const [isLoading, setIsLoading] = useState(false);
+
+  const user = useSelector((state) => state.user);
 
   //Duplicate task in database
   const handleDuplicate = async() => {
@@ -12,7 +15,7 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
     const {title,description,deadline,priority,subtasks} = task;
 
     try {
-        await duplicateTask(title,description,deadline,priority,subtasks);
+        await duplicateTask(user.id,title,description,deadline,priority,subtasks);
         toast.success("Task duplicated successfully");
       } catch (error) {
         toast.error("Failed to duplicate task");

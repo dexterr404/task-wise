@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { IconButton,Tooltip } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
-import ProfileMenu from "./dropdownMenu/ProfileMenu";
+import ProfileMenu from "../dropdownMenu/ProfileMenu";
 import CloseIcon from "@mui/icons-material/Close";
-import defaultImage from "../assets/Default Profiles/gamer.png"
+import defaultImage from "../../assets/Default Profiles/gamer.png"
 
-function ProfileAndNotif({setTasks, setProfileMenuOpen, isProfileMenuOpen }) {
+function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
   const user = useSelector((state) => state.user);
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);

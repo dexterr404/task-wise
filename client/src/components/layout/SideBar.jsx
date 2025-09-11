@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Diversity3, Dashboard, Task, Add, MoreVert, Person} from "@mui/icons-material";
-import StringAvatar from "../components/StringAvatar";
+import { Diversity3, Dashboard, Add, MoreVert, Person} from "@mui/icons-material";
+import StringAvatar from "../ui/StringAvatar";
 import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import CreateTeamModal from "../features/team/CreateTeamModal";
-import { getTeams } from "../api/teamService";
-import TeamsOptionsMenu from "./TeamsOptionsMenu";
+import CreateTeamModal from "../../features/team/CreateTeamModal";
+import { getTeams } from "../../api/teamService";
+import TeamsOptionsMenu from "../optionsMenu/TeamsOptionsMenu";
 import { IconButton } from "@mui/material";
+import { useSelector } from "react-redux";
 
 function SideBar() {
   const [isNavOpen, setNavOpen] = useState(true);
@@ -15,6 +16,8 @@ function SideBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const location = useLocation();
+
+  const user = useSelector((state) => state.user);
 
   //Make sure to open the sidebar at large screens and can toggle in smaller screens
   useEffect(() => {
@@ -71,22 +74,22 @@ function SideBar() {
         <nav className="flex-1 flex flex-col gap-1 text-sm">
           <span className="text-xs text-gray-400 font-semibold mb-4">Menu</span>
           <ul className="flex flex-col gap-3 font-semibold">
-            <Link to="/Dashboard">
+            <Link to={`/dashboard/${user.id}`}>
               <li
                 className={`cursor-pointer flex items-center gap-2 px-2 py-1 rounded-md transition 
                 ${
-                  location.pathname === "/Dashboard"
+                  location.pathname === `/dashboard/${user.id}`
                     ? "bg-gray-200 text-black"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}>
                 <Dashboard fontSize="small"/>Dashboard
               </li>
             </Link>
-            <Link to="/Task">
+            <Link to={`/personal/${user.id}`}>
               <li
                 className={`cursor-pointer flex items-center gap-2 px-2 py-1 rounded-md transition 
                 ${
-                  location.pathname === "/Task"
+                  location.pathname ===  `/personal/${user.id}`
                     ? "bg-gray-200 text-black"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}>
