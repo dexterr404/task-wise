@@ -106,7 +106,6 @@ function DailyDigest() {
 
       {/* Generate Button */}
       <Tooltip title="Generate insights">
-        <span>
           <Button
             aria-label="Generate insights"
             disabled={isLoading || !generate}
@@ -126,10 +125,9 @@ function DailyDigest() {
             <AutoAwesome sx={{ fontSize: "12px", marginRight: "2px" }} />
             {isLoading ? "Generating..." : "Generate"}
           </Button>
-        </span>
       </Tooltip>
 
-      <h3 className="text-sm font-semibold mb-3">Daily Digest</h3>
+      <h3 className="text-sm font-semibold mb-3 mx-6">AI Insights</h3>
 
       {isLoading ? (
         <div className="flex items-center gap-2">

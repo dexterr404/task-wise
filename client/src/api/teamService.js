@@ -3,7 +3,7 @@ import axios from "axios";
 //Create team
 export async function addTeam(name,description) {
     const token = localStorage.getItem("token");
-    const res = await axios.post("http://192.168.0.118:5001/api/teams",{
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/teams`,{
         name,
         description
     },{
@@ -17,7 +17,7 @@ export async function addTeam(name,description) {
 //Get all teams
 export async function getTeams() {
     const token = localStorage.getItem("token");
-    const res = await axios.get("http://192.168.0.118:5001/api/teams",{
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams`,{
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -28,7 +28,7 @@ export async function getTeams() {
 //Get selected team's info
 export async function getTeamsById(teamId) {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`http://192.168.0.118:5001/api/teams/${teamId}`,{
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}`,{
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -39,7 +39,7 @@ export async function getTeamsById(teamId) {
 //Delete the selected team
 export async function deleteTeam(teamId) {
     const token = localStorage.getItem("token");
-    const res = await axios.delete(`http://192.168.0.118:5001/api/teams/${teamId}`,{
+    const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}`,{
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -50,7 +50,7 @@ export async function deleteTeam(teamId) {
 //Update the selected team's name and description
 export async function updateTeam(teamId,name,description) {
     const token = localStorage.getItem("token");
-    const res = await axios.put(`http://192.168.0.118:5001/api/teams/${teamId}`,{
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}`,{
         name,description
     }, {
         headers: {

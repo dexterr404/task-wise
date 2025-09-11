@@ -5,7 +5,7 @@ import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogConten
 import { toast, Toaster} from "react-hot-toast";
 import { getTeamByToken,joinTeamByToken } from "../api/teamService";
 
-import StringAvatar from "../components/StringAvatar";
+import StringAvatar from "../components/ui/StringAvatar.jsx";
 import Background from "../assets/Backgrounds/login_bg.jpg";
 import InviteSkeleton from "../components/skeleton/InviteSkeleton.jsx";
 

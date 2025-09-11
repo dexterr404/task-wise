@@ -4,7 +4,7 @@ export async function getInsights(tasks,id) {
     const token = localStorage.getItem("token");
 
     try {
-        const res = await axios.post(`http://192.168.0.118:5001/api/ai/insights/${id}`,
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/ai/insights/${id}`,
             {tasks},
             {
                 headers: {

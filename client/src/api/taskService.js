@@ -2,10 +2,10 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 
-export async function fetchAllTasks(sort, filters = []) {
+export async function fetchAllTasks(userId,sort, filters = []) {
   const token = localStorage.getItem("token");
   const filterQuery = filters.length > 0 ? `&filter=${filters.join(",")}` : "";
-  const res = await axios.get(`http://192.168.0.118:5001/api/tasks?sort=${sort}${filterQuery}`,{
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/personal/${userId}?sort=${sort}${filterQuery}`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -13,9 +13,9 @@ export async function fetchAllTasks(sort, filters = []) {
   return res.data;
 };
 
-export async function createTask(title, description, deadline, priority, subtasks) {
+export async function createTask(userId, title, description, deadline, priority, subtasks) {
   const res = await axios.post(
-    "http://192.168.0.118:5001/api/tasks/",
+    `${import.meta.env.VITE_API_URL}/api/personal/${userId}`,
     {
       title,
       description,
@@ -34,9 +34,9 @@ export async function createTask(title, description, deadline, priority, subtask
 }
 
 
-export async function deleteTask(taskId) {
+export async function deleteTask(userId,taskId) {
   const res = await axios.delete(
-    `http://192.168.0.118:5001/api/tasks/${taskId}`,
+    `${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,16 +46,16 @@ export async function deleteTask(taskId) {
   return res.data;
 }
 
-export async function updateTask(taskId, name, description, deadline, priority, validSubtasks, status) {
+export async function editTask(userId,taskId, title, description, deadline, priority, subtasks, status) {
   const res = await axios.put(
-    `http://192.168.0.118:5001/api/tasks/${taskId}`,
+    `${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
     {
-      title: name,
+      title,
       description,
       deadline,
       priority,
       status,
-      subtasks: validSubtasks,
+      subtasks
     },
     {
       headers: {
@@ -66,8 +66,8 @@ export async function updateTask(taskId, name, description, deadline, priority, 
   return res.data;
 }
 
-export async function unDoneTask(taskId,name,description,deadline,priority,subtasks) {
-  const res = await axios.put(`http://192.168.0.118:5001/api/tasks/${taskId}`,{
+export async function unDoneTask(userId,taskId,name,description,deadline,priority,subtasks) {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,{
     title: name,
     description,
     deadline,
@@ -83,8 +83,8 @@ export async function unDoneTask(taskId,name,description,deadline,priority,subta
   return res.data
 }
 
-export async function duplicateTask(title,description,deadline,priority,subtasks) {
-  const res = await axios.post("http://192.168.0.118:5001/api/tasks", {
+export async function duplicateTask(userId,title,description,deadline,priority,subtasks) {
+  const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/personal/${userId}`, {
     title,
     description,
     deadline,
@@ -99,8 +99,8 @@ export async function duplicateTask(title,description,deadline,priority,subtasks
   return res.data
 }
 
-export async function updateSubTask(taskId,task,status,subtasks) {
-  const res = await axios.put(`http://192.168.0.118:5001/api/tasks/${taskId}`, {
+export async function updateSubTask(userId,taskId,task,status,subtasks) {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`, {
     ...task,
     status,
     subtasks
@@ -113,8 +113,8 @@ export async function updateSubTask(taskId,task,status,subtasks) {
   return res.data
 }
 
-export async function updateTaskStatus(taskId,title,description,deadline,priority,subtasks) {
-  const res = await axios.put(`http://192.168.0.118:5001/api/tasks/${taskId}`,{
+export async function updateTaskStatus(userId,taskId,title,description,deadline,priority,subtasks) {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,{
       title,
       description,
       deadline,

@@ -47,7 +47,7 @@ export const createTask = async(req,res) => {
         const newTask = new Task({title, description, deadline, status, priority, subtasks, user: req.user._id})
 
         await newTask.save();
-        res.status(201).json({message: "Note created successfully"})
+        res.status(201).json({message: "Task created successfully"})
     }
     catch (error) {
         console.error("Error in createNote controller", error);
