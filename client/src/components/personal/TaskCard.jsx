@@ -4,12 +4,12 @@ import { statusColors } from "../../data/status";
 import { priorityColors } from "../../data/priority";
 
 import countRemainingDays from "../../utils/countRemainingDays";
-import PersonalTaskMenu from "../PersonalTaskMenu"
+import PersonalTaskMenu from "../optionsMenu/PersonalTaskOptionMenu"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "../ui/ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
 
-function TaskCard({task,fetchTask,onDelete,onEdit}){
+function TaskCard({task,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,onDuplicateTask}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     
     const closeOption = () => {
@@ -43,15 +43,18 @@ function TaskCard({task,fetchTask,onDelete,onEdit}){
               />
             </IconButton>
           </Tooltip>
-
+          {/*Show option when toggled*/}
           {isTodoOptionOpen && (
             <PersonalTaskMenu 
             task={task}
             closeOption={closeOption}
             onClose={() => setIsTodoOptionOpen(false)}
-            fetchTask={() => fetchTask()}
             onDelete={onDelete}
             onEdit={(updatedData) => onEdit(updatedData)}
+            onSubtaskUpdate={(taskId, updatedTask) => onSubtaskUpdate(taskId, updatedTask)}
+            onDoneTask={(updatedTask) => onDoneTask(updatedTask)}
+            unDoneTask={(updatedTask) => unDoneTask(updatedTask)}
+            onDuplicateTask={(newTask) => onDuplicateTask(newTask)}
             />
           )}
         </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Delete,Edit,Flag } from "@mui/icons-material";
+import { Delete,Edit,Info } from "@mui/icons-material";
 import { Tooltip,IconButton } from "@mui/material";
 
 import DeleteTaskModal from "../../features/task/DeleteTaskModal";
@@ -37,10 +37,10 @@ export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,closeMenu}) {
           <Edit fontSize="small" />
         </IconButton>
       </Tooltip>
-      <EditTaskModal open={editTask} onClose={() => setEditTask(false)} task={task} onEdit={handleEdit} closeMenu={closeMenu}/>
+      <EditTaskModal open={editTask} onClose={() => {setEditTask(false)}} task={task} onEdit={handleEdit} closeMenu={closeMenu}/>
       
       {/*Update Subtask*/}
-      <Tooltip title="Update Subtask">
+      <Tooltip title="Info">
         <IconButton
           sx={{
             color: "gray",
@@ -48,7 +48,7 @@ export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,closeMenu}) {
           }}
           size="small"
         >
-          <Flag fontSize="small" />
+          <Info fontSize="small" />
         </IconButton>
       </Tooltip>
     </div>

@@ -12,7 +12,7 @@ const priorities = [
 
 export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
   const initialTaskData = {
-      title: "",
+      title: categoryName || "",
       description: "",
       deadline: "",
       priority: "Medium",
@@ -23,8 +23,13 @@ export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setTaskData((prev) => ({ ...prev, title: categoryName || "" }));
-  }, []);
+    if (categoryName) {
+      setTaskData((prev) => ({
+        ...prev,
+        title: categoryName,
+      }));
+    }
+  }, [categoryName]);
 
   const handleChange = (e) => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });

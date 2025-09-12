@@ -66,7 +66,7 @@ export const createTeamTask = async(req,res) => {
 export const updateTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
-    const { title, description, priority, deadline, column, order } = req.body;
+    const { title, description, priority, deadline, column, order, subtasks, assignedTo } = req.body;
 
     if(!teamId || !taskId) {
       return res.status(400).json({ message: "Team ID and Task ID are required" });
@@ -80,6 +80,8 @@ export const updateTeamTask = async(req,res) => {
     if (description !== undefined) task.description = description;
     if (priority !== undefined) task.priority = priority;
     if (deadline !== undefined) task.deadline = deadline;
+    if(subtasks !== undefined && subtasks.length > 0) task.subtasks = subtasks;
+    if (assignedTo !== undefined) task.assignedTo = assignedTo;
 
     //Update the column and order for drag and drop
     if (column !== undefined) task.column = column;
@@ -113,3 +115,24 @@ export const deleteTeamTask = async(req,res) => {
     res.status(500).json({ message: "Internal server error"});
   }
 }
+
+//Toggle subtask
+export const toggleSubtaskStatus = async (req, res) => {
+  const { teamId, taskId, subtaskId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const task = await TeamTask.findOne({ _id: taskId, team: teamId });
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) return res.status(404).json({ message: "Subtask not found" });
+
+    subtask.status = status;
+    await task.save();
+
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to toggle subtask status" });
+  }
+};

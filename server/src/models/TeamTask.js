@@ -12,7 +12,7 @@ const teamTaskSchema = new mongoose.Schema({
     column: {type: String, default: "Backlog"},
     order: {type: Number, default: 0},
     priority: {type: String, default: "Medium"},
-    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     subtasks: [teamSubtaskSchema],
     team: {type: mongoose.Schema.Types.ObjectId, ref: "Team"},
     comments: [

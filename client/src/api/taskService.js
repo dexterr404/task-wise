@@ -66,15 +66,10 @@ export async function editTask(userId,taskId, title, description, deadline, prio
   return res.data;
 }
 
-export async function unDoneTask(userId,taskId,name,description,deadline,priority,subtasks) {
-  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,{
-    title: name,
-    description,
-    deadline,
-    priority,
-    status: "Ongoing",
-    subtasks
-  },
+export async function updateUndoneTask(userId,taskId,updatedTask) {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
+    updatedTask
+    ,
   {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -83,14 +78,9 @@ export async function unDoneTask(userId,taskId,name,description,deadline,priorit
   return res.data
 }
 
-export async function duplicateTask(userId,title,description,deadline,priority,subtasks) {
-  const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/personal/${userId}`, {
-    title,
-    description,
-    deadline,
-    priority,
-    subtasks
-  },
+export async function duplicateTask(userId,duplicateTask) {
+  const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/personal/${userId}`, 
+    duplicateTask,
   {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -99,29 +89,23 @@ export async function duplicateTask(userId,title,description,deadline,priority,s
   return res.data
 }
 
-export async function updateSubTask(userId,taskId,task,status,subtasks) {
-  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`, {
-    ...task,
-    status,
-    subtasks
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  return res.data
+export async function updateSubTask(userId, taskId, updatedTask) {
+  const res = await axios.put(
+    `${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
+    updatedTask,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+  return res.data;
 }
 
-export async function updateTaskStatus(userId,taskId,title,description,deadline,priority,subtasks) {
-  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,{
-      title,
-      description,
-      deadline,
-      priority,
-      status: "Done",
-      subtasks
-    },
+
+export async function updateDoneTask(userId,taskId,updatedTask) {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
+    updatedTask,
   {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -1,5 +1,5 @@
 
-function countRemainingDays(deadline) {
+export function countRemainingDays(deadline) {
   const now = new Date();
   now.setHours(0,0,0,0);
 

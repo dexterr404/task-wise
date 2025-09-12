@@ -2,14 +2,14 @@ import { useState } from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import { Delete,Edit,Flag,Cancel,CheckCircle,ContentCopy, } from "@mui/icons-material";
 
-import EditTaskModal from "../features/task/EditTaskModal";
-import DeleteTaskModal from "../features/task/DeleteTaskModal";
-import DoneTaskModal from "../features/task/DoneTaskModal";
-import NotDoneTaskModal from "../features/task/NotDoneTaskModal";
-import DuplicateTaskModal from "../features/task/DuplicateTaskModal";
-import UpdateSubtaskModal from "../features/task/UpdateSubtaskModal";
+import EditTaskModal from "../../features/task/EditTaskModal";
+import DeleteTaskModal from "../../features/task/DeleteTaskModal";
+import DoneTaskModal from "../../features/task/DoneTaskModal";
+import NotDoneTaskModal from "../../features/task/NotDoneTaskModal";
+import DuplicateTaskModal from "../../features/task/DuplicateTaskModal";
+import UpdateSubtaskModal from "../../features/task/UpdateSubtaskModal";
 
-export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onEdit}) {
+export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,onDuplicateTask}) {
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
@@ -53,7 +53,6 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onE
        onClose={() => {setIsEditTaskOpen(false)}}
        onEdit={(updatedData) => {
           onEdit(updatedData);
-          closeOption();
         }}
         />
       
@@ -72,9 +71,9 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onE
       </Tooltip>
       <UpdateSubtaskModal
         open={isSubtaskModalOpen}
-        fetchTask={fetchTask}
         task={task}
         onClose={() => setIsSubtaskModalOpen(false)}
+        onSubtaskUpdate={(taskId, updatedTask) => onSubtaskUpdate(taskId, updatedTask)}
       />
 
       {/*Update task status to done*/}
@@ -91,9 +90,10 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onE
       </Tooltip>
       <DoneTaskModal
       task={task}
-      fetchTask={() => fetchTask()}
       open={isDoneModalOpen}
-      onClose={() => setIsDoneModalOpen(false)} />
+      onClose={() => setIsDoneModalOpen(false)}
+      onDoneTask={(updatedTask) => onDoneTask(updatedTask)}
+       />
 
       {/*Update task status to ongoing*/}
       <Tooltip title="Undone">
@@ -110,8 +110,8 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onE
       <NotDoneTaskModal 
       task={task}
       open={isNotDoneModalOpen}
-      fetchTask={() => fetchTask()}
-      onClose={() => setIsNotDoneModalOpen(false)}/>
+      onClose={() => setIsNotDoneModalOpen(false)}
+      unDoneTask={(updatedTask) => unDoneTask(updatedTask)}/>
 
       {/*Duplicate Task*/}
       <Tooltip title="Duplicate">
@@ -128,7 +128,8 @@ export default function TodoOptionsMenu({task,closeOption,fetchTask,onDelete,onE
       <DuplicateTaskModal 
       task={task}
       open={isDuplicateModalOpen}
-      fetchTask={() => fetchTask()}
-      onClose={() => setIsDuplicateModalOpen(false)}/>
+      onClose={() => setIsDuplicateModalOpen(false)}
+      onDuplicateTask={(newTask) => onDuplicateTask(newTask)}
+      />
     </div>
 }

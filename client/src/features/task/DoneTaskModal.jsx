@@ -1,24 +1,32 @@
 import { useState } from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
-import toast from "react-hot-toast";
-import { updateTaskStatus } from "../../api/taskService";
-import { useSelector } from "react-redux";
+import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography } from "@mui/material";
 
-function DoneTaskModal({open,onClose,task,fetchTask}) {
+import toast from "react-hot-toast";
+
+function DoneTaskModal({open,onClose,task,onDoneTask}) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = useSelector((state) => state.user);
-
   const handleDone = async() => {
-    const {name,description,deadline,priority,subtasks} = task;
+    const {title,description,deadline,priority,subtasks} = task;
 
     setIsLoading(true);
+
+    const updatedTask = {
+      title,
+      description,
+      deadline,
+      status: "Done",
+      priority,
+      subtasks,
+    }
+    console.log(updatedTask);
       try {
-        await updateTaskStatus(user.id,task._id,name,description,deadline,priority,subtasks)
-        fetchTask();
+        await onDoneTask(updatedTask);
+        onClose();
         toast.success("Done task");
       } catch (error) {
         toast.error("Failed to update status");
+        console.log(error);
       } finally {
         setIsLoading(false);
       }

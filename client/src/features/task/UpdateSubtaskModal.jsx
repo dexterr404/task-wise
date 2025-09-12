@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
-import StatusMenu from "../../components/dropdownMenu/StatusMenu";
 import { statusColors } from "../../data/status";
-import toast from "react-hot-toast";
-import { updateSubTask } from "../../api/taskService";
-import { useSelector } from "react-redux";
 
-function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
+import StatusMenu from "../../components/dropdownMenu/StatusMenu";
+import toast from "react-hot-toast";
+
+
+function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedSubtaskIndex, setSelectedSubtaskIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // keep local editable copy of subtasks
   const [taskData, setTaskData] = useState({ subtasks: [] });
-
-  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (task) {
@@ -61,8 +59,15 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
     setIsLoading(true);
     const status = handleStatus();
     try {
-      await updateSubTask(user.id,task._id,task,status,taskData.subtasks);
-      
+      const updatedTaskData = {
+                title: task.title,
+                description: task.description,
+                deadline: task.deadline,
+                status: status,
+                priority: task.priority,
+                subtasks: taskData.subtasks,
+            };
+      await onSubtaskUpdate(task._id, updatedTaskData);
       toast.success("Subtasks updated successfully");
       onClose();
     } catch (err) {
@@ -70,7 +75,6 @@ function UpdateSubtaskModal({ open, onClose, task, fetchTask }) {
       toast.error("Failed to update subtasks");
     } finally {
       setIsLoading(false);
-      fetchTask();
     }
   };
 

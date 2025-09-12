@@ -82,7 +82,6 @@ export default function EditTask({task,open,onClose,onEdit,closeMenu }) {
     try {
         await onEdit({title,description,deadline,priority,subtasks:validSubtasks,status});
         toast.success("Task edited successfully");
-        closeMenu();
         onClose();
       } catch (error) {
         console.error("Error editing task:", error.message);

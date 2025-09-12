@@ -26,12 +26,10 @@ export async function getTeamTasks(teamId) {
     return res.data
 }
 
-export async function updateTeamTask(teamId,taskId,title,description,priority,deadline,column,order) {
+export async function updateTeamTask(teamId,taskId,updatedTask) {
     const token = localStorage.getItem("token");
     const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,
-        {
-            title, description, priority, deadline, column, order
-        },
+        updatedTask,
         {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -45,6 +43,20 @@ export async function deleteTeamTask(teamId,taskId) {
     const token = localStorage.getItem("token");
     const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,
         {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}
+
+export async function toggleSubtaskStatus(teamId,taskId,subtaskId,status) {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}/subtask/${subtaskId}`,
+        {
+            status
+        }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
