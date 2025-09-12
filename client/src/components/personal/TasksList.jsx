@@ -2,7 +2,7 @@ import TaskCard from './TaskCard'
 import { CircularProgress } from '@mui/material'
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 
-const TasksList = ( {tasks,isLoading,fetchTask,onDelete,onEdit}) => {
+const TasksList = ( {tasks,isLoading,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,onDuplicateTask}) => {
 
     //Show loading if fetching
     if(isLoading) {
@@ -31,9 +31,13 @@ const TasksList = ( {tasks,isLoading,fetchTask,onDelete,onEdit}) => {
         <div className="flex flex-col bg-white px-4 pt-6 pb-30 gap-3">
             {
                 tasks.map((task) => (
-                    <TaskCard key={task._id} task={task} fetchTask={() => fetchTask()}
+                    <TaskCard key={task._id} task={task}
                     onDelete={() => onDelete(task._id)}
                     onEdit={(updatedData) => onEdit(task._id, updatedData)}
+                    onSubtaskUpdate={(taskId, updatedTask) => onSubtaskUpdate(taskId, updatedTask)}
+                    onDoneTask={(updatedTask) => onDoneTask(task._id, updatedTask)}
+                    unDoneTask={(updatedTask) => unDoneTask(task._id, updatedTask)}
+                    onDuplicateTask={(newTask) => onDuplicateTask(newTask)}
                     />
                 ))
             }

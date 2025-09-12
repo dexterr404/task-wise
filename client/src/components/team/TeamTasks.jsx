@@ -11,8 +11,6 @@ import TeamTaskKanbanCard from "./TeamTaskKanbanCard";
 export function TeamTasks({team}) {
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
     const [columns, setColumns] = useState({});
-    const [openMenuId, setOpenMenuId] = useState(null);
-
     const queryClient = useQueryClient();
 
     //Fetch tasks
@@ -33,8 +31,8 @@ export function TeamTasks({team}) {
 
     //Update ui when data mutated by updating
     const updateTaskMutation = useMutation({
-        mutationFn: ({ teamId, taskId, title, description, priority, deadline, column, order }) =>
-            updateTeamTask(teamId, taskId, title, description, priority, deadline, column, order),
+        mutationFn: ({ teamId, taskId, ...updatedData }) =>
+            updateTeamTask(teamId, taskId, updatedData),
         onSuccess: () => {
             queryClient.invalidateQueries(['teamTasks', team._id]);
         },
@@ -72,55 +70,43 @@ export function TeamTasks({team}) {
         });
     }
 
-    // Save to the database and update ui after dragging
     const handleDragEnd = (result) => {
-        const { source, destination } = result;
-        if (!destination) return;
+    const { source, destination } = result;
+    if (!destination) return;
 
-        const sourceCol = source.droppableId;
-        const destCol = destination.droppableId;
+    const sourceCol = source.droppableId;
+    const destCol = destination.droppableId;
 
-        const newColumns = { ...columns };
-        const sourceItems = Array.from(newColumns[sourceCol]);
-        const destItems = sourceCol === destCol ? sourceItems : Array.from(newColumns[destCol]);
+    const newColumns = { ...columns };
+    const sourceItems = Array.from(newColumns[sourceCol]);
+    const destItems = sourceCol === destCol ? sourceItems : Array.from(newColumns[destCol]);
 
-        // 1. Remove from source
-        const [moved] = sourceItems.splice(source.index, 1);
+    // 1. Remove from source
+    const [movedTask] = sourceItems.splice(source.index, 1);
 
-        // 2. Insert into destination
-        destItems.splice(destination.index, 0, moved);
+    // 2. Insert into destination
+    destItems.splice(destination.index, 0, movedTask);
 
-        // 3. Update columns locally
-        newColumns[sourceCol] = sourceCol === destCol ? destItems : sourceItems;
-        newColumns[destCol] = destCol !== sourceCol ? destItems : newColumns[destCol];
+    // 3. Update columns locally
+    newColumns[sourceCol] = sourceCol === destCol ? destItems : sourceItems;
+    newColumns[destCol] = destCol !== sourceCol ? destItems : newColumns[destCol];
 
-        setColumns(newColumns);
+    setColumns(newColumns);
 
-        // 4. Reassign order + column for all tasks in destination
-        const reorderedTasks = newColumns[destCol].map((task, index) => ({
-            ...task,
-            order: index,
-            column: destCol,
-        }));
-
-        // 5. Also fix orders in sourceCol if moved across columns
-        if (sourceCol !== destCol) {
-            const reOrderedSourceTasks = newColumns[sourceCol].map((task, index) => ({
-            ...task,
-            order: index,
-            column: sourceCol,
-            }));
-
-            reOrderedSourceTasks.forEach((task) => {
-            handleEditTask({taskId: task._id, ...task});
-            });
-        }
-
-        // 6. Send updates for destination column
-        reorderedTasks.forEach((task) => {
-            handleEditTask({taskId: task._id, ...task});
+    // 4. Helper to update only tasks that actually changed
+    const updateTasks = (tasks, columnId) => {
+        tasks.forEach((task, index) => {
+            // Only update if order or column changed
+            if (task.order !== index || task.column !== columnId) {
+                handleEditTask({ taskId: task._id, order: index, column: columnId });
+            }
         });
     };
+
+    // 5. Update source and destination
+    updateTasks(newColumns[sourceCol], sourceCol);
+    if (sourceCol !== destCol) updateTasks(newColumns[destCol], destCol);
+};
 
 
     if (isLoading) return <p>Loading tasks...</p>;
@@ -164,8 +150,6 @@ export function TeamTasks({team}) {
                             task={task}
                             team={team}
                             index={index}
-                            openMenuId={openMenuId}
-                            setOpenMenuId={setOpenMenuId}
                             handleDelete={() => handleDeleteTask(task)}
                             handleEdit={(taskData) => handleEditTask({ taskId: task._id, ...taskData })}
                         />

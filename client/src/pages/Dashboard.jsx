@@ -10,7 +10,7 @@ import MetricsCard from "../components/dashboard/MetricsCard.jsx"
 import TaskDistribution from "../components/dashboard/TaskDistributionGraph.jsx"
 import TaskWithCountdown from "../components/dashboard/CountdownTimer.jsx"
 import TaskCalendar from "../components/dashboard/TaskCalendar.jsx"
-import RateLimitedUI from "../components/RateLimitedUI.jsx"
+import RateLimitedUI from "../components/ui/RateLimitedUI.jsx"
 import Insight from "../components/dashboard/DailyDigest.jsx";
 
 

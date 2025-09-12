@@ -1,21 +1,26 @@
 import { useState } from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
 import toast from "react-hot-toast";
-import { unDoneTask } from "../../api/taskService";
-import { useSelector } from "react-redux";
 
-function NotDoneTaskModal({open,onClose,task,fetchTask}) {
+function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = useSelector((state) => state.user);
-
   const handleDone = async() => {
-    const {name,description,deadline,priority,subtasks} = task;
+    const {title,description,deadline,priority,subtasks} = task;
+
+    const updatedTask =({
+      title,
+      description,
+      deadline,
+      status: "Ongoing",
+      priority,
+      subtasks,
+    })
 
     setIsLoading(true);
     try {
-      await unDoneTask(user.id,task._id,name,description,deadline,priority,subtasks);
-      fetchTask();
+      await unDoneTask(updatedTask);
+      onClose();
       toast.success("Undone task");
     } catch (error) {
       toast.error("Failed to update status");

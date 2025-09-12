@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { duplicateTask } from "../../api/taskService";
 import { useSelector } from "react-redux";
 
-function DuplicateTaskModal({open,onClose,fetchTask,task}) {
+function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state.user);
@@ -15,14 +15,20 @@ function DuplicateTaskModal({open,onClose,fetchTask,task}) {
     const {title,description,deadline,priority,subtasks} = task;
 
     try {
-        await duplicateTask(user.id,title,description,deadline,priority,subtasks);
+        const newTask = ({
+          title,
+          description,
+          deadline,
+          priority,
+          subtasks
+        })
+        await onDuplicateTask(newTask);
         toast.success("Task duplicated successfully");
       } catch (error) {
         toast.error("Failed to duplicate task");
         console.log(error);
       } finally {
         setIsLoading(false);
-        fetchTask();
       }
     }
 

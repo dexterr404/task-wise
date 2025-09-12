@@ -58,6 +58,7 @@ export const createTask = async(req,res) => {
 export const updateTask = async (req, res) => {
   try {
     const { title, description, deadline, status, priority, subtasks } = req.body;
+  
     const updatedTask = await Task.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
       { title, description, deadline, status, priority, subtasks },
