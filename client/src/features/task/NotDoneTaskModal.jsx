@@ -58,7 +58,7 @@ function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
           onClick={() => handleDone()}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#d4af0d", "&:hover": { backgroundColor: "#f1c915" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: "#f1c915", "&:hover": { backgroundColor: "#d4af0d" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span>Updating</span> : <span>Not Done</span>}
         </Button>

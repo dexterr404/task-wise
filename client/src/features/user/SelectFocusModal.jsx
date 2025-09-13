@@ -114,7 +114,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
           disabled={isLoading}
           variant="contained"
           sx={{
-            fontSize: "12px", backgroundColor: "#1D4ED8", textTransform: "none", marginRight: "14px"
+            fontSize: "12px", backgroundColor: "#1D4ED8","&:hover": { backgroundColor: "#1E40AF" }, textTransform: "none", marginRight: "14px"
           }}
         >
           {isLoading ? <span className="text-white">Selecting</span> : <span>Select</span>}

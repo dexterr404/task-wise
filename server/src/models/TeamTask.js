@@ -15,15 +15,6 @@ const teamTaskSchema = new mongoose.Schema({
     assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     subtasks: [teamSubtaskSchema],
     team: {type: mongoose.Schema.Types.ObjectId, ref: "Team"},
-    comments: [
-        {
-            user: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
-            text: String,
-            createdAt: { type: Date, default: Date.now}
-        }
-    ],
-    createdAt: { type: Date, default: Date.now},
-    updatedAt: { type: Date, default: Date.now}
-});
+}, { timestamps: true });
 
 export default mongoose.model("TeamTask", teamTaskSchema);

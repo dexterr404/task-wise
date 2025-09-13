@@ -187,7 +187,7 @@ export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
             onClick={handleSave}
             variant="contained"
             disabled={isLoading}
-            sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
+            sx={{ fontSize: "12px", backgroundColor: "#388E3C", "&:hover": { backgroundColor: "#2E7D32" }, textTransform: "none", marginRight: "14px" }}
           >{
             isLoading ? <div className="text-white">Creating</div> : <div>Create</div>
           }

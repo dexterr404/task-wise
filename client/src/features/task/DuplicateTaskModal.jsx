@@ -61,7 +61,7 @@ function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
           onClick={() => handleDuplicate()}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#1976D2", "&:hover": { backgroundColor: "#2196F3" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: "#2196F3", "&:hover": { backgroundColor: "#1976D2" }, textTransform: "none", marginRight: "14px" }}
         >
           { isLoading ? <span className="text-white">Duplicating</span> : <span>Duplicate</span>}
         </Button>

@@ -61,7 +61,7 @@ function DoneTaskModal({open,onClose,task,onDoneTask}) {
           onClick={() => handleDone()}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: "#388E3C", "&:hover": { backgroundColor: "#2E7D32" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span className="text-white">Updating</span> : <span>Done</span>}
         </Button>
