@@ -45,7 +45,7 @@ function DeleteTaskModal({open,onClose,onDelete}) {
         </Button>  
         <Button
         variant="contained"
-         sx={{ fontSize: "12px", backgroundColor: "#b71c1c", "&:hover": { backgroundColor: "#d32f2f" }, textTransform: "none", marginRight: "14px" }}
+         sx={{ fontSize: "12px", backgroundColor: "#d32f2f", "&:hover": { backgroundColor: "#b71c1c" }, textTransform: "none", marginRight: "14px" }}
           onClick={() => {
             handleDelete();
           }}

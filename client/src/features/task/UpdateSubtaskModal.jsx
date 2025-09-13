@@ -146,7 +146,7 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
           onClick={handleSave}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#7CB342", "&:hover": { backgroundColor: "#9CCC65" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: "#9CCC65", "&:hover": { backgroundColor: "#7CB342" }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? "Updating..." : "Update"}
         </Button>

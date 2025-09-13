@@ -1,22 +1,30 @@
 import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { ViewKanbanOutlined,TableRows,FormatListBulleted } from "@mui/icons-material";
 import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask } from "../../api/teamTaskService";
 
 import CreateTask from "../../features/task/CreateTaskModal";
 import TeamTaskKanbanCard from "./TeamTaskKanbanCard";
+import RateLimitedUI from "../ui/RateLimitedUI";
 
 export function TeamTasks({team}) {
-    const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
-    const [columns, setColumns] = useState({});
     const queryClient = useQueryClient();
 
+    const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
+    const [columns, setColumns] = useState({});
+    const [isRateLimited, setIsRateLimited] = useState(false);
+    
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
         queryKey: ["teamTasks", team._id],
         queryFn: () => getTeamTasks(team._id),
+        onError: (error) => {
+            if (error.response?.status === 429) {
+            setIsRateLimited(true);
+            }
+        },
     });
 
     //Mutation ui to add a task
@@ -131,7 +139,7 @@ export function TeamTasks({team}) {
                 Add task
             </Button>
         </section>
-        <section className="flex justify-between">
+        <section className="bg-white rounded-lg shadow-md flex min-h-[80vh] gap-4 p-4 overflow-x-auto">
             <DragDropContext onDragEnd={handleDragEnd}>
             {Object.entries(columns).map(([colName, tasks]) => (
                 <Droppable key={colName} droppableId={colName}>
@@ -139,9 +147,21 @@ export function TeamTasks({team}) {
                     <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className="flex-1 p-3 bg-white"
+                    className="flex-shrink-0 w-60"
                     >
-                    <h3>{colName}</h3>
+                    <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{
+                            fontWeight: 600,
+                            letterSpacing: 0.5,
+                            color: "#111827",
+                            textTransform: "uppercase",
+                            mb: 1,
+                        }}
+                        >
+                        {colName}
+                        </Typography>
 
                     {tasks.length > 0 ? (
                         tasks.map((task, index) => (
@@ -164,6 +184,10 @@ export function TeamTasks({team}) {
             ))}
             </DragDropContext>
         </section>
+        {/*Show rate limited ui when too many request*/}
+        {
+            isRateLimited && <RateLimitedUI/>
+        }
         <CreateTask onCreateTask={(taskData) => addTaskMutation.mutateAsync({ teamId: team._id, ...taskData })} team={team} open={isCreateTeamTask} onClose={() => setIsCreateTeamTask(false)}/>
     </section>
 }

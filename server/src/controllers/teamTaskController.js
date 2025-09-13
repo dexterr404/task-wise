@@ -11,7 +11,6 @@ export const getTeamTasks = async (req, res) => {
 
     //Fetch all tasks for this team
     const tasks = await TeamTask.find({ team: teamId })
-      .populate("comments.user", "name profileImage")
       .populate("assignedTo", "name profileImage")
       .sort({ order: 1 });
 

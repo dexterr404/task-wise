@@ -1,20 +1,44 @@
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
 import { IconButton,Checkbox, AvatarGroup, Avatar } from "@mui/material";
 import { MoreHoriz,PersonAdd,Chat,CheckCircle,RadioButtonUnchecked } from "@mui/icons-material";
 import { priorityColors } from "../../data/priority";
 import { toggleSubtaskStatus } from "../../api/teamTaskService";
-import countRemainingDays from "../../utils/countRemainingDays";
 
+import { addComment,fetchComments,fetchCommentsCount } from "../../api/commentsService";
+
+import countRemainingDays from "../../utils/countRemainingDays";
 import TeamTaskOptionsMenu from "../optionsMenu/TeamTaskOptionsMenu";
 import AssignTaskModal from "../../features/task/AssignTaskModal";
+import CommentsModal from "../../features/task/CommentsModal";
 
 export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, handleEdit, handleDelete}) {
   const[option,setOption] = useState(false);
+  const [assignTask, setAssignTask] = useState(false);
+  const [isTaskComments, setIsTaskComments] = useState(false);
+
   const queryClient = useQueryClient();
 
-  const [assignTask, setAssignTask] = useState(false);
+  //Fetch comments
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ["comments", task._id],
+    queryFn: () => fetchComments(task._id,team._id),
+    enabled: isTaskComments,
+  });
+
+  //Fetch comments count
+  const { data: commentsCount = 0 } = useQuery({
+    queryKey: ["comments-count", task._id],
+    queryFn: () => fetchCommentsCount(task._id,team._id)
+  })
+
+  //Mutate to add comment
+  const addCommentMutation = useMutation({
+    mutationFn: ({ taskId, teamId, formData }) =>
+      addComment(taskId, teamId, formData),
+    onSuccess: () => queryClient.invalidateQueries(["comments", task._id])
+  });
 
   const toggleSubtaskMutation = useMutation({
     mutationFn: ({ teamId, taskId, subtaskId, status }) =>
@@ -102,8 +126,14 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
             ))}
           </div>
           <div className="flex justify-between items-center">
-            <IconButton>
+            <IconButton onClick={() => setIsTaskComments(true)} sx={{ position:"relative"}}>
               <Chat sx={{fontSize: "16px"}}/>
+              {commentsCount > 0 && (
+                <div className="absolute -top-0.5 -right-1 flex items-center justify-center pt-0.5 px-1.5
+                                 rounded-full bg-red-500 text-white text-[10px] font-medium">
+                  {commentsCount}
+                </div>
+              )}
             </IconButton>
             <div className="flex items-center text-xs">
               <AvatarGroup max={4} sx={{ '& .MuiAvatar-root': { width: 18, height: 18, fontSize: 11,backgroundColor: "gray", marginLeft: '-4px'}}}>
@@ -121,6 +151,8 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
               </IconButton>
             </div>
           </div>
+          <CommentsModal open={isTaskComments} onClose={() => setIsTaskComments(false)} addCommentMutation={addCommentMutation}
+          comments={comments} task={task} team={team} isLoading={isLoading}/>
           <AssignTaskModal handleEdit={handleEdit} task={task} team={team} open={assignTask} onClose={() => setAssignTask(false)}/>
         </div>
       )}

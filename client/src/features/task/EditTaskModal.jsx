@@ -194,7 +194,7 @@ export default function EditTask({task,open,onClose,onEdit,closeMenu }) {
             onClick={handleSave}
             variant="contained"
             disabled={isLoading}
-            sx={{ fontSize: "12px", backgroundColor: "#e68900", "&:hover": { backgroundColor: "orange" }, textTransform: "none", marginRight: "14px" }}
+            sx={{ fontSize: "12px", backgroundColor: "orange", "&:hover": { backgroundColor: "#e68900" }, textTransform: "none", marginRight: "14px" }}
           >
             {isLoading ? <span>Editing </span>: <span>Edit</span>}
           </Button>
