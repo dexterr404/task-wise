@@ -1,9 +1,10 @@
 import { Dialog, DialogTitle, Button, DialogActions, DialogContent, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
+import { Edit } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 import toast from "react-hot-toast";
-import { updateTeam } from "../../api/teamService";
 
-function EditTeamModal({ open, onClose,closeOption, setTeams, team }) {
+function EditTeamModal({ open, onClose, closeOption, team, onEditTeam }) {
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,10 +20,7 @@ function EditTeamModal({ open, onClose,closeOption, setTeams, team }) {
   const handleUpdate = async() => {
     setIsLoading(true);
     try {
-        const {updatedTeam} = await updateTeam(team._id,teamName,description);
-        setTeams((prevTeams) => 
-            prevTeams.map((t) => t._id === updatedTeam._id ? updatedTeam : t)
-        );
+        await onEditTeam(teamName,description);
         closeOption();
         onClose();
         toast.success("Team edited successfully");
@@ -43,7 +41,9 @@ function EditTeamModal({ open, onClose,closeOption, setTeams, team }) {
       disableEscapeKeyDown
       PaperProps={{ sx: { borderRadius: 2, p: 1 } }}
     >
-      <DialogTitle sx={{ fontSize: "16px" }}>Edit team</DialogTitle>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}><Edit sx={{ fontSize: "16px",
+        color: colors.darkOrange
+      }}/>Edit team</DialogTitle>
 
       <DialogContent>
         <TextField
@@ -101,7 +101,7 @@ function EditTeamModal({ open, onClose,closeOption, setTeams, team }) {
           variant="contained"
           sx={{
             fontSize: "12px",
-            backgroundColor: "#388E3C",
+            backgroundColor: colors.darkOrange,
             textTransform: "none",
             marginRight: "14px",
           }}

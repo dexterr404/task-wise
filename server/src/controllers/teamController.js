@@ -1,4 +1,5 @@
 import Team from "../models/Team.js"
+import TeamTask from "../models/TeamTask.js"
 import crypto from "crypto";
 import { sendInviteEmail } from "../services/emailService.js";
 
@@ -7,7 +8,9 @@ export const addTeam = async(req,res) => {
     try {
         const { name,description } = req.body;
         const inviteToken = crypto.randomBytes(16).toString("hex");
-        const newTeam = new Team({ name, description, owner: req.user._id, members: [], tasks: [], inviteToken });
+        const newTeam = new Team({ name, description, owner: req.user._id,
+            members: [{ user: req.user._id, role: "Leader", joinedAt: new Date() }],
+            tasks: [], inviteToken });
         await newTeam.save();
         res.status(201).json(newTeam);
     } catch (error) {
@@ -40,10 +43,10 @@ export const getTeams = async(req,res) => {
 export const getTeamsById = async(req,res) => {
     try {
         const userId = req.user._id;
-        const { id } = req.params;
+        const { teamId } = req.params;
 
         const team = await Team.findOne({
-            _id: id,
+            _id: teamId,
             $or: [
                 { owner: userId },
                 { "members.user": userId}
@@ -66,11 +69,11 @@ export const getTeamsById = async(req,res) => {
 //Delete team
 export const deleteTeam = async(req,res) => {
     try {
-        const {id} = req.params
+        const {teamId} = req.params
         const userId = req.user._id;
 
         //Find the team first
-        const team = await Team.findById(id);
+        const team = await Team.findById(teamId);
         if(!team) return res.status(404).json({message: "Team not found"});
 
         //Only allow the owner to delete
@@ -91,10 +94,10 @@ export const deleteTeam = async(req,res) => {
 //Update team name and description
 export const updateTeam = async(req,res) => {
     try {
-        const {id} = req.params;
+        const {teamId} = req.params;
         const { name, description } = req.body;
         const updatedTeam = await Team.findByIdAndUpdate(
-            { _id: id },
+            { _id: teamId },
             {  name, description },
             { new: true}
         );
@@ -145,7 +148,7 @@ export const joinTeamByToken = async (req, res) => {
     }
 
     // add new member
-    team.members.push({ user: userId, role: "member" });
+    team.members.push({ user: userId, role: "Member" });
     await team.save();
 
     return res.status(200).json({ message: "Joined team!", team });
@@ -173,3 +176,106 @@ export const sendTeamInviteEmail = async(req,res) => {
         return res.status(500).json({ message: "Failed to send invite email!" });
     }
 }
+
+//Remove user from a team
+export const removeUserFromTeam = async(req,res) => {
+    try {
+        const { memberId, teamId } = req.params;
+        
+        const team = await Team.findById(teamId);
+        if(!team) {
+            return res.status(404).json({ message: "Team not found"});
+        }
+
+        //Prevent removing the owner
+        if(team.owner.toString() === memberId){
+            return res.status(400).json({ message: "Cannot remove the team owner"});
+        }
+
+        const updatedTeam = await Team.findByIdAndUpdate(
+            teamId,
+            { $pull: { members: { user: memberId } } },
+            { new: true }
+        )
+
+        //Remove user from team tasks assigned to
+        await TeamTask.updateMany(
+            { team: teamId },
+            { $pull: { assignedTo: memberId } }
+        )
+
+        res.status(200).json({ 
+            message: "User removed from the team",
+            team: updatedTeam
+        });
+    } catch (error) {
+        console.log("Error removing user from the team", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+// Change user role in the team
+export const changeUserRole = async (req, res) => {
+  try {
+    const { teamId, memberId } = req.params;
+    const { newRole } = req.body;
+    const modifierId = req.user._id;
+
+    // Load team
+    const team = await Team.findById(teamId).populate("members.user");
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    // Find the modifier in team
+    const modifier = team.members.find(
+      (m) => m.user._id.toString() === modifierId.toString()
+    );
+    if (!modifier) {
+      return res.status(403).json({ message: "You are not part of this team" });
+    }
+
+    // Only Leader can change roles
+    if (modifier.role !== "Leader") {
+      return res.status(403).json({ message: "Only the Leader can modify roles" });
+    }
+
+    // Find target member
+    const targetIndex = team.members.findIndex(
+      (m) => m.user._id.toString() === memberId.toString()
+    );
+    if (targetIndex === -1) {
+      return res.status(404).json({ message: "Target user not found in team" });
+    }
+
+    // Prevent self-demotion if only one Leader exists
+    if (modifier.user._id.toString() === memberId.toString() && newRole !== "Leader") {
+      const otherLeader = team.members.find(
+        (m, idx) => idx !== targetIndex && m.role === "Leader"
+      );
+      if (!otherLeader) {
+        return res.status(400).json({ message: "Team must have a Leader" });
+      }
+    }
+
+    // 5. Handle promotion to Leader
+    if (newRole === "Leader") {
+      // Demote current Leader (except the one being promoted)
+      const currentLeaderIndex = team.members.findIndex((m) => m.role === "Leader");
+      if (currentLeaderIndex !== -1 && currentLeaderIndex !== targetIndex) {
+        team.members[currentLeaderIndex].role = "Admin";
+      }
+    }
+
+    // 6. Apply role change
+    team.members[targetIndex].role = newRole;
+
+    await team.save();
+
+    res.status(200).json({
+      message: "Role updated successfully",
+      members: team.members,
+    });
+  } catch (error) {
+    console.error("Error in changeUserRole controller:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

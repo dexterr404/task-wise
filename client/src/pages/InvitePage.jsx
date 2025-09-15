@@ -114,12 +114,6 @@ export function InvitePage() {
               border: '2px solid white',
             },
           }}>
-            <Avatar
-              key={team.owner._id}
-              alt={team.owner.name}
-              src={team.owner.profileImage}
-              sx={{ width: 32, height: 32 }}
-            />
             {team.members.map((member) => (
               <Avatar
                 key={member.user._id}
@@ -130,7 +124,7 @@ export function InvitePage() {
             ))}
           </AvatarGroup>
           <span className="text-sm text-gray-600">
-            {team.members.length + 1} {team.members.length + 1 === 1 ? "member" : "members" }
+            {team.members.length} {team.members.length === 1 ? "member" : "members" }
           </span>
         </div>
       </DialogContent>

@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Typography } from "@mui/material";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { ViewKanbanOutlined,TableRows,FormatListBulleted } from "@mui/icons-material";
+import { Window,TableRows,FormatListBulleted } from "@mui/icons-material";
 import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask } from "../../api/teamTaskService";
 
 import CreateTask from "../../features/task/CreateTaskModal";
@@ -124,7 +124,7 @@ export function TeamTasks({team}) {
         <section className="flex justify-between items-center">
             <div>
                 <Button sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-                    <ViewKanbanOutlined fontSize="small"/>Kanban
+                    <Window fontSize="small"/>Card
                 </Button>
                 <Button sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
                     <TableRows fontSize="small"/>Table

@@ -1,23 +1,29 @@
-import {useState} from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider} from "@mui/material";
-import {toast} from "react-hot-toast"
+import { useState } from "react";
+import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider } from "@mui/material";
+import { toast } from "react-hot-toast"
 import { ReportProblemRounded } from "@mui/icons-material";
 import { colors } from "../../data/colors.js";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function DeleteTeamModal({open,onClose,closeOption,onDeleteTeam}) {
+function RemoveUserModal({open,onClose,user,onRemoveUser}) {
   const [isLoading, setIsLoading] = useState(false);
 
-  //Delete Task from database
-  const handleDelete = async() => {
+  const currentUser = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  const handleRemoveUser = async() => {
     setIsLoading(true);
     try {
-        await onDeleteTeam()
-        toast.success("Team successfully deleted");
-        closeOption();
+        await onRemoveUser();
+        if(user._id === currentUser.id) {
+          navigate('/dashboard/'+currentUser.id)
+          toast.success("You have left the team");
+          return
+        }
+        toast.success("User successfully removed");
         onClose();
     } catch (error) {
-        console.log("Error:", error.message);
-        toast.error("Failed to delete the team");
     } finally {
         setIsLoading(false);
     }
@@ -35,12 +41,12 @@ function DeleteTeamModal({open,onClose,closeOption,onDeleteTeam}) {
       }}
     >
       <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
-        <ReportProblemRounded sx={{ color: colors.darkRed }}/>Do you really want to delete the team?
+        <ReportProblemRounded sx={{ color: colors.darkRed }}/>Do you really want to remove this member?
       </DialogTitle>
       <Divider />
       <DialogContent >
         <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
-          This action cannot be undone. All data associated with this team will be lost.
+          This action cannot be undone. You need to invite the user again to join.
         </Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "flex-end"}}>
@@ -48,12 +54,12 @@ function DeleteTeamModal({open,onClose,closeOption,onDeleteTeam}) {
             Cancel
           </Button>  
           <Button
-            onClick={handleDelete}
-            disabled={isLoading}
+            onClick={handleRemoveUser}
             variant="contained"
+            disabled={isLoading}
             sx={{ fontSize: "12px", backgroundColor: "#b71c1c", "&:hover": { backgroundColor: "#d32f2f" }, textTransform: "none", marginRight: "14px" }}
             >
-            {isLoading ? "Deleting" : "Delete"}
+            {isLoading ? "Removing" : "Remove"}
           </Button>
         </DialogActions>
     </Dialog>
@@ -61,4 +67,4 @@ function DeleteTeamModal({open,onClose,closeOption,onDeleteTeam}) {
   );
 }
 
-export default DeleteTeamModal;
+export default RemoveUserModal;

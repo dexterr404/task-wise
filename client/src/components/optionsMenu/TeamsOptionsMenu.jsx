@@ -7,7 +7,7 @@ import EditTeamModal from "../../features/team/EditTeamModal.jsx";
 import DetailsTeamModal from "../../features/team/DetailsTeamModal.jsx";
 import { getUserRole } from "../../hooks/useUserRole.js";
 
-function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams }) {
+function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams, onDeleteTeam, onEditTeam }) {
     const user = useSelector((state) => state.user);
     const [isDeleteOpen, SetIsDeleteOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -45,7 +45,7 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams }) {
         />
       )}
       {
-        (role === "owner" || role === "admin") && (
+        (role === "Leader" || role === "Admin") && (
           <MenuItem
             onClick={() => setIsEditOpen(true)}
             sx={{ fontSize: "14px", padding: "2px 16px", minHeight: "unset" }}
@@ -55,7 +55,7 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams }) {
         )
       }
       {
-        role === "owner" && (
+        role === "Leader" && (
           <MenuItem
             onClick={() => SetIsDeleteOpen(true)}
             sx={{ fontSize: "14px", padding: "2px 16px", minHeight: "unset" }}
@@ -64,8 +64,11 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams }) {
           </MenuItem>
         )
       }
-      <EditTeamModal open={isEditOpen} closeOption={onClose} onClose={() => setIsEditOpen(false)} setTeams={setTeams} team={team}/>
-      <DeleteTeamModal open={isDeleteOpen} closeOption={onClose} onClose={() => SetIsDeleteOpen(false)} setTeams={setTeams} team={team}/>
+      <EditTeamModal open={isEditOpen} closeOption={onClose} 
+      onEditTeam={(teamName,teamDescription) => onEditTeam({teamId:team._id,teamName,teamDescription})}
+       onClose={() => setIsEditOpen(false)} setTeams={setTeams} team={team}/>
+      <DeleteTeamModal open={isDeleteOpen} closeOption={onClose} onDeleteTeam={() => onDeleteTeam({teamId:team._id})}
+       onClose={() => SetIsDeleteOpen(false)}/>
     </Menu>
   );
 }

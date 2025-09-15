@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Button,Dialog,DialogTitle,DialogContent,DialogActions,IconButton,Avatar,Typography } from "@mui/material";
 import AssignedMembers from "./AssignedMembers";
 import { Add } from "@mui/icons-material";
@@ -7,6 +7,10 @@ import toast from "react-hot-toast";
 export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
   const [isLoading,setIsLoading] = useState(false);
   const [assignedUsers,setAssignedUsers] = useState(task.assignedTo || []);
+
+    useEffect(() => {
+      setAssignedUsers(task.assignedTo || []);
+    }, [task]);
 
     //Check if user is added already, if not add to assigned
     const addUser = (member) => {
@@ -25,7 +29,10 @@ export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
         await handleEdit({assignedTo: assignedUsers});
         if(assignedUsers.length === 1) {
           toast.success(`${assignedUsers[0].name.split(" ")[0]} has been assigned to the task`);
-        } else {
+        } else if(assignedUsers.length === 0) {
+          toast.success("Removed assigned users");
+        }
+        else {
           toast.success(`${assignedUsers.length} people assigned to the task`)
         }
         onClose();

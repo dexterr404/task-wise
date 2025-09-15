@@ -84,3 +84,30 @@ export async function sendTeamInviteEmail(teamId,email) {
     );
     return res.data.message;
 }
+
+//Remove user from team
+export async function removeUserFromTeam(teamId,memberId) {
+    const token = localStorage.getItem("token");
+    const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/members/${memberId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+    return res.data
+}
+
+//Change user role from team
+export async function changeUserRole(teamId,memberId,newRole) {
+    const token = localStorage.getItem("token")
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/members/${memberId}/role`,
+        {newRole},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}

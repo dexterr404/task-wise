@@ -11,7 +11,7 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function EditTask({task,open,onClose,onEdit,closeMenu }) {
+export default function EditTask({task,open,onClose,onEdit }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [taskData, setTaskData] = useState(() => ({

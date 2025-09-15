@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Delete,Edit,Info } from "@mui/icons-material";
+import { Delete,Details,Edit,Info } from "@mui/icons-material";
 import { Tooltip,IconButton } from "@mui/material";
 
 import DeleteTaskModal from "../../features/task/DeleteTaskModal";
 import EditTaskModal from "../../features/task/EditTaskModal";
+import DetailsTaskModal from "../../features/task/DetailsTaskModal";
 
-export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,closeMenu}) {
+export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,team}) {
     const[deleteTask, setDeleteTask] = useState(false);
     const[editTask, setEditTask] = useState(false);
+    const[detailsTask, setDetailsTask] = useState(false);
    
     return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-gray-200 flex gap-2">
     {/*Delete Task*/}
@@ -37,11 +39,12 @@ export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,closeMenu}) {
           <Edit fontSize="small" />
         </IconButton>
       </Tooltip>
-      <EditTaskModal open={editTask} onClose={() => {setEditTask(false)}} task={task} onEdit={handleEdit} closeMenu={closeMenu}/>
+      <EditTaskModal open={editTask} onClose={() => {setEditTask(false)}} task={task} onEdit={handleEdit}/>
       
       {/*Update Subtask*/}
       <Tooltip title="Info">
         <IconButton
+        onClick={() => setDetailsTask(true)}
           sx={{
             color: "gray",
             "&:hover": { color: "#7CB342" }
@@ -51,6 +54,7 @@ export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,closeMenu}) {
           <Info fontSize="small" />
         </IconButton>
       </Tooltip>
+      <DetailsTaskModal open={detailsTask} onClose={() => setDetailsTask(false)} task={task} team={team}/>
     </div>
 }
 

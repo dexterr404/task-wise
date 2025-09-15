@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Diversity3, Dashboard, Add, MoreVert, Person} from "@mui/icons-material";
-import StringAvatar from "../ui/StringAvatar";
-import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import CreateTeamModal from "../../features/team/CreateTeamModal";
-import { getTeams } from "../../api/teamService";
-import TeamsOptionsMenu from "../optionsMenu/TeamsOptionsMenu";
+import { getTeams, addTeam, deleteTeam, updateTeam } from "../../api/teamService";
 import { IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import TeamsOptionsMenu from "../optionsMenu/TeamsOptionsMenu";
+import CreateTeamModal from "../../features/team/CreateTeamModal";
+import StringAvatar from "../ui/StringAvatar";
+import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 function SideBar() {
   const [isNavOpen, setNavOpen] = useState(true);
@@ -18,31 +20,34 @@ function SideBar() {
   const location = useLocation();
 
   const user = useSelector((state) => state.user);
+  const queryClient = useQueryClient();
 
   //Make sure to open the sidebar at large screens and can toggle in smaller screens
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setNavOpen(true);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const { data: teamsList = [], isLoading } = useQuery({
+    queryKey: ["teamList", user.id],
+    queryFn: () => getTeams()
+  });
 
-  //Fetch all the teams from backend at mount
-  useEffect(() => {
-    const fetchTeams = async() => {
-      try {
-        const res = await getTeams();
-        setTeams(res);
-      } catch (error) {
-        console.log("Failed to fetch teams", error);
-      }
-    }
-    fetchTeams();
-  },[selectedTeam])
+  //Mutate when a team is added
+  const addTeamMutation = useMutation({
+    mutationFn: ({ teamName, teamDescription }) =>
+      addTeam(teamName, teamDescription),
+    onSuccess: () => queryClient.invalidateQueries("teamList", user.id)
+  })
+
+  //Mutate when a team is deleted
+  const deleteTeamMutation = useMutation({
+    mutationFn: ({ teamId }) =>
+      deleteTeam( teamId ),
+    onSuccess: () => queryClient.invalidateQueries("teamList", user.id)
+  })
+
+  //Mutate when a team is edited
+  const editTeamMutation = useMutation({
+    mutationFn: ({ teamId, teamName, teamDescription }) =>
+      updateTeam( teamId, teamName, teamDescription ),
+    onSuccess: () => queryClient.invalidateQueries("teamList", user.id)
+  })
 
   //Set the selected team and its option menu 
   const handleClick = (event, team) => {
@@ -103,7 +108,7 @@ function SideBar() {
               <ul className="flex flex-col gap-1 max-h-[200px] w-45 overflow-x-hidden overflow-y-auto scroll-hint scrollbar-auto-hide">
 
                 {/*Mapping out the user's joined teams*/}
-                {teams.map((team) => (
+                {teamsList.map((team) => (
                   <Link to={`/teams/${team._id}`} key={team._id}>
                   <li
                     className={`cursor-pointer flex items-center justify-between gap-2 px-2 py-1 rounded-md transition  ${
@@ -134,7 +139,9 @@ function SideBar() {
               {/*Make sure that there is a team before opening team options */}
               {
                 selectedTeam && (
-                  <TeamsOptionsMenu 
+                  <TeamsOptionsMenu
+                  onDeleteTeam={(teamId) => deleteTeamMutation.mutateAsync(teamId)}
+                  onEditTeam={((teamId,teamName,teamDescription) => editTeamMutation.mutateAsync(teamId,teamName,teamDescription))}
                   setTeams={setTeams}
                   open={Boolean(anchorEl)}
                   anchorEl={anchorEl}
@@ -153,7 +160,10 @@ function SideBar() {
           </ul>
         </nav>
       </div>
-      <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)} setSelectedTeam={setSelectedTeam} setTeams={setTeams}/>
+      <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)} 
+      onAddTeam={(teamName,teamDescription) =>
+        addTeamMutation.mutateAsync(teamName,teamDescription)} 
+      setSelectedTeam={setSelectedTeam} setTeams={setTeams}/>
     </aside>
   ) : (
     <div

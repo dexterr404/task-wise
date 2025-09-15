@@ -1,4 +1,6 @@
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,Avatar,AvatarGroup} from "@mui/material";
+import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,Avatar,AvatarGroup,Divider} from "@mui/material";
+import { Info } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 
 export function DetailsTeamModal({ open, onClose, team }) {
   if (!team) return null;
@@ -7,59 +9,66 @@ export function DetailsTeamModal({ open, onClose, team }) {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="xs"
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: { borderRadius: 2, p: 1},
       }}
     >
-      <DialogTitle sx={{ fontSize: 16 }}>
-        Team Details
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <Info sx={{ color: colors.lighterblue, fontSize: "16px" }}/>Team Details
       </DialogTitle>
-
+      <Divider />
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {/* Team Name */}
         <div>
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography sx={{ color: "text.primary", fontSize: 13 }}>
             Name:
           </Typography>
-          <Typography  variant="subtitle2" color="text.secondary">{team.name}</Typography>
+          <Typography sx={{ color: "text.secondary", fontSize: 13 }}>{team.name}</Typography>
         </div>
 
         {/* Owner */}
         <div className="flex items-center justify-start gap-10 max-sm:flex-col max-sm:items-start max-sm:gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Avatar
               alt={team.owner.name}
               src={team.owner.profileImage}
               sx={{ width: 32, height: 32 }}
             />
             <div className="flex flex-col">
-              <Typography variant="subtitle2" color="text.secondary">
-                Owner:
+              <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+                Leader:
               </Typography>
-              <Typography  variant="subtitle2" color="text.secondary">{team.owner.name}</Typography>
+              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>{team.owner.email}</Typography>
             </div>
           </div>
 
           {/* Members */}
           <div className="flex gap-2">
             <AvatarGroup max={4}>
-              {team.members.map((member) => (
-                <Avatar
-                  key={member.user._id}
-                  alt={member.user.name}
-                  src={member.user.profileImage}
-                  sx={{ width: 32, height: 32, marginLeft: '-14px', border: '2px solid white' }}
-                />
-              ))}
+              {team.members.map((member) => 
+                member.role !== "Leader" ? (
+                  <Avatar
+                    key={member.user._id}
+                    alt={member.user.name}
+                    src={member.user.profileImage}
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      marginLeft: '-14px',
+                      border: '2px solid white'
+                    }}
+                  />
+                ) : null
+              )}
             </AvatarGroup>
             <div>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography sx={{ color: "text.primary", fontSize: 13 }}>
                 Members:
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {team.members.length} {team.members.length === 1 ? "member" : "members"}
+              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                {team.members.length-1} {team.members.length === 1 ? "member" : "members"}
               </Typography>
             </div>
           </div>
@@ -68,10 +77,10 @@ export function DetailsTeamModal({ open, onClose, team }) {
         {/* Description */}
         {team.description && (
           <div>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
               Description:
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
               {team.description}
             </Typography>
           </div>
@@ -79,11 +88,11 @@ export function DetailsTeamModal({ open, onClose, team }) {
 
         {/* Date Created */}
         <div>
-          <Typography variant="subtitle2" color="text.secondary">
+            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
               Date Created:
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {new Date(team.createdAt).toLocaleDateString()}
+            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              {new Date(team.createdAt).toLocaleString()}
             </Typography>
         </div>
       </DialogContent>

@@ -1,14 +1,18 @@
-//Get user's role
 export function getUserRole(user, team) {
-  if (!team || !user?.id) return "guest";
+  if (!team || !user) return "Guest";
 
-  // Owner always has the highest privilege
-  if (team.owner._id === user.id) return "owner";
+  // Normalize user ID
+  const userId = user._id || user.id;
+  if (!userId) return "Guest";
 
-  // Check membership
-  const member = team.members.find(m => m.user._id === user.id);
-  if (member) return member.role || "member";
+  // Look inside members (Leader/Admin/Member)
+  const member = team.members.find(
+    (m) => (m.user._id || m.user.id) === userId
+  );
 
-  return "guest";
+  if (member) {
+    return member.role || "Member";
+  }
+
+  return "Guest";
 }
-

@@ -1,6 +1,6 @@
 import { Box, Skeleton } from "@mui/material";
 
-export default function ChatMessageSkeleton({ count = 5 }) {
+export default function ChatMessageSkeleton({ count = 3 }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {[...Array(count)].map((_, index) => (

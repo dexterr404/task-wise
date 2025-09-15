@@ -1,9 +1,11 @@
-import { Dialog, DialogTitle, Typography, Button, DialogActions, DialogContent, TextField, TextareaAutosize } from "@mui/material";
+import { Dialog, DialogTitle, Button, DialogActions, DialogContent, TextField} from "@mui/material";
 import { useState } from "react";
-import { addTeam } from "../../api/teamService";
+import { Groups } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 import toast from "react-hot-toast";
 
-function CreateTeamModal({ open, onClose, setTeams, setSelectedTeam }) {
+
+function CreateTeamModal({ open, onClose, onAddTeam }) {
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,9 +16,7 @@ function CreateTeamModal({ open, onClose, setTeams, setSelectedTeam }) {
     }
     setIsLoading(true);
     try {
-        const newTeam = await addTeam(teamName,description);
-        setTeams((prev) => [...prev, newTeam]);
-        setSelectedTeam(newTeam);
+        await onAddTeam({teamName,description});
         toast.success("Team successfully created");
         setTeamName("");
         setDescription("");
@@ -37,8 +37,8 @@ function CreateTeamModal({ open, onClose, setTeams, setSelectedTeam }) {
       fullWidth
       PaperProps={{ sx: { borderRadius: 2, p: 1 } }}
     >
-      <DialogTitle sx={{fontSize: "16px"}}>
-        Create team
+      <DialogTitle variant="h8" sx={{ display: "flex", gap: 0.5, fontSize: "16px"}}>
+        <Groups sx={{ color: colors.darkGreen}}/>Create team
       </DialogTitle>
 
       <DialogContent>
@@ -115,6 +115,7 @@ function CreateTeamModal({ open, onClose, setTeams, setSelectedTeam }) {
         </Button>
         <Button
           onClick={handleCreateTeam}
+          disabled={isLoading}
           variant="contained"
           sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
         >

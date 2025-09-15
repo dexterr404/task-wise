@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { useSelector } from "react-redux"
-import { AddComment, AttachFile,InsertEmoticon } from "@mui/icons-material";
+import { AddComment, AttachFile,InsertEmoticon, QuestionAnswerRounded } from "@mui/icons-material";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button,
 Typography, TextField, Avatar, IconButton,Popover } from "@mui/material";
-import formatCommentDate from "../../utils/formatCommentDate.js"
+import { colors } from "../../data/colors.js"
 
+import formatCommentDate from "../../utils/formatCommentDate.js"
 import EmojiPicker from "emoji-picker-react";
 import ChatMessageSkeleton from "../../components/skeleton/ChatMessagesSkeleton";
+import ImageLightBox from "../../components/ui/ImageLightBox.jsx";
 
 function CommentsModal({ open, onClose, task, team, addCommentMutation,comments, isLoading }) {
   const user = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
+  const [lightBoxIndex, setLightBoxIndex] = useState(-1);
 
   const handleEmojiClick = (emojiObject) => {
     setMessage((prev) => prev + emojiObject.emoji);
@@ -45,11 +48,21 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
     }
   };
 
+  // Flatten all images across all comments
+  const allImages = comments?.flatMap((c) =>
+    c.images?.map((img) => ({
+      src: img,
+      commentId: c._id,
+    })) || []
+  );
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{
         sx: { borderRadius: 2, p: 2 },
       }}>
-      <DialogTitle variant="h8">{task.title}</DialogTitle>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", gap: 1, alignItems: "center"}}>
+        <QuestionAnswerRounded fontSize="small" sx={{ color: colors.lighterblue}}/>{task.title}
+      </DialogTitle>
         <form onSubmit={handleAddComment}>
           <DialogContent dividers>
             <div className="max-h-99 overflow-y-auto mb-4 py-10">
@@ -82,14 +95,18 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                       {/* Images */}
                       {c.images?.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
-                          {c.images.map((img, idx) => (
-                            <img
-                              key={idx}
-                              src={img}
-                              alt="comment attachment"
-                              className="w-28 h-28 object-cover rounded-lg"
-                            />
-                          ))}
+                          {c.images.map((img) => {
+                            const indexInAll = allImages.findIndex((i) => i.src === img);
+                            return (
+                              <img
+                                key={img}
+                                src={img}
+                                alt="comment attachment"
+                                className="w-28 h-28 object-cover rounded-lg cursor-pointer"
+                                onClick={() => setLightBoxIndex(indexInAll)}
+                              />
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -100,6 +117,13 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                 <Typography sx={{ fontSize: "14px", color: "text.secondary", py: 2, textAlign: "center" }}>No comments yet.</Typography>
               )}
             </div>
+            {lightBoxIndex >= 0 && (
+              <ImageLightBox
+                images={allImages.map((i) => i.src)}
+                openIndex={lightBoxIndex}
+                onClose={() => setLightBoxIndex(-1)}
+              />
+            )}
             {/* Preview selected images */}
             {imageFiles.length > 0 && (
               <div className="flex gap-2 mt-2 flex-wrap">

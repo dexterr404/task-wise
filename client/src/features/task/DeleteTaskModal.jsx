@@ -1,6 +1,8 @@
 import {useState} from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography} from "@mui/material";
 import {toast} from "react-hot-toast"
+import { colors } from "../../data/colors";
+import { ReportProblemRounded  } from "@mui/icons-material";
 
 function DeleteTaskModal({open,onClose,onDelete}) {
   const [isloading, setIsLoading] = useState(false);
@@ -29,13 +31,14 @@ function DeleteTaskModal({open,onClose,onDelete}) {
         sx: { borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle component="div">
-      <Typography variant="subtitle1">
-        Do you really want to delete task?
-      </Typography>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <ReportProblemRounded sx={{ color: colors.darkRed }}/>Do you really want to delete the task?
       </DialogTitle>
-      <DialogContent />
-
+      <DialogContent>
+        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+          This action cannot be undone. All data associated with this task will be lost.
+        </Typography>
+      </DialogContent>
       <DialogActions sx={{ justifyContent: "flex-end"}}>
         <Button
           onClick={onClose}
