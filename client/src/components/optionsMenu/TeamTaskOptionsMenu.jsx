@@ -1,17 +1,34 @@
 import { useState } from "react";
-import { Delete,Details,Edit,Info } from "@mui/icons-material";
+import { Archive, Delete,Details,Edit,Info } from "@mui/icons-material";
 import { Tooltip,IconButton } from "@mui/material";
 
 import DeleteTaskModal from "../../features/task/DeleteTaskModal";
 import EditTaskModal from "../../features/task/EditTaskModal";
 import DetailsTaskModal from "../../features/task/DetailsTaskModal";
+import ArchiveTaskModal from "../../features/task/ArchiveTaskModal";
+import { colors } from "../../data/colors";
 
-export function TeamTaskOptionsMenu({handleDelete,handleEdit,task,team}) {
+export function TeamTaskOptionsMenu({handleDelete,handleEdit,handleArchive,task,team}) {
     const[deleteTask, setDeleteTask] = useState(false);
     const[editTask, setEditTask] = useState(false);
     const[detailsTask, setDetailsTask] = useState(false);
+    const[archiveTask, setArchiveTask] = useState(false);
    
     return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-gray-200 flex gap-2">
+      {/*Archive Task*/}
+      <Tooltip title="Archive">
+        <IconButton
+          onClick={() => setArchiveTask(true)}
+          size="small"
+          sx={{
+            color: "gray",
+            "&:hover": { color: colors.darkOrange }
+          }}
+        >
+          <Archive fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleArchive}/>
     {/*Delete Task*/}
       <Tooltip title="Delete">
         <IconButton

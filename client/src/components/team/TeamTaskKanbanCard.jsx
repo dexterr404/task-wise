@@ -13,7 +13,7 @@ import TeamTaskOptionsMenu from "../optionsMenu/TeamTaskOptionsMenu";
 import AssignTaskModal from "../../features/task/AssignTaskModal";
 import CommentsModal from "../../features/task/CommentsModal";
 
-export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, handleEdit, handleDelete}) {
+export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, handleEdit, handleDelete, handleArchive}) {
   const[option,setOption] = useState(false);
   const [assignTask, setAssignTask] = useState(false);
   const [isTaskComments, setIsTaskComments] = useState(false);
@@ -61,7 +61,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
   };
 
   return (
-    <Draggable draggableId={task._id} index={index}>
+    <Draggable draggableId={String(task._id)} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}
@@ -79,7 +79,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
             >
               <MoreHoriz fontSize="small" />
             </IconButton>
-            {option && <TeamTaskOptionsMenu task={task} team={team} handleDelete={handleDelete}
+            {option && <TeamTaskOptionsMenu task={task} team={team} handleDelete={handleDelete} handleArchive={handleArchive}
             handleEdit={handleEdit} closeMenu={() => setOpenMenuId(null)}/>}
           </div>
 

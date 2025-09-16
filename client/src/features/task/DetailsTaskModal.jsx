@@ -31,20 +31,12 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
         },
       }}
     >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          fontSize: 16,
-          fontWeight: "bold",
-        }}
-      >
-        <Info sx={{ color: "primary.main" }} />
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <Info sx={{ color: "primary.main" }} fontSize="small"/>
         Task Details
       </DialogTitle>
 
-      <Divider sx={{ my: 1 }} />
+      <Divider/>
 
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {/* Title */}

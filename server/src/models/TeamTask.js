@@ -12,6 +12,8 @@ const teamTaskSchema = new mongoose.Schema({
     column: {type: String, default: "Backlog"},
     order: {type: Number, default: 0},
     priority: {type: String, default: "Medium"},
+    isArchived: {type: Boolean, default: false },
+    archivedAt: {type: Date, default: Date.now},
     assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     subtasks: [teamSubtaskSchema],
     team: {type: mongoose.Schema.Types.ObjectId, ref: "Team"},

@@ -1,7 +1,8 @@
 import { useState,useEffect } from "react";
-import { Button,Dialog,DialogTitle,DialogContent,DialogActions,IconButton,Avatar,Typography } from "@mui/material";
+import { Button,Dialog,DialogTitle,DialogContent,DialogActions,IconButton,Avatar,Typography, Divider } from "@mui/material";
 import AssignedMembers from "./AssignedMembers";
-import { Add } from "@mui/icons-material";
+import { Add, GroupAdd } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 import toast from "react-hot-toast";
 
 export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
@@ -49,7 +50,9 @@ export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
       <Dialog open={open} fullWidth maxWidth={false} PaperProps={{
         sx: { borderRadius: 2, p: 1, width: "470px", maxWidth: "90%" },
       }}>
-        <DialogTitle fontSize="medium">Assign task</DialogTitle>
+        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}> 
+          <GroupAdd sx={{ color: colors.darkGreen }} fontSize="small"/>Assign task</DialogTitle>
+        <Divider />
         <DialogContent>
           {
             assignedUsers.length > 0 ? (
@@ -62,22 +65,6 @@ export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
               Team Members
            </Typography>
           <div className="max-h-80 overflow-y-auto">
-            {
-              <div className="px-3 py-1 rounded-2xl text-xs flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Avatar
-                    key={team.owner._id}
-                    alt={team.owner.name}
-                    src={team.owner.profileImage}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                  {team.owner.name}
-                </div>
-                  <IconButton onClick={() => addUser(team.owner)}>
-                    <Add fontSize="small"/>
-                  </IconButton>
-              </div>
-            }
             {
               team.members.map((member) => (
                 <div key={member._id} className="px-3 py-1 rounded-2xl text-xs flex gap-1 items-center justify-between">

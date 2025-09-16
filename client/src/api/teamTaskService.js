@@ -64,3 +64,29 @@ export async function toggleSubtaskStatus(teamId,taskId,subtaskId,status) {
     )
     return res.data
 }
+
+export async function archiveTeamTask(teamId,taskId) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}/archive`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}
+
+export async function unArchiveTeamTask(teamId,taskId) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}/unArchive`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}

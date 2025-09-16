@@ -2,12 +2,14 @@ import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Typography } from "@mui/material";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { Window,TableRows,FormatListBulleted } from "@mui/icons-material";
-import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask } from "../../api/teamTaskService";
+import { Window,TableRows,FormatListBulleted, Archive } from "@mui/icons-material";
+import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask, archiveTeamTask, unArchiveTeamTask } from "../../api/teamTaskService";
 
 import CreateTask from "../../features/task/CreateTaskModal";
 import TeamTaskKanbanCard from "./TeamTaskKanbanCard";
 import RateLimitedUI from "../ui/RateLimitedUI";
+import { TeamTaskKanban } from "./TeamTaskKanban";
+import TeamTaskArchive from "./TeamTaskArchive";
 
 export function TeamTasks({team}) {
     const queryClient = useQueryClient();
@@ -15,6 +17,7 @@ export function TeamTasks({team}) {
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
     const [columns, setColumns] = useState({});
     const [isRateLimited, setIsRateLimited] = useState(false);
+    const [activeSection, setActiveSection] = useState("card")
     
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
@@ -58,6 +61,23 @@ export function TeamTasks({team}) {
         }
     })
 
+    //Mutate ui when a task is archived
+    const archiveTaskMutation = useMutation({
+        mutationFn: ({ teamId, taskId }) =>
+            archiveTeamTask(teamId, taskId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['teamTasks', team._id]);
+        }
+    })
+
+    const unArchiveTaskMutation = useMutation({
+        mutationFn: ({ teamId, taskId }) =>
+            unArchiveTeamTask(teamId, taskId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['teamTasks', team._id]);
+        }
+    })
+
     //Set columns for tasks
     useEffect(() => {
         if (data?.columns) setColumns(data.columns);
@@ -76,6 +96,20 @@ export function TeamTasks({team}) {
             teamId: team._id,
             taskId: task._id
         });
+    }
+
+    const handleArchiveTask = (task) => {
+        archiveTaskMutation.mutate({
+            teamId: team._id,
+            taskId: task._id
+        })
+    }
+
+    const handleUnarchiveTask = (task) => {
+        unArchiveTaskMutation.mutate({
+            teamId: team._id,
+            taskId: task._id
+        })
     }
 
     const handleDragEnd = (result) => {
@@ -123,66 +157,46 @@ export function TeamTasks({team}) {
     return<section className="flex flex-col gap-4 w-full">
         <section className="flex justify-between items-center">
             <div>
-                <Button sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                <Button
+                 onClick={() => setActiveSection("card")}
+                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
                     <Window fontSize="small"/>Card
                 </Button>
-                <Button sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                <Button
+                 onClick={() => setActiveSection("table")}
+                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
                     <TableRows fontSize="small"/>Table
                 </Button>
-                <Button sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                <Button
+                 onClick={() => setActiveSection("list")}
+                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
                     <FormatListBulleted fontSize="small"/>List
                 </Button>
             </div>
-            <Button
-            onClick={() => setIsCreateTeamTask(true)}
-            variant="contained" sx={{ fontSize: "12px", textTransform: "none", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" },  color: "white", paddingY: "2px"}}>
-                Add task
-            </Button>
+            <div className="flex gap-3 items-center">
+                <Button
+                 onClick={() => setActiveSection("archive")}
+                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                    <Archive fontSize="small"/>Archive
+                </Button>
+                <Button
+                onClick={() => setIsCreateTeamTask(true)}
+                variant="contained" sx={{ fontSize: "12px", textTransform: "none", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" },  color: "white", paddingY: "2px"}}>
+                    Add task
+                </Button>
+            </div>
         </section>
-        <section className="bg-white rounded-lg shadow-md flex min-h-[80vh] gap-4 p-4 overflow-x-auto">
-            <DragDropContext onDragEnd={handleDragEnd}>
-            {Object.entries(columns).map(([colName, tasks]) => (
-                <Droppable key={colName} droppableId={colName}>
-                {(provided) => (
-                    <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="flex-shrink-0 w-60"
-                    >
-                    <Typography
-                        variant="h6"
-                        component="h2"
-                        sx={{
-                            fontWeight: 600,
-                            letterSpacing: 0.5,
-                            color: "#111827",
-                            textTransform: "uppercase",
-                            mb: 1,
-                        }}
-                        >
-                        {colName}
-                        </Typography>
-
-                    {tasks.length > 0 ? (
-                        tasks.map((task, index) => (
-                        <TeamTaskKanbanCard 
-                            key={task._id}
-                            task={task}
-                            team={team}
-                            index={index}
-                            handleDelete={() => handleDeleteTask(task)}
-                            handleEdit={(taskData) => handleEditTask({ taskId: task._id, ...taskData })}
-                        />
-                        ))
-                    ) : (
-                        <div className="text-gray-400 text-sm">No task</div>
-                    )}
-                    {provided.placeholder}
-                    </div>
-                )}
-                </Droppable>
-            ))}
-            </DragDropContext>
+        <section >
+            {
+                activeSection === "card" && (
+                    <TeamTaskKanban onDragEnd={handleDragEnd} columns={columns} handleDelete={(task) => handleDeleteTask(task)} team={team}handleEdit={(taskId,taskData) => handleEditTask(taskId,taskData)} handleArchive={(task) => handleArchiveTask(task)}/>
+                )
+            }
+            {
+                activeSection === "archive" && (
+                    <TeamTaskArchive columns={columns} handleUnarchive={(task) => handleUnarchiveTask(task)}/>
+                )
+            }
         </section>
         {/*Show rate limited ui when too many request*/}
         {

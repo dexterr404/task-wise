@@ -49,6 +49,7 @@ export const createTeamTask = async(req,res) => {
             priority: priority || "medium",
             team: teamId,
             subtasks: subtasks || [],
+            isArchived: false,
             deadline
         });
 
@@ -135,3 +136,44 @@ export const toggleSubtaskStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to toggle subtask status" });
   }
 };
+
+
+//Archive Task
+export const archiveTeamTask = async(req,res) => {
+  try {
+    const { teamId, taskId } = req.params;
+    const task = await TeamTask.findByIdAndUpdate(
+      { _id: taskId, team: teamId},
+      { isArchived: true, archivedAt: Date.now() },
+      { new: true }
+    );
+    if(!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json({ task });
+    console.log(task);
+  } catch (error) {
+    console.log("Error archiving task", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+//Unarchive Task
+export const unArchiveTeamTask = async(req,res) => {
+  try {
+    const { teamId, taskId } = req.params;
+    const task = await TeamTask.findByIdAndUpdate(
+      { _id: taskId, team: teamId},
+      { isArchived: false },
+      { new: true }
+    );
+    if(!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json({ task });
+    console.log(task);
+  } catch (error) {
+    console.log("Error unArchiving task", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
