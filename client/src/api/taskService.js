@@ -46,17 +46,10 @@ export async function deleteTask(userId,taskId) {
   return res.data;
 }
 
-export async function editTask(userId,taskId, title, description, deadline, priority, subtasks, status) {
+export async function editTask(userId,taskId,updatedTask) {
   const res = await axios.put(
     `${import.meta.env.VITE_API_URL}/api/personal/${userId}/${taskId}`,
-    {
-      title,
-      description,
-      deadline,
-      priority,
-      status,
-      subtasks
-    },
+    updatedTask,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -112,4 +105,31 @@ export async function updateDoneTask(userId,taskId,updatedTask) {
     },
   });
   return res.data
+}
+
+
+export async function archiveTask(userId,taskId) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/tasks/${taskId}/archive`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}
+
+export async function unArchiveTask(userId,taskId) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/personal/${userId}/tasks/${taskId}/unArchive`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
 }

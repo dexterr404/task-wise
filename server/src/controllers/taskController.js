@@ -44,7 +44,7 @@ export const getTaskById = async(req,res) => {
 export const createTask = async(req,res) => {
     try {
         const {title, description, deadline, status, priority, subtasks} = req.body;
-        const newTask = new Task({title, description, deadline, status, priority, subtasks, user: req.user._id})
+        const newTask = new Task({title, description, deadline, status, priority, isArchived:false, subtasks, user: req.user._id})
 
         await newTask.save();
         res.status(201).json({message: "Task created successfully"})
@@ -84,3 +84,43 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
+//Archive Task
+export const archiveTask = async(req,res) => {
+  try {
+    const { userId, taskId } = req.params;
+    const task = await Task.findByIdAndUpdate(
+      { _id: taskId, user: userId},
+      { isArchived: true, archivedAt: Date.now() },
+      { new: true }
+    );
+    if(!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    console.log("Error archiving task", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+//Archive Task
+export const unArchiveTask = async(req,res) => {
+  try {
+    const { userId, taskId } = req.params;
+    const task = await Task.findByIdAndUpdate(
+      { _id: taskId, user: userId},
+      { isArchived: false},
+      { new: true }
+    );
+    if(!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    console.log("Error archiving task", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

@@ -1,8 +1,13 @@
 import { useState } from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
-import toast from "react-hot-toast";
+import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider,} from "@mui/material";
+import { Cancel } from "@mui/icons-material";
+import { colors } from "../../data/colors";
+import { useLocation } from "react-router-dom";
 
-function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
+function NotDoneTaskModal({open,onClose,task,onUndoneTask}) {
+  const { pathname } = useLocation();
+  const isTeams = pathname.includes("teams");
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDone = async() => {
@@ -12,18 +17,17 @@ function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
       title,
       description,
       deadline,
-      status: "Ongoing",
+      status: isTeams ? "Doing" : "Ongoing",
       priority,
       subtasks,
     })
 
     setIsLoading(true);
     try {
-      await unDoneTask(updatedTask);
+      await onUndoneTask(updatedTask);
       onClose();
-      toast.success("Undone task");
     } catch (error) {
-      toast.error("Failed to update status");
+      console.log("Error updating task", error);
     } finally {
       setIsLoading(false);
     }
@@ -39,13 +43,15 @@ function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
         sx: { borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle component="div">
-      <Typography variant="subtitle1">
-        Done with the task?
-      </Typography>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <Cancel fontSize="small"  sx={{ color: colors.yellow }}/> Done with the task?
       </DialogTitle>
-
-      <DialogContent />
+      <Divider />
+      <DialogContent>
+        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+          This will mark the task as not completed. You can mark it done again later.
+        </Typography>
+      </DialogContent>
 
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
@@ -58,7 +64,7 @@ function NotDoneTaskModal({open,onClose,task,unDoneTask}) {
           onClick={() => handleDone()}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#f1c915", "&:hover": { backgroundColor: "#d4af0d" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: colors.yellow, "&:hover": { backgroundColor: colors.darkerYellow }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span>Updating</span> : <span>Not Done</span>}
         </Button>

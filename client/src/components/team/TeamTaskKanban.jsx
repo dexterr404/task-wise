@@ -3,9 +3,7 @@ import { Typography } from "@mui/material"
 
 import TeamTaskKanbanCard from "./TeamTaskKanbanCard"
 
-
-
-export function TeamTaskKanban({onDragEnd,columns,handleDelete,handleEdit,handleArchive,team}) {
+export function TeamTaskKanban({onDragEnd,columns,team}) {
     return<section className="bg-white rounded-lg shadow-md flex min-h-[80vh] gap-4 p-4 overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
             {Object.entries(columns).map(([colName, tasks]) => (
@@ -40,9 +38,6 @@ export function TeamTaskKanban({onDragEnd,columns,handleDelete,handleEdit,handle
                             task={task}
                             team={team}
                             index={index}
-                            handleDelete={() => handleDelete(task)}
-                            handleEdit={(taskData) => handleEdit({ taskId: task._id, ...taskData })}
-                            handleArchive={() => handleArchive(task)}
                         />
                         ))
                     ) : (
@@ -56,3 +51,5 @@ export function TeamTaskKanban({onDragEnd,columns,handleDelete,handleEdit,handle
             </DragDropContext>
     </section>
 }
+
+export default TeamTaskKanban

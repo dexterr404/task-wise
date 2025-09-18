@@ -1,22 +1,19 @@
-import {useState} from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider} from "@mui/material";
-import {toast} from "react-hot-toast"
+import { Dialog, DialogTitle, DialogActions, Button, DialogContent,Typography, Divider } from "@mui/material";
 import { colors } from "../../data/colors";
 import { ReportProblemRounded  } from "@mui/icons-material";
+import { useState } from "react";
 
-function DeleteTaskModal({open,onClose,onDelete}) {
-  const [isloading, setIsLoading] = useState(false);
-
+function DeleteTaskModal({open,onClose,onDeleteTask}) {
+  const [loading,setLoading] = useState(false);
   const handleDelete = async() => {
-    setIsLoading(true);
+    setLoading(true);
     try {
-      await onDelete();
-      toast.success("Task deleted successfully")
+      await onDeleteTask();
+      onClose();
     } catch (error) {
-      toast.error("Failed to delete task");
       console.log("Error deleting task", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -53,9 +50,9 @@ function DeleteTaskModal({open,onClose,onDelete}) {
           onClick={() => {
             handleDelete();
           }}
-          disabled={isloading}
+          disabled={loading}
         >
-          { isloading ? <span className="text-white">Deleting</span> : <span>Delete</span>}
+          { loading ? <span className="text-white">Deleting</span> : <span>Delete</span>}
         </Button>
       </DialogActions>
     </Dialog>

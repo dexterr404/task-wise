@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
+import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider,} from "@mui/material";
 import { statusColors } from "../../data/status";
+import { useLocation } from "react-router-dom";
 
 import StatusMenu from "../../components/dropdownMenu/StatusMenu";
-import toast from "react-hot-toast";
+import { colors } from "../../data/colors";
+import { Flag } from "@mui/icons-material";
 
 
 function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
+  const { pathname } = useLocation();
+  const isTeamsPage = pathname.includes("teams");
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedSubtaskIndex, setSelectedSubtaskIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,16 +31,18 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
   const handleStatus = () => {
     const subtaskStatuses = taskData.subtasks.map(s => s.status);
 
-    let mainStatus = "Not Started";
+    let mainStatus =(isTeamsPage ? "To Do" : "Not Started");
 
-    if (subtaskStatuses.some(s => s === "Ongoing" || s === "Done")) {
-      mainStatus = "Ongoing"
-    } else{
-      mainStatus = "Not Started"
+    if (
+      subtaskStatuses.some(
+        (s) => s === "Done" || s === (isTeamsPage ? "Doing" : "Ongoing")
+      )
+    ) {
+      mainStatus = isTeamsPage ? "Doing" : "Ongoing";
     }
 
-    return mainStatus
-  }
+    return mainStatus;
+  };
  
   const handleUpdateSubtaskStatus = (newStatus) => {
     if (selectedSubtaskIndex !== null) {
@@ -67,12 +74,10 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
                 priority: task.priority,
                 subtasks: taskData.subtasks,
             };
-      await onSubtaskUpdate(task._id, updatedTaskData);
-      toast.success("Subtasks updated successfully");
+      await onSubtaskUpdate({taskId:task._id, updatedTask:updatedTaskData});
       onClose();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update subtasks");
     } finally {
       setIsLoading(false);
     }
@@ -88,24 +93,20 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
         sx: { borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle component="div">
-        <Typography
-          variant="subtitle1"
-          sx={{ marginBottom: "2rem", fontSize: "1.2rem" }}
-        >
-          Update subtasks status here
-        </Typography>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+          <Flag fontSize="small"  sx={{ color: colors.darkerGreenYellow }}/> Update subtasks status here
+      </DialogTitle>
+      <Divider />
+      <DialogContent>
         <div className="flex flex-col justify-around text-sm gap-1 mt-3">
           {taskData.subtasks.map((t, index) => (
             <div
               key={index}
-              className="flex justify-between items-center border-b-1 pb-1 border-b-gray-200"
+              className="flex justify-between items-center border-b-2 pb-1 border-b-gray-200"
             >
-              <div className="flex items-center gap-1">
-                <div className="text-xs bg-gray-200 px-2 py-1 rounded-full">
-                  {index + 1}
-                </div>
-                {t.title}
+              <div className="flex items-center gap-2 text-xs px-2 py-1">
+                <span>{index + 1}.</span>
+                <span>{t.title}</span>
               </div>
               <div className="relative">
                 <div
@@ -131,9 +132,7 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
             </div>
           ))}
         </div>
-      </DialogTitle>
-
-      <DialogContent />
+      </DialogContent>
 
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
@@ -146,7 +145,7 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
           onClick={handleSave}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: "#9CCC65", "&:hover": { backgroundColor: "#7CB342" }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: colors.greenYellow, "&:hover": { backgroundColor: colors.darkerGreenYellow }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? "Updating..." : "Update"}
         </Button>

@@ -1,116 +1,33 @@
 import { useState,useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Typography } from "@mui/material";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { useQuery} from "@tanstack/react-query";
+import { Button } from "@mui/material";
 import { Window,TableRows,FormatListBulleted, Archive } from "@mui/icons-material";
-import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask, archiveTeamTask, unArchiveTeamTask } from "../../api/teamTaskService";
+import { getTeamTasks} from "../../api/teamTaskService";
+import { useTeamTasks } from "../../hooks/useTeamTasks";
 
 import CreateTask from "../../features/task/CreateTaskModal";
-import TeamTaskKanbanCard from "./TeamTaskKanbanCard";
-import RateLimitedUI from "../ui/RateLimitedUI";
-import { TeamTaskKanban } from "./TeamTaskKanban";
+import TeamTaskKanban from "./TeamTaskKanban";
 import TeamTaskArchive from "./TeamTaskArchive";
+import TeamTaskTable from "./TeamTaskTable";
+import TeamTaskList from "./TeamTaskList";
 
 export function TeamTasks({team}) {
-    const queryClient = useQueryClient();
+    const { onAddTask,onEditTask } = useTeamTasks(team._id);
 
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
     const [columns, setColumns] = useState({});
-    const [isRateLimited, setIsRateLimited] = useState(false);
     const [activeSection, setActiveSection] = useState("card")
     
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
         queryKey: ["teamTasks", team._id],
         queryFn: () => getTeamTasks(team._id),
-        onError: (error) => {
-            if (error.response?.status === 429) {
-            setIsRateLimited(true);
-            }
-        },
     });
-
-    //Mutation ui to add a task
-    const addTaskMutation = useMutation({
-        mutationFn: ({ teamId, title, description, deadline, priority, subtasks }) =>
-            createTeamTask( teamId, title, description, deadline, priority, subtasks),
-        onSuccess: () => {
-            queryClient.invalidateQueries(["teamTasks", team._id]);
-            setIsCreateTeamTask(false);
-        }
-    });
-
-    //Update ui when data mutated by updating
-    const updateTaskMutation = useMutation({
-        mutationFn: ({ teamId, taskId, ...updatedData }) =>
-            updateTeamTask(teamId, taskId, updatedData),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['teamTasks', team._id]);
-        },
-        onError: (error) => {
-            console.error('Failed to update task:', error);
-        },
-    });
-
-    //Mutate ui when data mutated by deleting
-    const deleteTaskMutation = useMutation({
-        mutationFn: ({ teamId, taskId }) =>
-            deleteTeamTask(teamId, taskId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['teamTasks', team._id]);
-        }
-    })
-
-    //Mutate ui when a task is archived
-    const archiveTaskMutation = useMutation({
-        mutationFn: ({ teamId, taskId }) =>
-            archiveTeamTask(teamId, taskId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['teamTasks', team._id]);
-        }
-    })
-
-    const unArchiveTaskMutation = useMutation({
-        mutationFn: ({ teamId, taskId }) =>
-            unArchiveTeamTask(teamId, taskId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['teamTasks', team._id]);
-        }
-    })
 
     //Set columns for tasks
     useEffect(() => {
         if (data?.columns) setColumns(data.columns);
     }, [data]);
-
-    const handleEditTask = ({ taskId, ...updatedData }) => {
-        updateTaskMutation.mutate({
-            teamId: team._id,
-            taskId,
-            ...updatedData
-        });
-    };
-
-    const handleDeleteTask = (task) => {
-        deleteTaskMutation.mutate({
-            teamId: team._id,
-            taskId: task._id
-        });
-    }
-
-    const handleArchiveTask = (task) => {
-        archiveTaskMutation.mutate({
-            teamId: team._id,
-            taskId: task._id
-        })
-    }
-
-    const handleUnarchiveTask = (task) => {
-        unArchiveTaskMutation.mutate({
-            teamId: team._id,
-            taskId: task._id
-        })
-    }
 
     const handleDragEnd = (result) => {
     const { source, destination } = result;
@@ -139,17 +56,16 @@ export function TeamTasks({team}) {
     const updateTasks = (tasks, columnId) => {
         tasks.forEach((task, index) => {
             // Only update if order or column changed
-            if (task.order !== index || task.column !== columnId) {
-                handleEditTask({ taskId: task._id, order: index, column: columnId });
+            if (task.order !== index || task.status !== columnId) {
+                onEditTask({ taskId: task._id, order: index, status: columnId });
             }
         });
     };
 
     // 5. Update source and destination
     updateTasks(newColumns[sourceCol], sourceCol);
-    if (sourceCol !== destCol) updateTasks(newColumns[destCol], destCol);
-};
-
+        if (sourceCol !== destCol) updateTasks(newColumns[destCol], destCol);
+    };
 
     if (isLoading) return <p>Loading tasks...</p>;
     if (error) return <p>Error loading tasks</p>;
@@ -187,22 +103,29 @@ export function TeamTasks({team}) {
             </div>
         </section>
         <section >
+            {/*Change view depending on user choice*/}
             {
                 activeSection === "card" && (
-                    <TeamTaskKanban onDragEnd={handleDragEnd} columns={columns} handleDelete={(task) => handleDeleteTask(task)} team={team}handleEdit={(taskId,taskData) => handleEditTask(taskId,taskData)} handleArchive={(task) => handleArchiveTask(task)}/>
+                    <TeamTaskKanban onDragEnd={handleDragEnd} columns={columns} team={team} />
                 )
             }
             {
                 activeSection === "archive" && (
-                    <TeamTaskArchive columns={columns} handleUnarchive={(task) => handleUnarchiveTask(task)}/>
+                    <TeamTaskArchive columns={columns} team={team}/>
+                )
+            }
+            {
+                activeSection === "table" && (
+                    <TeamTaskTable columns={columns} team={team}/>
+                )
+            }
+            {
+                activeSection === "list" && (
+                    <TeamTaskList columns={columns} team={team}/>
                 )
             }
         </section>
-        {/*Show rate limited ui when too many request*/}
-        {
-            isRateLimited && <RateLimitedUI/>
-        }
-        <CreateTask onCreateTask={(taskData) => addTaskMutation.mutateAsync({ teamId: team._id, ...taskData })} team={team} open={isCreateTeamTask} onClose={() => setIsCreateTeamTask(false)}/>
+        <CreateTask onAddTask={onAddTask} team={team} open={isCreateTeamTask} onClose={() => setIsCreateTeamTask(false)}/>
     </section>
 }
 

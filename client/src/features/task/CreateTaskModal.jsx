@@ -10,7 +10,7 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
+export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
   const initialTaskData = {
       title: categoryName || "",
       description: "",
@@ -73,10 +73,9 @@ export default function CreateTask({ categoryName,onClose,onCreateTask,open }) {
 
     setIsLoading(true);
     try {
-      await onCreateTask({title,description,deadline,priority,subtasks:validSubtasks});
+      await onAddTask({title,description,deadline,priority,subtasks:validSubtasks});
       setTaskData(initialTaskData);
       onClose();
-      toast.success("Task added successfully!");
     } catch (error) {
       console.error("Error adding task:", error.response?.data || error.message);
       toast.error("Failed to add task");

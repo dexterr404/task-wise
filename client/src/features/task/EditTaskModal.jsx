@@ -11,7 +11,7 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-export default function EditTask({task,open,onClose,onEdit }) {
+export default function EditTask({task,open,onClose,onUpdateTask}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [taskData, setTaskData] = useState(() => ({
@@ -80,12 +80,10 @@ export default function EditTask({task,open,onClose,onEdit }) {
 
     setIsLoading(true);
     try {
-        await onEdit({title,description,deadline,priority,subtasks:validSubtasks,status});
-        toast.success("Task edited successfully");
+        await onUpdateTask({title,description,deadline,priority,subtasks:validSubtasks,status});
         onClose();
       } catch (error) {
         console.error("Error editing task:", error.message);
-        toast.error("Failed to edit task");
       } finally {
         setIsLoading(false);
       }

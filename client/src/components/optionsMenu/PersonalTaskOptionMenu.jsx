@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { IconButton, Tooltip } from "@mui/material";
-import { Delete,Edit,Flag,Cancel,CheckCircle,ContentCopy, } from "@mui/icons-material";
+import { Delete,Edit,Flag,Cancel,CheckCircle,ContentCopy,Archive } from "@mui/icons-material";
+import { usePersonalTasks } from "../../hooks/usePersonalTasks";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useTeamTasks } from "../../hooks/useTeamTasks";
+import { colors } from "../../data/colors";
 
 import EditTaskModal from "../../features/task/EditTaskModal";
 import DeleteTaskModal from "../../features/task/DeleteTaskModal";
@@ -8,34 +13,49 @@ import DoneTaskModal from "../../features/task/DoneTaskModal";
 import NotDoneTaskModal from "../../features/task/NotDoneTaskModal";
 import DuplicateTaskModal from "../../features/task/DuplicateTaskModal";
 import UpdateSubtaskModal from "../../features/task/UpdateSubtaskModal";
+import ArchiveTaskModal from "../../features/task/ArchiveTaskModal";
 
-export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,onDuplicateTask}) {
+export default function TodoOptionsMenu({task,closeOption,team}) {
+  const { pathname } = useLocation()
+  const user = useSelector((state) => state.user);
+
+  const isTeamPage = pathname.includes("teams");
+
+  let taskActions
+
+  if (isTeamPage) {
+    taskActions = useTeamTasks(team._id)
+  } else {
+    taskActions = usePersonalTasks(user.id)
+  }
+  
+  const { onDeleteTask, onDoneTask, onUndoneTask, onDuplicateTask, onSubtaskUpdate, onEditTask, onArchiveTask } = taskActions
+
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
   const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
   const[isNotDoneModalOpen,setIsNotDoneModalOpen] = useState(false);
   const[isDuplicateModalOpen,setIsDuplicateModalOpen] = useState(false);
   const[isSubtaskModalOpen,setIsSubtaskModalOpen] = useState(false);
-
+  const[isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-gray-200 flex gap-2">
-
-    {/*Delete Task*/}
-      <Tooltip title="Delete">
+      {/*Archive Task*/}
+      <Tooltip title="Archive">
         <IconButton
+          onClick={() => setIsArchiveModalOpen(true)}
           size="small"
           sx={{
             color: "gray",
-            "&:hover": { color: "#b71c1c" }
+            "&:hover": { color: colors.darkOrange }
           }}
-          onClick={() => setIsDeleteModalOpen((prev) => !prev)}
         >
-          <Delete fontSize="small" />
+          <Archive fontSize="small" />
         </IconButton>
       </Tooltip>
-      <DeleteTaskModal
-        open={isDeleteModalOpen}
-        onDelete={() => {onDelete(); closeOption();}}
-        onClose={() => setIsDeleteModalOpen(false)}
+      <ArchiveTaskModal 
+      open={isArchiveModalOpen}
+      onClose={() => setIsArchiveModalOpen(false)}
+      onArchiveTask={() => onArchiveTask({taskId:task._id})}
       />
       {/*Edit Task*/}
       <Tooltip title="Edit">
@@ -51,11 +71,8 @@ export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubt
       <EditTaskModal task={task}
        open={isEditTaskOpen}
        onClose={() => {setIsEditTaskOpen(false)}}
-       onEdit={(updatedData) => {
-          onEdit(updatedData);
-        }}
-        />
-      
+       onUpdateTask={(updatedTask) => onEditTask({taskId:task._id,...updatedTask})}
+       />
       {/*Update Subtask*/}
       <Tooltip title="Update Subtask">
         <IconButton
@@ -73,18 +90,18 @@ export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubt
         open={isSubtaskModalOpen}
         task={task}
         onClose={() => setIsSubtaskModalOpen(false)}
-        onSubtaskUpdate={(taskId, updatedTask) => onSubtaskUpdate(taskId, updatedTask)}
+        onSubtaskUpdate={onSubtaskUpdate}
       />
 
       {/*Update task status to done*/}
       <Tooltip title="Mark as Done">
         <IconButton 
-        sx={{
-          color: "gray",
-          "&:hover": { color: "#2E7D32" }
-        }}
-        onClick={() => {setIsDoneModalOpen((prev) => !prev)}}
-        size="small">
+          sx={{
+            color: "gray",
+            "&:hover": { color: "#2E7D32" }
+          }}
+          onClick={() => {setIsDoneModalOpen((prev) => !prev)}}
+          size="small">
           <CheckCircle fontSize="small" />
         </IconButton>
       </Tooltip>
@@ -92,7 +109,7 @@ export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubt
       task={task}
       open={isDoneModalOpen}
       onClose={() => setIsDoneModalOpen(false)}
-      onDoneTask={(updatedTask) => onDoneTask(updatedTask)}
+      onDoneTask={(updatedTask) => onDoneTask({taskId:task._id,updatedTask})}
        />
 
       {/*Update task status to ongoing*/}
@@ -111,7 +128,7 @@ export default function TodoOptionsMenu({task,closeOption,onDelete,onEdit,onSubt
       task={task}
       open={isNotDoneModalOpen}
       onClose={() => setIsNotDoneModalOpen(false)}
-      unDoneTask={(updatedTask) => unDoneTask(updatedTask)}/>
+      onUndoneTask={(updatedTask) => onUndoneTask({taskId:task._id,updatedTask})}/>
 
       {/*Duplicate Task*/}
       <Tooltip title="Duplicate">

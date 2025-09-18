@@ -1,11 +1,12 @@
 import { useState,useEffect } from "react";
 import { Button,Dialog,DialogTitle,DialogContent,DialogActions,IconButton,Avatar,Typography, Divider } from "@mui/material";
-import AssignedMembers from "./AssignedMembers";
 import { Add, GroupAdd } from "@mui/icons-material";
 import { colors } from "../../data/colors";
-import toast from "react-hot-toast";
 
-export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
+import toast from "react-hot-toast";
+import AssignedMembers from "./AssignedMembers";
+
+export function AssignTaskModal({open,onClose,team,task,onUpdateTask}) {
   const [isLoading,setIsLoading] = useState(false);
   const [assignedUsers,setAssignedUsers] = useState(task.assignedTo || []);
 
@@ -27,7 +28,7 @@ export function AssignTaskModal({open,onClose,team,task,handleEdit}) {
     const handleSave = async() => {
       setIsLoading(true);
       try {
-        await handleEdit({assignedTo: assignedUsers});
+        await onUpdateTask({assignedTo: assignedUsers});
         if(assignedUsers.length === 1) {
           toast.success(`${assignedUsers[0].name.split(" ")[0]} has been assigned to the task`);
         } else if(assignedUsers.length === 0) {

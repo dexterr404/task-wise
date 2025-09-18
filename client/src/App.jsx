@@ -7,9 +7,34 @@ import Dashboard from './pages/Dashboard'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import InvitePage from './pages/InvitePage.jsx'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import GlobalRateLimitHandler from './components/ui/GlobalRateLimitHandler.jsx'
+import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      console.log("Query error caught globally:", error);
+
+      const status = error?.response?.status || error?.status;
+      if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
+        console.log("Dispatching global rate limit event...");
+        window.dispatchEvent(new CustomEvent("rateLimited"));
+      }
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      console.log("Mutation error caught globally:", error);
+
+      const status = error?.response?.status || error?.status;
+      if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
+        console.log("Dispatching global rate limit event...");
+        window.dispatchEvent(new CustomEvent("rateLimited"));
+      }
+    },
+  }),
+});
+
 
 function App() {
   const location = useLocation();
@@ -19,6 +44,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <main className='relative'>
       {!hideSidebar && <SideBar />}
+      <GlobalRateLimitHandler />
       <Routes>
         <Route path='/register' element={<Register />}/>
         <Route path="/login" element={<Login />}/>

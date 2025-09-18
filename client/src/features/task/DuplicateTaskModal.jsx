@@ -1,13 +1,11 @@
 import {useState} from "react";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography,} from "@mui/material";
-import toast from "react-hot-toast";
-import { duplicateTask } from "../../api/taskService";
-import { useSelector } from "react-redux";
+import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider,} from "@mui/material";
+import { toast } from "react-hot-toast";
+import { ContentCopy } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 
 function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
   const [isLoading, setIsLoading] = useState(false);
-
-  const user = useSelector((state) => state.user);
 
   //Duplicate task in database
   const handleDuplicate = async() => {
@@ -22,10 +20,9 @@ function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
           priority,
           subtasks
         })
-        await onDuplicateTask(newTask);
-        toast.success("Task duplicated successfully");
+        await onDuplicateTask({newTask});
+        onClose();
       } catch (error) {
-        toast.error("Failed to duplicate task");
         console.log(error);
       } finally {
         setIsLoading(false);
@@ -42,13 +39,15 @@ function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
         sx: { borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle component="div">
-      <Typography variant="subtitle1" sx={{fontSize: "1rem"}}>
-        Duplicate the task?
-      </Typography>
+      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <ContentCopy fontSize="small"  sx={{ color: colors.lighterblue }}/> Duplicate the task?
       </DialogTitle>
-
-      <DialogContent />
+       <Divider />
+      <DialogContent>
+        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+          This will create a copy of the task with all its details, including subtasks and priority.
+        </Typography>
+      </DialogContent>
 
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button

@@ -29,14 +29,6 @@ function StatusMenu({ anchorEl, onClose, onSelect }) {
       >
         Done
       </MenuItem>
-      <MenuItem
-        onClick={() => {
-          onSelect("Ongoing");
-          onClose();
-        }}
-      >
-        Ongoing
-      </MenuItem>
        <MenuItem
         onClick={() => {
           onSelect("Not Started");
@@ -44,14 +36,6 @@ function StatusMenu({ anchorEl, onClose, onSelect }) {
         }}
       >
         Not Started
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          onSelect("Unfinished");
-          onClose();
-        }}
-      >
-        Unfinished
       </MenuItem>
     </Menu>
   );

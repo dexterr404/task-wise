@@ -9,7 +9,7 @@ const teamTaskSchema = new mongoose.Schema({
     title: {type: String, required: true},
     description: {type: String, required: true},
     deadline: { type: Date },
-    column: {type: String, default: "Backlog"},
+    status: {type: String, default: "Backlog"},
     order: {type: Number, default: 0},
     priority: {type: String, default: "Medium"},
     isArchived: {type: Boolean, default: false },

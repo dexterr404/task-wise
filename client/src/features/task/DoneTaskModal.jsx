@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography } from "@mui/material";
+import { Dialog,DialogTitle,DialogActions,Button,DialogContent, Divider, Typography } from "@mui/material";
+import { colors } from "../../data/colors";
 
-import toast from "react-hot-toast";
+import { CheckCircle } from "@mui/icons-material";
 
 function DoneTaskModal({open,onClose,task,onDoneTask}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,18 +20,15 @@ function DoneTaskModal({open,onClose,task,onDoneTask}) {
       priority,
       subtasks,
     }
-    console.log(updatedTask);
-      try {
-        await onDoneTask(updatedTask);
-        onClose();
-        toast.success("Done task");
-      } catch (error) {
-        toast.error("Failed to update status");
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      await onDoneTask(updatedTask);
+      onClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
   return (
     <Dialog
@@ -42,14 +40,15 @@ function DoneTaskModal({open,onClose,task,onDoneTask}) {
         sx: { borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle component="div">
-      <Typography variant="subtitle1">
-        Done with the task?
-      </Typography>
+      <DialogTitle  variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <CheckCircle fontSize="small"  sx={{ color: colors.darkGreen }}/> Done with the task?
       </DialogTitle>
-
-      <DialogContent />
-
+      <Divider />
+      <DialogContent>
+        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+          This will mark the task as completed. You can always mark it as not completed later if needed.
+        </Typography>
+      </DialogContent>
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}

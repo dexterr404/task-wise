@@ -1,23 +1,19 @@
-import {useState} from "react";
 import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider } from "@mui/material";
-import { toast } from "react-hot-toast"
 import { colors } from "../../data/colors";
 import { Archive } from "@mui/icons-material";
+import { useState } from "react";
 
-function ArchiveTaskModal({open,onClose,onArchive}) {
-    const [isLoading,setIsLoading] = useState(false);
-
+function ArchiveTaskModal({open,onClose,onArchiveTask}) {
+    const [loading,setLoading] = useState(false);
     const handleArchive = async() => {
-        setIsLoading(true);
+        setLoading(true);
         try {
-            await onArchive();
-            toast.success("Task successfully archived");
+            await onArchiveTask();
             onClose();
         } catch (error) {
-            toast.error("Failed to archive task");
             console.log("Error archiving the task", error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }
 
@@ -52,9 +48,9 @@ function ArchiveTaskModal({open,onClose,onArchive}) {
             variant="contained"
                 sx={{ fontSize: "12px", backgroundColor: colors.orange, "&:hover": { backgroundColor: colors.darkOrange }, textTransform: "none", marginRight: "14px" }}
                 onClick={handleArchive}
-                disabled={isLoading}
+                disabled={loading}
             >
-                { isLoading ? <span className="text-white">Archiving</span> : <span>Archive</span>}
+                { loading ? <span className="text-white">Archiving</span> : <span>Archive</span>}
             </Button>
             </DialogActions>
         </Dialog>

@@ -19,7 +19,7 @@ export const getTeamTasks = async (req, res) => {
       
       //Group tasks by column
       const grouped = columnOrder.reduce((acc, col) => {
-        acc[col] = tasks.filter((task) => task.column === col);
+        acc[col] = tasks.filter((task) => task.status === col);
         return acc
       }, {});
 
@@ -66,7 +66,7 @@ export const createTeamTask = async(req,res) => {
 export const updateTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
-    const { title, description, priority, deadline, column, order, subtasks, assignedTo } = req.body;
+    const { title, description, priority, deadline, status, order, subtasks, assignedTo } = req.body;
 
     if(!teamId || !taskId) {
       return res.status(400).json({ message: "Team ID and Task ID are required" });
@@ -84,7 +84,7 @@ export const updateTeamTask = async(req,res) => {
     if (assignedTo !== undefined) task.assignedTo = assignedTo;
 
     //Update the column and order for drag and drop
-    if (column !== undefined) task.column = column;
+    if (status !== undefined) task.status = status;
     if (order !== undefined) task.order = order;
 
     await task.save();
@@ -151,7 +151,6 @@ export const archiveTeamTask = async(req,res) => {
       return res.status(404).json({ message: "Task not found" });
     }
     res.status(200).json({ task });
-    console.log(task);
   } catch (error) {
     console.log("Error archiving task", error);
     res.status(500).json({ message: "Internal server error" });
@@ -171,7 +170,6 @@ export const unArchiveTeamTask = async(req,res) => {
       return res.status(404).json({ message: "Task not found" });
     }
     res.status(200).json({ task });
-    console.log(task);
   } catch (error) {
     console.log("Error unArchiving task", error);
     res.status(500).json({ message: "Internal server error" });

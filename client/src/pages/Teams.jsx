@@ -2,28 +2,29 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { Link as LinkIcon,People,CalendarMonth,AssignmentOutlined } from "@mui/icons-material";
-import { getTeamsById, removeUserFromTeam } from "../api/teamService";
-import StringAvatar from "../components/ui/StringAvatar";
-import ShareDialog from "../components/team/ShareDialog";
-import { Toaster} from "react-hot-toast";
-import TeamTasks from "../components/team/TeamTasks";
-import TeamMembers from "../components/team/TeamMembers";
-import RateLimitedUI from "../components/ui/RateLimitedUI";
 import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getUserRole } from "../hooks/useUserRole";
+import { Toaster} from "react-hot-toast";
+import { getTeamsById, removeUserFromTeam } from "../api/teamService";
+
+import StringAvatar from "../components/ui/StringAvatar";
+import ShareDialog from "../components/team/ShareDialog";
+import TeamTasks from "../components/team/TeamTasks";
+import TeamMembers from "../components/team/TeamMembers";
+
 
 function Teams() {
   const { teamId } = useParams();
   const user = useSelector((state) => state.user);
 
   const [shareDialog, setShareDialog] = useState(false);
-  const [isRateLimited, setIsRateLimited] = useState(false);
   const [activeSection, setActiveSection] = useState("tasks");
   const [role, setRole] = useState("Guest");
 
   const queryClient = useQueryClient();
 
+  //Get current team and its data using the url
   const { data:currentTeam, isLoading } = useQuery({
     queryKey: ["team", teamId],
     queryFn: () => getTeamsById(teamId),
@@ -31,12 +32,6 @@ function Teams() {
       if (error?.response?.status === 429) return false;
       return failureCount < 3;
     },
-    onError: (error) => {
-      if (error?.response?.status === 429) {
-        console.log(error.message);
-        setIsRateLimited(true);
-      }
-    }
   })
 
   useEffect(() => {
@@ -101,9 +96,6 @@ function Teams() {
           onRemoveUser={(userId) => removeUserMutation.mutateAsync({teamId, userId})}/>
         }
       </section>
-      {
-        isRateLimited && <RateLimitedUI/>
-      }
     </main>
   );
 }

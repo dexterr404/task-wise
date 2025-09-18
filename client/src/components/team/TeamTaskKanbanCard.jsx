@@ -5,7 +5,7 @@ import { IconButton,Checkbox, AvatarGroup, Avatar } from "@mui/material";
 import { MoreHoriz,PersonAdd,Chat,CheckCircle,RadioButtonUnchecked } from "@mui/icons-material";
 import { priorityColors } from "../../data/priority";
 import { toggleSubtaskStatus } from "../../api/teamTaskService";
-
+import { useTeamTasks } from "../../hooks/useTeamTasks";
 import { addComment,fetchComments,fetchCommentsCount } from "../../api/commentsService";
 
 import countRemainingDays from "../../utils/countRemainingDays";
@@ -13,7 +13,9 @@ import TeamTaskOptionsMenu from "../optionsMenu/TeamTaskOptionsMenu";
 import AssignTaskModal from "../../features/task/AssignTaskModal";
 import CommentsModal from "../../features/task/CommentsModal";
 
-export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, handleEdit, handleDelete, handleArchive}) {
+export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId }) {
+  const { onEditTask } = useTeamTasks(team._id);
+
   const[option,setOption] = useState(false);
   const [assignTask, setAssignTask] = useState(false);
   const [isTaskComments, setIsTaskComments] = useState(false);
@@ -79,8 +81,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
             >
               <MoreHoriz fontSize="small" />
             </IconButton>
-            {option && <TeamTaskOptionsMenu task={task} team={team} handleDelete={handleDelete} handleArchive={handleArchive}
-            handleEdit={handleEdit} closeMenu={() => setOpenMenuId(null)}/>}
+            {option && <TeamTaskOptionsMenu task={task} team={team} closeMenu={() => setOpenMenuId(null)} />}
           </div>
 
           {/* task content */}
@@ -153,7 +154,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId, h
           </div>
           <CommentsModal open={isTaskComments} onClose={() => setIsTaskComments(false)} addCommentMutation={addCommentMutation}
           comments={comments} task={task} team={team} isLoading={isLoading}/>
-          <AssignTaskModal handleEdit={handleEdit} task={task} team={team} open={assignTask} onClose={() => setAssignTask(false)}/>
+          <AssignTaskModal onUpdateTask={(taskData) => onEditTask({taskId:task._id,...taskData})} task={task} team={team} open={assignTask} onClose={() => setAssignTask(false)}/>
         </div>
       )}
     </Draggable>

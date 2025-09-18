@@ -1,23 +1,20 @@
-import {useState} from "react";
 import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography } from "@mui/material";
-import { toast } from "react-hot-toast"
 import { colors } from "../../data/colors";
 import { Unarchive } from "@mui/icons-material";
+import { useState } from "react";
 
-function UnarchiveTaskModal({open,onClose,onUnarchive}) {
-    const [isLoading,setIsLoading] = useState(false);
+function UnarchiveTaskModal({open,onClose,onUnArchiveTask}) {
+    const [loading,setLoading] = useState(false);
 
     const handleUnarchive = async() => {
-        setIsLoading(true);
+        setLoading(true);
         try {
-            await onUnarchive();
-            toast.success("Task successfully Unarchived");
+            await onUnArchiveTask();
             onClose();
         } catch (error) {
-            toast.error("Failed to Unarchive task");
             console.log("Error Unarchiving the task", error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }
 
@@ -51,9 +48,9 @@ function UnarchiveTaskModal({open,onClose,onUnarchive}) {
             variant="contained"
                 sx={{ fontSize: "12px", backgroundColor: colors.green, "&:hover": { backgroundColor: colors.darkGreen }, textTransform: "none", marginRight: "14px" }}
                 onClick={handleUnarchive}
-                disabled={isLoading}
+                disabled={loading}
             >
-                { isLoading ? <span className="text-white">Unarchiving</span> : <span>Unarchive</span>}
+                { loading ? <span className="text-white">Unarchiving</span> : <span>Unarchive</span>}
             </Button>
             </DialogActions>
         </Dialog>

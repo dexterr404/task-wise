@@ -10,6 +10,8 @@ const taskSchema = new mongoose.Schema({
   description: { type: String, required: true },
   deadline: { type: Date },
   status: { type: String, default: "Ongoing" },
+  isArchived: {type: Boolean, default: false },
+  archivedAt: {type: Date, default: Date.now},
   priority: { type: String, default: "Medium" },
   subtasks: [subtaskSchema],
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }

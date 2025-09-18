@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Table,TableHead,TableBody,TableRow,TableCell,Avatar,IconButton,Typography,Tooltip,Box,Select,MenuItem } from "@mui/material";
 import { getUserRole } from "../../hooks/useUserRole";
 import { Edit,Delete } from "@mui/icons-material";
-import { useQuery,useQueryClient,useMutation, QueryClient } from "@tanstack/react-query";
+import { useQueryClient,useMutation} from "@tanstack/react-query";
 import { changeUserRole } from "../../api/teamService";
 
 import RemoveUserModal from "../../features/team/RemoveUserModal";

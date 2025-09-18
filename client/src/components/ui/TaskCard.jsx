@@ -9,7 +9,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "../ui/ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
 
-function TaskCard({task,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,onDuplicateTask}){
+function TaskCard({task,team}){
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     
     const closeOption = () => {
@@ -23,7 +23,7 @@ function TaskCard({task,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,on
         </div>
         <div className="flex items-center text-xs gap-2 min-w-[160px]">
             <div className={`px-3 py-1 text-white rounded-md
-              ${statusColors[task.status] || `bg-gray-700`}`}>{task.status}</div>
+              ${statusColors[task.status] || statusColors[task.column]}`}>{task.status || task.column}</div>
             <div className={`px-3 py-1  text-white rounded-md
               ${priorityColors[task.priority] || `bg-gray-700`}`}>{task.priority}</div>
         </div>
@@ -49,12 +49,7 @@ function TaskCard({task,onDelete,onEdit,onSubtaskUpdate,onDoneTask,unDoneTask,on
             task={task}
             closeOption={closeOption}
             onClose={() => setIsTodoOptionOpen(false)}
-            onDelete={onDelete}
-            onEdit={(updatedData) => onEdit(updatedData)}
-            onSubtaskUpdate={(taskId, updatedTask) => onSubtaskUpdate(taskId, updatedTask)}
-            onDoneTask={(updatedTask) => onDoneTask(updatedTask)}
-            unDoneTask={(updatedTask) => unDoneTask(updatedTask)}
-            onDuplicateTask={(newTask) => onDuplicateTask(newTask)}
+            team={team}
             />
           )}
         </div>

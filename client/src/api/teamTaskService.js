@@ -36,7 +36,7 @@ export async function updateTeamTask(teamId,taskId,updatedTask) {
             }
         }
     )
-    return res.data
+    return res.data.task
 }
 
 export async function deleteTeamTask(teamId,taskId) {
@@ -90,3 +90,55 @@ export async function unArchiveTeamTask(teamId,taskId) {
     )
     return res.data
 }
+
+export async function updateDoneTeamTask(teamId,taskId,updatedTask) {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,
+        updatedTask,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data.task
+}
+
+export async function updateUndoneTeamTask(teamId,taskId,updatedTask) {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,
+        updatedTask,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data.task
+}
+
+export async function duplicatTeamTask(teamId,duplicateTask) {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks`,
+        duplicateTask,
+        {
+            headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return res.data
+}
+
+export async function updateTeamSubtask(teamId,taskId,updatedTask) {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,
+        updatedTask,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data.task
+}
+
