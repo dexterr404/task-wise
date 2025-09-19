@@ -39,9 +39,9 @@ function TeamTaskArchive({ tasks, columns, team }) {
     : tasks?.filter((task) => task.isArchived);
 
   return (
-    <section className="flex flex-col w-full">
+    <section className="flex flex-col">
       {/* Header - hide on small screens */}
-      <div className="hidden md:grid grid-cols-12 gap-4 px-3 py-2 bg-gray-100 rounded-md">
+      <div className="hidden md:grid grid-cols-12 gap-4 px-3 py-2 bg-whiterounded-md">
         <div className="col-span-3 font-medium">Title</div>
         <div className="col-span-4 font-medium">Description</div>
         <div className="col-span-3 font-medium">Archived At</div>

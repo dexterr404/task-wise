@@ -1,11 +1,12 @@
 import { useState,useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Tooltip,} from "@mui/material";
-import { CenterFocusStrong } from "@mui/icons-material";
+import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Tooltip, Divider,} from "@mui/material";
+import { CenterFocusStrong, TrackChanges } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { selectPendingTasks } from "../task/taskSlice";
 import { updateFocus } from "../../api/userService";
 import { addUser } from "./userSlice";
+import { colors } from "../../data/colors";
 
 function SelectFocusModal({open,onClose,setFocusId}) {
   const user = useSelector((state) => state.user);
@@ -58,14 +59,15 @@ function SelectFocusModal({open,onClose,setFocusId}) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, paddingY: "14px" },
+        sx: { borderRadius: 2, p: 1 },
       }}
     >
       <DialogTitle component="div">
       <div className="flex items-center gap-1">
-        <CenterFocusStrong fontSize="small"/> <div className="text-sm">Select Focus</div>
+        <TrackChanges fontSize="small" sx={{ color: colors.darkerblue}}/> <div className="text-sm">Select Focus</div>
       </div>
       </DialogTitle>
+      <Divider />
       {/*Different ui if there is a task or no task to be focused*/}
       {
         pendingTasks.length === 0 ? (
@@ -75,27 +77,38 @@ function SelectFocusModal({open,onClose,setFocusId}) {
         ) : (
            <DialogContent>
             <div className="flex flex-col gap-1">
-              {
-                pendingTasks.map((task) => (
-                  <div 
+              {pendingTasks.map((task) => (
+                <div
                   key={task._id}
-                  className="grid grid-cols-[6fr_1fr_1fr] py-2 px-2 gap-1 rounded-md hover:shadow-lg transition-shadow shadow-md  text-sm text-left">
-                    <div className="break-wordstext-xs place-self-start pl-3 w-full overflow-hidden pr-1">
+                  className="flex items-center justify-between rounded-lg border-1 border-gray-300 p-3 shadow-sm hover:shadow-md transition"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-900 text-sm truncate">
                       {task.title}
-                    </div>
-                    <div className="text-sm font-semibold">
+                    </span>
+                    <span className="text-xs text-gray-500">
                       {new Date(task.deadline).toLocaleDateString()}
-                    </div>
-                    <Tooltip title="Focus">
-                      <Button 
-                      onClick={() => handleFocusPick(task._id)}
-                      variant="contained" sx={{backgroundColor: `${activeFocus === task._id ? "#1D4ED8" : "white"}`, minWidth: "0px", padding: "5px" }}>
-                        <CenterFocusStrong fontSize="8px" sx={{color: `${activeFocus === task._id ? "white" : "black" }`}}/>
-                      </Button>
-                    </Tooltip>
+                    </span>
                   </div>
-                ))
-              }
+                  <Tooltip title="Focus">
+                    <Button
+                      onClick={() => handleFocusPick(task._id)}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: activeFocus === task._id ? "#1D4ED8" : "white",
+                        minWidth: "32px",
+                        padding: "5px",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <TrackChanges
+                        fontSize="small"
+                        sx={{ color: activeFocus === task._id ? "white" : "black" }}
+                      />
+                    </Button>
+                  </Tooltip>
+                </div>
+              ))}
             </div>
           </DialogContent>
         )

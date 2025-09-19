@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material"
 import TaskCard from "../ui/TaskCard"
 
 export function TeamTaskList({ columns,team }) {
@@ -5,10 +6,10 @@ export function TeamTaskList({ columns,team }) {
   const allTasks = Object.values(columns).flat()
 
   return (
-    <main className="flex flex-col gap-4 w-full">
+    <main className="flex flex-col gap-2 w-full">
       {
       allTasks?.length === 0 ? (
-        <div className="flex justify-center">No active tasks </div>
+        <Typography sx={{ color: "text.secondary", fontSize: 14, textAlign: "center", py: 4 }}>No active tasks </Typography>
       ) : (
         allTasks
           .filter((task) => !task.isArchived)

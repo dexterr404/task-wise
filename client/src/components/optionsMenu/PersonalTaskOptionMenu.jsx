@@ -8,14 +8,13 @@ import { useTeamTasks } from "../../hooks/useTeamTasks";
 import { colors } from "../../data/colors";
 
 import EditTaskModal from "../../features/task/EditTaskModal";
-import DeleteTaskModal from "../../features/task/DeleteTaskModal";
 import DoneTaskModal from "../../features/task/DoneTaskModal";
 import NotDoneTaskModal from "../../features/task/NotDoneTaskModal";
 import DuplicateTaskModal from "../../features/task/DuplicateTaskModal";
 import UpdateSubtaskModal from "../../features/task/UpdateSubtaskModal";
 import ArchiveTaskModal from "../../features/task/ArchiveTaskModal";
 
-export default function TodoOptionsMenu({task,closeOption,team}) {
+export default function TodoOptionsMenu({task,team}) {
   const { pathname } = useLocation()
   const user = useSelector((state) => state.user);
 
@@ -29,10 +28,9 @@ export default function TodoOptionsMenu({task,closeOption,team}) {
     taskActions = usePersonalTasks(user.id)
   }
   
-  const { onDeleteTask, onDoneTask, onUndoneTask, onDuplicateTask, onSubtaskUpdate, onEditTask, onArchiveTask } = taskActions
+  const { onDoneTask, onUndoneTask, onDuplicateTask, onSubtaskUpdate, onEditTask, onArchiveTask } = taskActions
 
   const[isEditTaskOpen,setIsEditTaskOpen] = useState(false);
-  const[isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
   const[isDoneModalOpen,setIsDoneModalOpen] = useState(false);
   const[isNotDoneModalOpen,setIsNotDoneModalOpen] = useState(false);
   const[isDuplicateModalOpen,setIsDuplicateModalOpen] = useState(false);

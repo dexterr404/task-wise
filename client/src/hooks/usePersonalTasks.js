@@ -4,13 +4,13 @@ import {  fetchAllTasks, createTask, deleteTask, editTask, updateSubTask,
 updateDoneTask, updateUndoneTask, duplicateTask, 
 archiveTask,unArchiveTask} from "../api/taskService";
 
-export const usePersonalTasks = (userId,sort,filters) => {
+export const usePersonalTasks = (userId,sort,filters,searchQuery) => {
     const queryClient = useQueryClient();
 
     //Fetch tasks
     const { data, isLoading, error, isError } = useQuery({
-        queryKey: ["personalTasks", userId, sort, filters],
-        queryFn: () => fetchAllTasks(userId, sort, filters),
+        queryKey: ["personalTasks", userId, sort, filters, searchQuery],
+        queryFn: () => fetchAllTasks(userId, sort, filters, searchQuery),
         keepPreviousData: true,
         retry: (failureCount, error) => {
         return failureCount < 3;
@@ -47,11 +47,10 @@ export const usePersonalTasks = (userId,sort,filters) => {
 
     //Mutate ui when task status changed to done
     const updateDoneMutation = useMutation({
-        mutationFn: ({ taskId, ...updatedTask }) =>
+        mutationFn: ({ taskId, updatedTask }) =>
             updateDoneTask( userId, taskId, updatedTask),
         onSuccess: () => {
             queryClient.invalidateQueries(['personalTasks', userId]);
-            toast.success("Task updated successfully");
         },
         onError: (error) => {
             if (error?.response?.status === 429) return;
@@ -154,6 +153,6 @@ export const usePersonalTasks = (userId,sort,filters) => {
         onSubtaskUpdate: ({taskId,updatedTask}) => updateSubtaskMutation.mutateAsync({taskId,updatedTask}),
         onEditTask: (updatedTask) =>  editTaskMutation.mutateAsync(updatedTask),
         onArchiveTask: archiveMutation.mutateAsync,
-        onUnArchive: unArchiveMutation.mutateAsync
+        onUnArchiveTask: unArchiveMutation.mutateAsync
     }
 }

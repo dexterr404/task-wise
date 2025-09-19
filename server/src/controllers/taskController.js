@@ -2,14 +2,24 @@ import Task from "../models/Task.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const { filter, sort } = req.query;
-    let filterOption = { user: req.user._id };
+    const { filter, sort , search } = req.query;
+    let filterOption = { user: req.user._id, isArchived: false };
     let sortOption = {};
 
     // Handle filtering by status
     if (filter) {
       const statuses = filter.split(","); // e.g. "In Progress,Done"
       filterOption.status = { $in: statuses };
+    }
+
+    // Handle search by title, description, or subtasks
+    if (search) {
+      const searchRegex = new RegExp(search, "i"); // case-insensitive
+      filterOption.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { "subtasks.title": searchRegex }
+      ];
     }
 
     // Handle sorting

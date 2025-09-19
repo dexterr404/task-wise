@@ -1,15 +1,17 @@
 import { useState,useEffect } from "react";
 import { useQuery} from "@tanstack/react-query";
 import { Button } from "@mui/material";
-import { Window,TableRows,FormatListBulleted, Archive } from "@mui/icons-material";
+import { Window,TableRows,FormatListBulleted, Archive,AddBox } from "@mui/icons-material";
 import { getTeamTasks} from "../../api/teamTaskService";
 import { useTeamTasks } from "../../hooks/useTeamTasks";
+import { colors } from "../../data/colors";
 
 import CreateTask from "../../features/task/CreateTaskModal";
 import TeamTaskKanban from "./TeamTaskKanban";
 import TeamTaskArchive from "./TeamTaskArchive";
 import TeamTaskTable from "./TeamTaskTable";
 import TeamTaskList from "./TeamTaskList";
+import SearchTaskInput from "../../features/task/SearchTaskInput";
 
 export function TeamTasks({team}) {
     const { onAddTask,onEditTask } = useTeamTasks(team._id);
@@ -17,11 +19,12 @@ export function TeamTasks({team}) {
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
     const [columns, setColumns] = useState({});
     const [activeSection, setActiveSection] = useState("card")
+    const [searchQuery, setSearchQuery] = useState("");
     
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
-        queryKey: ["teamTasks", team._id],
-        queryFn: () => getTeamTasks(team._id),
+        queryKey: ["teamTasks", team._id,searchQuery],
+        queryFn: () => getTeamTasks(team._id,searchQuery),
     });
 
     //Set columns for tasks
@@ -70,39 +73,58 @@ export function TeamTasks({team}) {
     if (isLoading) return <p>Loading tasks...</p>;
     if (error) return <p>Error loading tasks</p>;
 
-    return<section className="flex flex-col gap-4 w-full">
-        <section className="flex justify-between items-center">
-            <div>
-                <Button
-                 onClick={() => setActiveSection("card")}
-                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-                    <Window fontSize="small"/>Card
-                </Button>
-                <Button
-                 onClick={() => setActiveSection("table")}
-                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-                    <TableRows fontSize="small"/>Table
-                </Button>
-                <Button
-                 onClick={() => setActiveSection("list")}
-                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-                    <FormatListBulleted fontSize="small"/>List
-                </Button>
+    return<section className="flex flex-col gap-4 h-full w-full">
+        <section className="flex justify-between items-center max-sm:flex-col max-sm:items-start border-x-1 border-b-1 border-gray-200">
+            <div className="max-sm:flex max-sm:justify-between max-sm:w-full max-xs:flex-col">
+                <div>
+                    <Button
+                    onClick={() => setActiveSection("card")}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "card" ? colors.gray : "white"}}>
+                        <Window fontSize="small"/>Card
+                    </Button>
+                    <Button
+                    onClick={() => setActiveSection("table")}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "table" ? colors.gray : "white"}}>
+                        <TableRows fontSize="small"/>Table
+                    </Button>
+                    <Button
+                    onClick={() => setActiveSection("list")}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "list" ? colors.gray : "white"}}>
+                        <FormatListBulleted fontSize="small"/>List
+                    </Button>
+                </div>
+                <div className="max-sm:block sm:hidden">
+                    <Button
+                    onClick={() => setActiveSection("archive")}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}>
+                        <Archive fontSize="small"/>Archive
+                    </Button>
+                    <Button
+                    onClick={() => setIsCreateTeamTask(true)}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+                    >
+                        <AddBox fontSize="small"/> Create
+                    </Button>
+                </div>
             </div>
-            <div className="flex gap-3 items-center">
+            <div className="flex justify-center max-sm:w-full max-sm:py-1">
+                <SearchTaskInput searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
+            </div>
+            <div className="flex gap-3 items-center max-sm:hidden">
                 <Button
                  onClick={() => setActiveSection("archive")}
-                 sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                 sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}>
                     <Archive fontSize="small"/>Archive
                 </Button>
                 <Button
                 onClick={() => setIsCreateTeamTask(true)}
-                variant="contained" sx={{ fontSize: "12px", textTransform: "none", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" },  color: "white", paddingY: "2px"}}>
-                    Add task
+                sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+                >
+                    <AddBox fontSize="small"/> Create
                 </Button>
             </div>
         </section>
-        <section >
+        <section>
             {/*Change view depending on user choice*/}
             {
                 activeSection === "card" && (

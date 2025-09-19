@@ -2,10 +2,11 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 
-export async function fetchAllTasks(userId,sort, filters = []) {
+export async function fetchAllTasks(userId,sort, filters = [], searchQuery="") {
   const token = localStorage.getItem("token");
   const filterQuery = filters.length > 0 ? `&filter=${filters.join(",")}` : "";
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/personal/${userId}?sort=${sort}${filterQuery}`,{
+  const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/personal/${userId}?sort=${sort}${filterQuery}${searchParam}`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -5,6 +5,8 @@
   --font-caveat: "Caveat", cursive;
   --font-inter: "Inter", sans-serif;
   --font-work-sans: "Work Sans", sans-serif;
+
+  --breakpoint-xs: 360px; 
 }
 
 .scrollbar-auto-hide::-webkit-scrollbar {

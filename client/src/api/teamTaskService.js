@@ -14,9 +14,10 @@ export async function createTeamTask(teamId,title,description,deadline,priority,
     return res.data
 }
 
-export async function getTeamTasks(teamId) {
+export async function getTeamTasks(teamId, searchQuery="") {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks`,
+    const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks?${searchParam}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`

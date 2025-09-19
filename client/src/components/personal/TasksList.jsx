@@ -43,7 +43,7 @@ const TasksList = ( {tasks,isLoading}) => {
     }
     
     return (
-        <div className="flex flex-col bg-white px-4 pt-6 pb-30 gap-3">
+        <div className="flex flex-col pt-6 w-full gap-2">
             {
                 tasks
                 .filter((task) => !task.isArchived)

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import {Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton} from "@mui/material";
+import {Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton, Divider} from "@mui/material";
+import { colors } from "../../data/colors";
+import { Edit } from "@mui/icons-material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import toast from "react-hot-toast";
@@ -81,6 +83,7 @@ export default function EditTask({task,open,onClose,onUpdateTask}) {
     setIsLoading(true);
     try {
         await onUpdateTask({title,description,deadline,priority,subtasks:validSubtasks,status});
+        toast.success("Task updated successfully");
         onClose();
       } catch (error) {
         console.error("Error editing task:", error.message);
@@ -96,7 +99,10 @@ export default function EditTask({task,open,onClose,onUpdateTask}) {
         sx: { borderRadius: 2, p: 1 },
       }}
        disableEnforceFocus={false} onClose={onClose}>
-        <DialogTitle>Edit Task</DialogTitle>
+        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+          <Edit fontSize="small" sx={{ color: colors.darkOrange}}/> Edit Task
+        </DialogTitle>
+        <Divider />
         <DialogContent>
           <TextField
             label="*Task Name"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
-import { IconButton,Checkbox, AvatarGroup, Avatar } from "@mui/material";
+import { IconButton,Checkbox, AvatarGroup, Avatar, Divider } from "@mui/material";
 import { MoreHoriz,PersonAdd,Chat,CheckCircle,RadioButtonUnchecked } from "@mui/icons-material";
 import { priorityColors } from "../../data/priority";
 import { toggleSubtaskStatus } from "../../api/teamTaskService";
@@ -83,7 +83,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
             </IconButton>
             {option && <TeamTaskOptionsMenu task={task} team={team} closeMenu={() => setOpenMenuId(null)} />}
           </div>
-
+          <Divider />
           {/* task content */}
           <div className="absolute top-3 left-4">
             <span className={`${priorityColors[task.priority]} px-3 py-1 rounded-md text-[8px] text-white`}>{task.priority}
@@ -126,6 +126,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
               </div>
             ))}
           </div>
+          <Divider />
           <div className="flex justify-between items-center">
             <IconButton onClick={() => setIsTaskComments(true)} sx={{ position:"relative"}}>
               <Chat sx={{fontSize: "16px"}}/>

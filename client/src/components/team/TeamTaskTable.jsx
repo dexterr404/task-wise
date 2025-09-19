@@ -1,8 +1,10 @@
 import {Table, TableBody, TableCell, TableContainer,TableHead, TableRow,
-Paper, IconButton, Tooltip, Typography} from "@mui/material";
+Paper, IconButton, Tooltip, Typography,
+TableFooter} from "@mui/material";
 import { Edit, Archive } from "@mui/icons-material";
 import { useState } from "react";
 import { useTeamTasks } from "../../hooks/useTeamTasks";
+import { colors } from "../../data/colors";
 
 import ArchiveTaskModal from "../../features/task/ArchiveTaskModal";
 import EditTask from "../../features/task/EditTaskModal";
@@ -23,7 +25,7 @@ function TeamTaskTable({ columns, team}) {
   );
 
   return (
-    <section className="w-full">
+    <section className="w-full h-full">
       {activeTasks.length === 0 ? (
         <Typography sx={{ color: "text.secondary", fontSize: 14, textAlign: "center", py: 4 }}>
           No active tasks found.
@@ -34,15 +36,14 @@ function TeamTaskTable({ columns, team}) {
             {/* Header */}
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f9fafb" }}>
-                <TableCell sx={{ fontWeight: 600 }}>Title</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Description</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Column</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Priority</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Deadline</TableCell>
-                <TableCell sx={{ fontWeight: 600, textAlign: "center" }}>Actions</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Title</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Description</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Column</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Priority</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Deadline</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, textAlign: "center" }}><Typography variant="body2">Actions</Typography></TableCell>
               </TableRow>
             </TableHead>
-
             {/* Body */}
             <TableBody>
               {activeTasks.map((task) => (
@@ -75,7 +76,7 @@ function TeamTaskTable({ columns, team}) {
                   <TableCell align="center">
                     <Tooltip title="Edit">
                       <IconButton onClick={() => {setEditTask(true); setSelectedTask(task);}}>
-                        <Edit fontSize="small" />
+                        <Edit fontSize="small" sx={{ color: colors.lighterblue}}/>
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Archive">

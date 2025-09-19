@@ -32,7 +32,6 @@ export const useTeamTasks = (teamId) => {
         updateTeamTask(teamId, taskId, updatedData),
     onSuccess: () => {
         queryClient.invalidateQueries(['teamTasks', teamId]);
-        toast.success("Task edited successfully Team");
     },
     onError: (error) => {
         if (error?.response?.status === 429) return;

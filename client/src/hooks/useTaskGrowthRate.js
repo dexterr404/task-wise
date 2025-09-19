@@ -42,7 +42,7 @@ export function useTaskGrowthRate() {
   // Helper to calculate growth %
   const calcGrowth = (curr, prev) => {
     if (prev > 0) return Math.round(((curr - prev) / prev) * 100);
-    if (curr > 0) return 100;
+    if (curr > 0) return "New";
     return 0;
   };
 

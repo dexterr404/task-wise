@@ -38,15 +38,18 @@ function Dashboard() {
         fetchTasks();
     },[])
 
+    //<SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/> <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
+
+
     return<main className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4 font-inter">
         <Toaster position="top-center" reverseOrder={false} />
         <section className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
             <h1 className="font-bold text-black text-xl">Dashboard</h1>
-            <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
+            
             <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </section>
         <section className="flex justify-center">
-            <SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
+            
         </section>
         <section className="lg:ml-[100px] mx-10">
             <MetricsCard total={total} done={done} ongoing={ongoing} pending={pending}/>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
-import { Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton } from "@mui/material";
-
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton, Divider } from "@mui/material";
+import { Add, AddBox } from "@mui/icons-material";
+import { colors } from "../../data/colors";
 
 const priorities = [
   { value: "Low", label: "Low" },
@@ -89,7 +89,10 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
       <Dialog open={open} fullWidth maxWidth="sm" PaperProps={{
         sx: { borderRadius: 2, p: 1 },
       }}>
-        <DialogTitle>Add New Task</DialogTitle>
+        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+          <AddBox fontSize="small" sx={{ color: colors.darkGreen}}/>Add New Task
+        </DialogTitle>
+        <Divider />
         <DialogContent>
           <TextField
             label="*Task Name"

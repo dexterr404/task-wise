@@ -1,37 +1,68 @@
 import TeamTask from "../models/TeamTask.js";
+import mongoose from "mongoose";
 
 //Get team's tasks
 export const getTeamTasks = async (req, res) => {
   try {
     const { teamId } = req.params;
+    const { search } = req.query;
 
     if (!teamId) {
       return res.status(400).json({ message: "Team ID is required" });
     }
 
-    //Fetch all tasks for this team
-    const tasks = await TeamTask.find({ team: teamId })
-      .populate("assignedTo", "name profileImage email")
-      .sort({ order: 1 });
+    const searchRegex = search ? new RegExp(search, "i") : null;
 
-      //Define the order
-      const columnOrder = ["Backlog", "To Do", "Doing", "Review", "Done"];
-      
-      //Group tasks by column
-      const grouped = columnOrder.reduce((acc, col) => {
-        acc[col] = tasks.filter((task) => task.status === col);
-        return acc
-      }, {});
+    const tasks = await TeamTask.aggregate([
+      {
+        $match: {
+          team: new mongoose.Types.ObjectId(teamId),
+          isArchived: false,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo",
+          foreignField: "_id",
+          as: "assignedTo",
+        },
+      },
+      {
+        $match: search
+          ? {
+              $or: [
+                { title: searchRegex },
+                { description: searchRegex },
+                { "subtasks.title": searchRegex },
+                { "assignedTo.name": searchRegex },
+                { "assignedTo.email": searchRegex },
+              ],
+            }
+          : {},
+      },
+      { $sort: { order: 1 } },
+    ]);
+
+    // Define the order
+    const columnOrder = ["Backlog", "To Do", "Doing", "Review", "Done"];
+
+    // Group tasks by column
+    const grouped = columnOrder.reduce((acc, col) => {
+      acc[col] = tasks.filter((task) => task.status === col);
+      return acc;
+    }, {});
 
     return res.status(200).json({
-        teamId,
-        columns: grouped
+      teamId,
+      columns: grouped,
     });
   } catch (error) {
     console.error("Error fetching team tasks:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 //Create team task
 export const createTeamTask = async(req,res) => {

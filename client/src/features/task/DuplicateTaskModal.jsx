@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Divider,} from "@mui/material";
-import { toast } from "react-hot-toast";
 import { ContentCopy } from "@mui/icons-material";
 import { colors } from "../../data/colors";
 

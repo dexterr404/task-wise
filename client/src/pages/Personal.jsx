@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { Button, Icon, IconButton } from "@mui/material";
-import { FilterList, Sort, Add, Archive, FormatListBulleted } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import { FilterList, Sort, AddBox, Archive, FormatListBulleted } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { usePersonalTasks } from "../hooks/usePersonalTasks";
+import { colors } from "../data/colors";
 
 import ProfileAndNotif from "../components/personal/ProfileAndNotif";
 import SearchTaskInput from "../features/task/SearchTaskInput";
@@ -24,36 +25,45 @@ function Task() {
     const [isSortOpen,setIsSortOpen] = useState(false);
     const [sort,setSort] = useState("none");
     const [filters, setFilters] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [activeSection, setActiveSection] = useState("tasks");
 
-    const { tasks,isQueryLoading, onAddTask } = usePersonalTasks(user.id,sort,filters);
+    const { tasks,isQueryLoading, onAddTask } = usePersonalTasks(user.id,sort,filters,searchQuery);
 
     const handleSortChange = (option) => setSort(option);
 
 
-    return<main className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4 font-inter">
+    return<main className="flex flex-col h-dvh bg-gray-50 text-gray-600 lg:ml-[200px] font-inter">
         <Toaster position="top-center" reverseOrder={false} />
-        <section className="flex items-center justify-between lg:ml-[100px] p-4 mx-10 relative">
-            <h1 className="font-bold text-black text-xl">My Task</h1>
-            <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
+        <section className="flex items-center justify-between bg-white border-1 border-gray-200 lg:ml-[100px] px-4 py-2 sm:mx-10 relative">
+            <h1 className="font-semibold">My tasks</h1>
+            <SearchTaskInput setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative lg:block max-md:hidden w-[300px]"/>
             <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </section>
-        <section className="flex justify-center">
-            <SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
+        <section className="flex justify-center bg-white border-x-1 border-gray-200 sm:mx-10 ">
+            <SearchTaskInput  setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
         </section>
         <Recommended setIsCreateTaskOpen={setIsCreateTaskOpen} setSelectedCategory={setSelectedCategory}/>
-        <section className="flex justify-between items-center mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
-            <div className="flex gap-2">
+        <section className="flex justify-between bg-white border-1 border-gray-200 items-center sm:mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
+            <div className="flex gap-6">
                 <div className="relative">
-                    <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1  rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center relative"
-                    onClick={() => {setIsFilterOpen((prev) => !prev)}}><FilterList fontSize="small"/>Filter</button>
+                    <Button
+                    onClick={() => {setIsFilterOpen((prev) => !prev)}}
+                    fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+                    >
+                        <FilterList/> Filter
+                    </Button>
+                    
                     {
                         isFilterOpen && <FilterMenu onChange={setFilters}/>
                     }
                 </div>
                 <div className="relative">
-                    <button className=" bg-gray-800 text-white border-gray-300 px-4 py-1 border-1 rounded-md text-xs font-semibold cursor-pointer hover:opacity-95 active:opacity-90 flex items-center"
-                    onClick={() => {setIsSortOpen((prev) => !prev)}}><Sort fontSize="small"/>Sort</button>
+                    <Button 
+                    onClick={() => {setIsSortOpen((prev) => !prev)}}
+                    fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+                        <Sort/>Sort
+                    </Button>
                     {
                         isSortOpen && <SortMenu onChange={(value) => {
                             handleSortChange(value);
@@ -64,30 +74,31 @@ function Task() {
                     }
                 </div>
             </div>
-            <div>
-                <IconButton
-                onClick={() => setActiveSection("archive")}
-                >
-                    <Archive fontSize="small"/>
-                </IconButton>
-                <IconButton
-                onClick={() => setActiveSection("tasks")}
-                >
-                    <FormatListBulleted fontSize="small"/>
-                </IconButton>
+            <div className="flex items-center">
                 <Button
-                variant="contained" sx={{backgroundColor: "#115e59", color: "white", fontSize: "12px", textTransform: "none"}}
-                onClick={() => {
-                    setSelectedCategory("");
-                    setIsCreateTaskOpen(true);
-                }}><Add fontSize="small"/>Add New Task</Button>
+                onClick={() => setActiveSection("tasks")}
+                fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "tasks" ? colors.gray : "white"}}
+                >
+                    <FormatListBulleted fontSize="small"/> Tasks
+                </Button>
+                <Button
+                onClick={() => setActiveSection("archive")}
+                fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}
+                >
+                    <Archive fontSize="small"/> Archive
+                </Button>
+                <Button
+                onClick={() => { setSelectedCategory(""); setIsCreateTaskOpen(true);}}
+                sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+                >
+                    <AddBox fontSize="small"/> Create
+                </Button>
             </div>
             <CreateTask open={isCreateTaskOpen} categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)} 
              onAddTask={(taskData) => onAddTask({...taskData})}/> 
         </section>
-        <section className="flex flex-col mx-10 lg:ml-[100px]">
-            <h1 className="font-semibold text-xs text-black mb-4">TODO</h1>
-            <div className="flex justify-end flex-col gap-2">
+        <section className="flex flex-col lg:ml-[100px] sm:mx-10 flex-1">
+            <div className="flex justify-stretch flex-col gap-2 h-full bg-white">
                 {
                     activeSection === "tasks" && <TasksList isLoading={isQueryLoading} tasks={tasks}/>
                 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tooltip,IconButton } from "@mui/material"
+import { Tooltip,IconButton, Avatar, AvatarGroup } from "@mui/material"
 import { statusColors } from "../../data/status";
 import { priorityColors } from "../../data/priority";
 
@@ -8,8 +8,12 @@ import PersonalTaskMenu from "../optionsMenu/PersonalTaskOptionMenu"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LinearWithValueLabel from "../ui/ProgressBar";
 import TimeIcon from "@mui/icons-material/AccessTime";
+import { useLocation } from "react-router-dom";
 
 function TaskCard({task,team}){
+    const { pathname } = useLocation();
+    const isTeamsPage = pathname.includes("teams");
+
     const [isTodoOptionOpen,setIsTodoOptionOpen] = useState(false);
     
     const closeOption = () => {
@@ -33,27 +37,44 @@ function TaskCard({task,team}){
             </span>
             <LinearWithValueLabel task={task} className='flex-1'/>
         </div>
-        <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
-        <div className="relative inline-flex">
-          <Tooltip title="Options">
-            <IconButton sx={{ padding: "1px"}}>
-              <MoreHorizIcon
-                className="cursor-pointer"
-                onClick={() => setIsTodoOptionOpen((p) => !p)}
-              />
-            </IconButton>
-          </Tooltip>
-          {/*Show option when toggled*/}
-          {isTodoOptionOpen && (
-            <PersonalTaskMenu 
-            task={task}
-            closeOption={closeOption}
-            onClose={() => setIsTodoOptionOpen(false)}
-            team={team}
-            />
+        <div className="absolute bottom-14 right-4 lg:top-0">
+          {isTeamsPage && (
+            <AvatarGroup max={4}>
+              {task.assignedTo?.map((user) => (
+                <Tooltip key={user._id} title={user.name}>
+                  <Avatar
+                    src={user.profileImage}
+                    alt={user.name}
+                    sx={{ width: 24, height: 24, fontSize: 14 }}
+                  >
+                    {user.name?.[0]}
+                  </Avatar>
+                </Tooltip>
+              ))}
+            </AvatarGroup>
           )}
         </div>
-      </div>
+        <div className="max-lg:absolute max-lg:top-2 max-lg:right-2 z-10">
+          <div className="relative inline-flex">
+            <Tooltip title="Options">
+              <IconButton sx={{ padding: "1px"}}>
+                <MoreHorizIcon
+                  className="cursor-pointer"
+                  onClick={() => setIsTodoOptionOpen((p) => !p)}
+                />
+              </IconButton>
+            </Tooltip>
+            {/*Show option when toggled*/}
+            {isTodoOptionOpen && (
+              <PersonalTaskMenu 
+              task={task}
+              closeOption={closeOption}
+              onClose={() => setIsTodoOptionOpen(false)}
+              team={team}
+              />
+            )}
+          </div>
+        </div>
     </div>
 }
 

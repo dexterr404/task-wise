@@ -98,39 +98,51 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
       </DialogTitle>
       <Divider />
       <DialogContent>
+        <Typography sx={{ fontSize: 14 }}>
+          {task.title}
+        </Typography>
         <div className="flex flex-col justify-around text-sm gap-1 mt-3">
-          {taskData.subtasks.map((t, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center border-b-2 pb-1 border-b-gray-200"
-            >
-              <div className="flex items-center gap-2 text-xs px-2 py-1">
-                <span>{index + 1}.</span>
-                <span>{t.title}</span>
-              </div>
-              <div className="relative">
-                <div
-                  className={`cursor-pointer px-2 text-white py-1 rounded-md text-xs hover:opacity-90 active:opacity-70
-                        ${statusColors[t.status] || `bg-gray-700`}`}
-                  onClick={(e) => {
-                    setAnchorEl(e.currentTarget);
-                    setSelectedSubtaskIndex(index);
-                  }}
+          <ul>
+            {taskData.subtasks.length === 0 ? (
+              <li className="text-sm text-gray-500 italic px-2 py-1 flex justify-center">
+                No tasks available
+              </li>
+            ) : (
+              taskData.subtasks.map((t, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center border-b-2 pb-1 border-b-gray-200"
                 >
-                  {t.status}
-                </div>
+                  <div className="flex items-center gap-2 text-xs px-2 py-1">
+                    <span>{index + 1}.</span>
+                    <span>{t.title}</span>
+                  </div>
 
-                <StatusMenu
-                  anchorEl={anchorEl}
-                  onClose={() => {
-                    setAnchorEl(null);
-                    setSelectedSubtaskIndex(null);
-                  }}
-                  onSelect={(status) => handleUpdateSubtaskStatus(status)}
-                />
-              </div>
-            </div>
-          ))}
+                  <div className="relative">
+                    <div
+                      className={`cursor-pointer px-2 text-white py-1 rounded-md text-xs hover:opacity-90 active:opacity-70
+                        ${statusColors[t.status] || `bg-gray-700`}`}
+                      onClick={(e) => {
+                        setAnchorEl(e.currentTarget);
+                        setSelectedSubtaskIndex(index);
+                      }}
+                    >
+                      {t.status}
+                    </div>
+
+                    <StatusMenu
+                      anchorEl={anchorEl}
+                      onClose={() => {
+                        setAnchorEl(null);
+                        setSelectedSubtaskIndex(null);
+                      }}
+                      onSelect={(status) => handleUpdateSubtaskStatus(status)}
+                    />
+                  </div>
+                </li>
+              ))
+            )}
+          </ul>
         </div>
       </DialogContent>
 
