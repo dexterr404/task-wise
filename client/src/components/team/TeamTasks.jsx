@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
 import { useQuery} from "@tanstack/react-query";
-import { Button } from "@mui/material";
-import { Window,TableRows,FormatListBulleted, Archive,AddBox } from "@mui/icons-material";
+import { Button,IconButton, Tooltip } from "@mui/material";
+import { Window,TableRows,FormatListBulleted, Archive,AddBox, FilterList, Sort } from "@mui/icons-material";
 import { getTeamTasks} from "../../api/teamTaskService";
 import { useTeamTasks } from "../../hooks/useTeamTasks";
 import { colors } from "../../data/colors";
@@ -12,6 +12,9 @@ import TeamTaskArchive from "./TeamTaskArchive";
 import TeamTaskTable from "./TeamTaskTable";
 import TeamTaskList from "./TeamTaskList";
 import SearchTaskInput from "../../features/task/SearchTaskInput";
+import FilterMenu from "../dropdownMenu/FilterMenu";
+import SortMenu from "../dropdownMenu/SortMenu";
+
 
 export function TeamTasks({team}) {
     const { onAddTask,onEditTask } = useTeamTasks(team._id);
@@ -20,12 +23,23 @@ export function TeamTasks({team}) {
     const [columns, setColumns] = useState({});
     const [activeSection, setActiveSection] = useState("card")
     const [searchQuery, setSearchQuery] = useState("");
+    const [filters, setFilters] = useState([]);
+    const [sort, setSort] = useState("none");
+    const [openMenu, setOpenMenu] = useState(null);
     
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
-        queryKey: ["teamTasks", team._id,searchQuery],
-        queryFn: () => getTeamTasks(team._id,searchQuery),
+        queryKey: ["teamTasks", team._id,searchQuery,filters,sort],
+        queryFn: () => getTeamTasks(team._id,searchQuery,filters,sort),
     });
+
+    useEffect(() => {
+    if (activeSection === "card") {
+        setFilters([]);
+        setSort("none");
+        setOpenMenu(null);
+    }
+    }, [activeSection]);
 
     //Set columns for tasks
     useEffect(() => {
@@ -70,12 +84,14 @@ export function TeamTasks({team}) {
         if (sourceCol !== destCol) updateTasks(newColumns[destCol], destCol);
     };
 
+    const handleSortChange = (option) => setSort(option);
+
     if (isLoading) return <p>Loading tasks...</p>;
     if (error) return <p>Error loading tasks</p>;
 
     return<section className="flex flex-col gap-4 h-full w-full">
         <section className="flex justify-between items-center max-sm:flex-col max-sm:items-start border-x-1 border-b-1 border-gray-200">
-            <div className="max-sm:flex max-sm:justify-between max-sm:w-full max-xs:flex-col">
+            <div className="max-sm:flex max-sm:justify-between max-sm:w-full max-md:flex-col">
                 <div>
                     <Button
                     onClick={() => setActiveSection("card")}
@@ -92,8 +108,6 @@ export function TeamTasks({team}) {
                     sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "list" ? colors.gray : "white"}}>
                         <FormatListBulleted fontSize="small"/>List
                     </Button>
-                </div>
-                <div className="max-sm:block sm:hidden">
                     <Button
                     onClick={() => setActiveSection("archive")}
                     sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}>
@@ -107,21 +121,32 @@ export function TeamTasks({team}) {
                     </Button>
                 </div>
             </div>
-            <div className="flex justify-center max-sm:w-full max-sm:py-1">
-                <SearchTaskInput searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
-            </div>
-            <div className="flex gap-3 items-center max-sm:hidden">
-                <Button
-                 onClick={() => setActiveSection("archive")}
-                 sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}>
-                    <Archive fontSize="small"/>Archive
-                </Button>
-                <Button
-                onClick={() => setIsCreateTeamTask(true)}
-                sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
-                >
-                    <AddBox fontSize="small"/> Create
-                </Button>
+            <div className="flex max-sm:items-center px-2   ">
+                <div className="flex items-center justify-center max-sm:w-full max-sm:py-1 relative">
+                    <SearchTaskInput searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
+                </div>
+                <div className="flex">
+                    <div className={`relative flex ${(activeSection === "archive" || activeSection === "card") && "hidden"}`}>
+                        <Tooltip title="Filter">
+                            <IconButton
+                            onClick={() => setOpenMenu(openMenu === "filter" ? null : "filter")}
+                            sx={{ color: openMenu === "filter" ? "#1D4ED8" : "gray" }}
+                            >
+                                <FilterList fontSize="small"/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Sort">
+                            <IconButton
+                            onClick={() => setOpenMenu(openMenu === "sort" ? null : "sort")}
+                            sx={{ color: openMenu === "sort" ? "#1D4ED8" : "gray" }}
+                            >
+                                <Sort fontSize="small"/>
+                            </IconButton>
+                        </Tooltip>
+                        {openMenu === "filter" && <FilterMenu options={["Backlog", "To Do", "Doing", "Review", "Done"]} selected={filters} onChange={setFilters} />}
+                        {openMenu === "sort" && <SortMenu  onChange={(value) => {handleSortChange(value);setSort(value)}}sort={sort}/>}
+                    </div>
+                </div>   
             </div>
         </section>
         <section>
@@ -138,12 +163,12 @@ export function TeamTasks({team}) {
             }
             {
                 activeSection === "table" && (
-                    <TeamTaskTable columns={columns} team={team}/>
+                    <TeamTaskTable tasks={data.tasks} team={team}/>
                 )
             }
             {
                 activeSection === "list" && (
-                    <TeamTaskList columns={columns} team={team}/>
+                    <TeamTaskList tasks={data.tasks} team={team}/>
                 )
             }
         </section>

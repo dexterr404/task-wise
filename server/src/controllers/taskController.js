@@ -3,7 +3,7 @@ import Task from "../models/Task.js";
 export const getAllTasks = async (req, res) => {
   try {
     const { filter, sort , search } = req.query;
-    let filterOption = { user: req.user._id, isArchived: false };
+    let filterOption = { user: req.user._id };
     let sortOption = {};
 
     // Handle filtering by status

@@ -1,25 +1,27 @@
 import TeamTask from "../models/TeamTask.js";
 import mongoose from "mongoose";
 
-//Get team's tasks
 export const getTeamTasks = async (req, res) => {
   try {
     const { teamId } = req.params;
-    const { search } = req.query;
+    const { search, filter, sort } = req.query;
+    let sortOption = {};
 
     if (!teamId) {
       return res.status(400).json({ message: "Team ID is required" });
     }
 
-    const searchRegex = search ? new RegExp(search, "i") : null;
+    // base filter
+    let filterOption = { team: new mongoose.Types.ObjectId(teamId) };
 
-    const tasks = await TeamTask.aggregate([
-      {
-        $match: {
-          team: new mongoose.Types.ObjectId(teamId),
-          isArchived: false,
-        },
-      },
+    // apply status filter
+    if (filter) {
+      const statuses = filter.split(",");
+      filterOption.status = { $in: statuses };
+    }
+
+    const pipeline = [
+      { $match: filterOption },
       {
         $lookup: {
           from: "users",
@@ -28,35 +30,42 @@ export const getTeamTasks = async (req, res) => {
           as: "assignedTo",
         },
       },
-      {
-        $match: search
-          ? {
-              $or: [
-                { title: searchRegex },
-                { description: searchRegex },
-                { "subtasks.title": searchRegex },
-                { "assignedTo.name": searchRegex },
-                { "assignedTo.email": searchRegex },
-              ],
-            }
-          : {},
-      },
-      { $sort: { order: 1 } },
-    ]);
+    ];
 
-    // Define the order
+    // apply search *after* lookup
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      pipeline.push({
+        $match: {
+          $or: [
+            { title: searchRegex },
+            { description: searchRegex },
+            { "subtasks.title": searchRegex },
+            { "assignedTo.name": searchRegex },
+            { "assignedTo.email": searchRegex },
+          ],
+        },
+      });
+    }
+
+     // Handle sorting
+    if (sort === "alphabetical") sortOption.title = 1;
+    else if (sort === "status") sortOption.status = 1;
+    else if (sort === "deadline") sortOption.deadline = 1;
+    else if (sort === "none" || !sort) sortOption.order = 1;
+    else sortOption.createdAt = -1;
+
+    pipeline.push({ $sort: sortOption ? sortOption : { order: 1 } });
+
+    const tasks = await TeamTask.aggregate(pipeline);
+
     const columnOrder = ["Backlog", "To Do", "Doing", "Review", "Done"];
-
-    // Group tasks by column
     const grouped = columnOrder.reduce((acc, col) => {
       acc[col] = tasks.filter((task) => task.status === col);
       return acc;
     }, {});
 
-    return res.status(200).json({
-      teamId,
-      columns: grouped,
-    });
+    return res.status(200).json({ teamId, columns: grouped, tasks });
   } catch (error) {
     console.error("Error fetching team tasks:", error);
     return res.status(500).json({ message: "Internal server error" });

@@ -9,20 +9,15 @@ import { colors } from "../../data/colors";
 import ArchiveTaskModal from "../../features/task/ArchiveTaskModal";
 import EditTask from "../../features/task/EditTaskModal";
 
-function TeamTaskTable({ columns, team}) {
+function TeamTaskTable({ tasks, team }) {
   const { onArchiveTask, onUpdateTask } = useTeamTasks(team._id);
 
-  const[selectedTask, setSelectedTask] = useState(null);
-  const[editTask, setEditTask] = useState(false);
-  const[archiveTask, setArchiveTask] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [editTask, setEditTask] = useState(false);
+  const [archiveTask, setArchiveTask] = useState(false);
 
-  // Collect all active (non-archived) tasks across columns
-  const activeTasks = Object.entries(columns).flatMap(([colName, tasks]) =>
-    tasks.filter((task) => !task.isArchived).map((task) => ({
-      ...task,
-      column: colName, // keep track of which column it's in
-    }))
-  );
+  // Just filter active tasks directly
+  const activeTasks = tasks.filter((task) => !task.isArchived);
 
   return (
     <section className="w-full h-full">
@@ -60,7 +55,7 @@ function TeamTaskTable({ columns, team}) {
                   </TableCell>
                   <TableCell>
                     <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
-                        {task.column}
+                        {task.status}
                     </Typography>
                   </TableCell>
                   <TableCell>

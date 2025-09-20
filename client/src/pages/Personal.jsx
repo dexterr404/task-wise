@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { Button } from "@mui/material";
+import { Button,Tooltip,IconButton } from "@mui/material";
 import { FilterList, Sort, AddBox, Archive, FormatListBulleted } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { usePersonalTasks } from "../hooks/usePersonalTasks";
@@ -21,8 +21,7 @@ function Task() {
     const [isCreateTaskOpen,setIsCreateTaskOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [isProfileMenuOpen,setProfileMenuOpen] = useState(false);
-    const [isFilterOpen,setIsFilterOpen] = useState(false);
-    const [isSortOpen,setIsSortOpen] = useState(false);
+    const [openMenu, setOpenMenu] = useState(null);
     const [sort,setSort] = useState("none");
     const [filters, setFilters] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -46,32 +45,25 @@ function Task() {
         <Recommended setIsCreateTaskOpen={setIsCreateTaskOpen} setSelectedCategory={setSelectedCategory}/>
         <section className="flex justify-between bg-white border-1 border-gray-200 items-center sm:mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
             <div className="flex gap-6">
-                <div className="relative">
-                    <Button
-                    onClick={() => {setIsFilterOpen((prev) => !prev)}}
-                    fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
-                    >
-                        <FilterList/> Filter
-                    </Button>
-                    
-                    {
-                        isFilterOpen && <FilterMenu onChange={setFilters}/>
-                    }
-                </div>
-                <div className="relative">
-                    <Button 
-                    onClick={() => {setIsSortOpen((prev) => !prev)}}
-                    fontSize="small" sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-                        <Sort/>Sort
-                    </Button>
-                    {
-                        isSortOpen && <SortMenu onChange={(value) => {
-                            handleSortChange(value);
-                            setSort(value);
-                        }
-                        }
-                        sort={sort}/>
-                    }
+                <div className={`relative ${activeSection === "archive" && "hidden"} px-4`}>
+                    <Tooltip title="Filter">
+                        <IconButton
+                        onClick={() => setOpenMenu(openMenu === "filter" ? null : "filter")}
+                        sx={{ color: openMenu === "filter" ? "#1D4ED8" : "gray" }}
+                        >
+                            <FilterList fontSize="small"/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Sort">
+                        <IconButton
+                        onClick={() => setOpenMenu(openMenu === "sort" ? null : "sort")}
+                        sx={{ color: openMenu === "sort" ? "#1D4ED8" : "gray" }}
+                        >
+                            <Sort fontSize="small"/>
+                        </IconButton>
+                    </Tooltip>
+                    {openMenu === "filter" && <FilterMenu options={["Not Started", "Ongoing", "Done"]} selected={filters} onChange={setFilters} />}
+                    {openMenu === "sort" && <SortMenu  onChange={(value) => {handleSortChange(value);setSort(value)}}sort={sort}/>}
                 </div>
             </div>
             <div className="flex items-center">

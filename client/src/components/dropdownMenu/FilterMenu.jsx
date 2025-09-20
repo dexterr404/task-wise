@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Checkbox,
   FormControlLabel,
@@ -6,43 +6,43 @@ import {
   Paper,
 } from "@mui/material";
 
-export default function FilterMenu({ onChange }) {
-  const [filters, setFilters] = useState({
-    all: true,
-    Ongoing: true,
-    "Not Started": true,
-    Done: true,
-  });
+export default function FilterMenu({ onChange, options = [], selected = [] }) {
+  // Use parent state, fallback to all true
+  const [filters, setFilters] = useState(
+    options.reduce((acc, opt) => {
+      acc[opt] = selected.length === 0 ? true : selected.includes(opt);
+      return acc;
+    }, { all: true })
+  );
+
+  useEffect(() => {
+    // Sync with parent when `selected` changes
+    setFilters(
+      options.reduce((acc, opt) => {
+        acc[opt] = selected.length === 0 ? true : selected.includes(opt);
+        return acc;
+      }, { all: true })
+    );
+  }, [selected, options]);
 
   const handleChange = (e) => {
     const { name, checked } = e.target;
-    let updated = { ...filters };
+    const updated = { ...filters };
 
     if (name === "all") {
       if (!checked) return;
-      updated = {
-        all: checked,
-        Ongoing: checked,
-        "Not Started": checked,
-        Done: checked,
-      };
+      Object.keys(updated).forEach((key) => (updated[key] = true));
     } else {
-      const activeCount =
-        filters.Ongoing + filters["Not Started"] + filters.Done;
+      const activeCount = options.filter((opt) => updated[opt]).length;
       if (!checked && activeCount === 1) return;
-
       updated[name] = checked;
-      updated.all = updated.Ongoing && updated["Not Started"] && updated.Done;
+      updated.all = options.every((opt) => updated[opt]);
     }
 
     setFilters(updated);
 
-    const activeFilters = [];
-    if (updated.Ongoing) activeFilters.push("Ongoing");
-    if (updated["Not Started"]) activeFilters.push("Not Started");
-    if (updated.Done) activeFilters.push("Done");
-
-    onChange(activeFilters.length === 3 ? [] : activeFilters);
+    const activeFilters = options.filter((opt) => updated[opt]);
+    onChange(activeFilters.length === options.length ? [] : activeFilters);
   };
 
   return (
@@ -64,7 +64,7 @@ export default function FilterMenu({ onChange }) {
           gap: 0.3,
         }}
       >
-        {["all", "Ongoing", "Not Started", "Done"].map((status) => (
+        {options.map((status) => (
           <FormControlLabel
             key={status}
             control={
