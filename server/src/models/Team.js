@@ -32,10 +32,10 @@ const teamSchema = new mongoose.Schema({
             },
         },
     ],
-    tasks: [
+    inbox: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "TeamTask"
+            ref: "TeamInbox"
         }
     ],
     inviteToken: {

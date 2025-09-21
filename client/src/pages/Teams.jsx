@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Button } from "@mui/material";
-import { Link as LinkIcon,People,CalendarMonth,AssignmentOutlined } from "@mui/icons-material";
+import { Button,IconButton, Tooltip } from "@mui/material";
+import { Link,People,CalendarMonth,AssignmentOutlined,IosShare,Mail, Inbox } from "@mui/icons-material";
 import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getUserRole } from "../hooks/useUserRole";
@@ -13,6 +13,7 @@ import StringAvatar from "../components/ui/StringAvatar";
 import ShareDialog from "../components/team/ShareDialog";
 import TeamTasks from "../components/team/TeamTasks";
 import TeamMembers from "../components/team/TeamMembers";
+import TeamInbox from "../components/team/TeamInbox";
 
 
 function Teams() {
@@ -65,37 +66,47 @@ function Teams() {
             <h1>{currentTeam.name}</h1>
         </div>
         <div className="flex gap-1 items-center">
-            <Button 
-            onClick={() => setShareDialog(true)}
-            variant="contained" sx={{fontSize: "12px", textTransform: "none", paddingY: "2px", paddingX: "6px"}}>
-                <LinkIcon sx={{fontSize: "14px", marginRight: "2px"}} /><span className="max-sm:hidden">Invite</span>
-            </Button>
+          <Tooltip title="Share">
+            <IconButton onClick={() => setShareDialog(true)} sx={{ color: "gray", "&:hover": {color: colors.lighterblue}}}>
+              <IosShare fontSize="small" sx={{color: colors.darkerblue}}/>
+            </IconButton>
+          </Tooltip>
         </div>
         <ShareDialog inviteToken={currentTeam.inviteToken} teamId={currentTeam._id} open={shareDialog} onClose={() => setShareDialog(false)}/>
       </header>
       <section className="flex-1 bg-white">
-        <section className="flex items-center text-sm bg-white border-x-1 border-b-1 border-gray-200">
+        <section className="flex items-center justify-between text-sm bg-white border-x-1 border-b-1 border-gray-200">
+          <div className="flex">
+            <Button 
+            onClick={() => setActiveSection("tasks")}
+            sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "tasks" ? colors.gray : "white"}}>
+              <AssignmentOutlined fontSize="small"/>Task
+            </Button>
+            <Button 
+            onClick={() => setActiveSection("members")}
+            sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "members" ? colors.gray : "white"}}>
+              <People fontSize="small"/>Team
+            </Button>
+            <Button  sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+              <CalendarMonth fontSize="small"/>Calendar
+            </Button>
+          </div>
           <Button 
-          onClick={() => setActiveSection("tasks")}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "tasks" ? colors.gray : "white"}}>
-            <AssignmentOutlined fontSize="small"/>Task
-          </Button>
-          <Button 
-          onClick={() => setActiveSection("members")}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "members" ? colors.gray : "white"}}>
-            <People fontSize="small"/>Team
-          </Button>
-          <Button  sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-            <CalendarMonth fontSize="small"/>Calendar
+          onClick={() => setActiveSection("inbox")}
+          sx={{ fontSize: "12px", textTransform: "none", color: "gray", mx: "4px", backgroundColor: activeSection === "inbox" ? colors.gray : "white"}}>
+            <Inbox fontSize="small"/>Inbox
           </Button>
         </section>
-        <section className="flex flex-1 gap-4 text-gray-600 text-sm bg-white">
+        <section className="flex gap-4 text-gray-600 text-sm bg-white">
           {
             activeSection === "tasks" && <TeamTasks team={currentTeam}/>
           }
           {
             activeSection === "members" && <TeamMembers team={currentTeam} role={role} accUser={user}
             onRemoveUser={(userId) => removeUserMutation.mutateAsync({teamId, userId})}/>
+          }
+          {
+            activeSection === "inbox" && <TeamInbox team={currentTeam}/>
           }
         </section>
       </section>

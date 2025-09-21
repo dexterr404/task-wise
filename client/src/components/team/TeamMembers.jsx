@@ -204,6 +204,7 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
       open={removeUser}
       onClose={() => setRemoveUser(false)}
       onRemoveUser={() => onRemoveUser(user._id)}
+      user={user}
       role={role}
     />
 

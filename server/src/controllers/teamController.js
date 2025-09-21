@@ -2,6 +2,8 @@ import Team from "../models/Team.js"
 import TeamTask from "../models/TeamTask.js"
 import crypto from "crypto";
 import { sendInviteEmail } from "../services/emailService.js";
+import { notifyJoinUser, notifyKickUser, notifyLeftUser, notifyTeamInfoChange, notifyUserRoleChange } from "../services/teamService.js";
+import User from "../models/User.js";
 
 //Create new team
 export const addTeam = async(req,res) => {
@@ -92,23 +94,38 @@ export const deleteTeam = async(req,res) => {
 }
 
 //Update team name and description
-export const updateTeam = async(req,res) => {
-    try {
-        const {teamId} = req.params;
-        const { name, description } = req.body;
-        const updatedTeam = await Team.findByIdAndUpdate(
-            { _id: teamId },
-            {  name, description },
-            { new: true}
-        );
-        if(!updatedTeam) return res.status(404).json({message: "Team not found"});
+export const updateTeam = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const userId = req.user._id;
 
-        res.status(200).json({updatedTeam});
-    } catch (error) {
-        console.error("Error in updateTeam controller", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
+    const { name, description } = req.body;
+
+    // Get the current team first
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    const oldName = team.name;
+    const oldDescription = team.description;
+
+    // Apply updates
+    if (name !== undefined) team.name = name;
+    if (description !== undefined) team.description = description;
+
+    const updatedTeam = await team.save();
+
+    const user = await User.findById(userId);
+
+    // Pass both old and new values
+    await notifyTeamInfoChange(teamId, oldName, updatedTeam.name, oldDescription, updatedTeam.description, user);
+
+    res.status(200).json({ updatedTeam });
+  } catch (error) {
+    console.error("Error in updateTeam controller", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 //Get the team's info using the inviteToken
 export const getTeamByToken = async(req,res) => {
@@ -151,6 +168,10 @@ export const joinTeamByToken = async (req, res) => {
     team.members.push({ user: userId, role: "Member" });
     await team.save();
 
+    const user = await User.findById(userId);
+
+    await notifyJoinUser(team._id,user);
+
     return res.status(200).json({ message: "Joined team!", team });
   } catch (error) {
     console.error("Error:", error.message);
@@ -181,6 +202,11 @@ export const sendTeamInviteEmail = async(req,res) => {
 export const removeUserFromTeam = async(req,res) => {
     try {
         const { memberId, teamId } = req.params;
+        const userId =  req.user._id;
+        const member = await User.findById(memberId);
+
+        console.log("userId:", userId.toString());
+        console.log("memberId:", member._id.toString());
         
         const team = await Team.findById(teamId);
         if(!team) {
@@ -204,6 +230,14 @@ export const removeUserFromTeam = async(req,res) => {
             { $pull: { assignedTo: memberId } }
         )
 
+        const user = await User.findById(userId);
+
+        if(userId.toString() !== memberId.toString()) {
+          await notifyKickUser(teamId,user,member);
+        } else {
+          await notifyLeftUser(teamId,member);
+        }
+
         res.status(200).json({ 
             message: "User removed from the team",
             team: updatedTeam
@@ -220,6 +254,8 @@ export const changeUserRole = async (req, res) => {
     const { teamId, memberId } = req.params;
     const { newRole } = req.body;
     const modifierId = req.user._id;
+    const member = await User.findById(memberId);
+    const user = await User.findById(modifierId);
 
     // Load team
     const team = await Team.findById(teamId).populate("members.user");
@@ -246,6 +282,8 @@ export const changeUserRole = async (req, res) => {
       return res.status(404).json({ message: "Target user not found in team" });
     }
 
+    const previousRole = team.members[targetIndex].role;
+
     // Prevent self-demotion if only one Leader exists
     if (modifier.user._id.toString() === memberId.toString() && newRole !== "Leader") {
       const otherLeader = team.members.find(
@@ -267,8 +305,10 @@ export const changeUserRole = async (req, res) => {
 
     // 6. Apply role change
     team.members[targetIndex].role = newRole;
-
+    
     await team.save();
+
+    await notifyUserRoleChange(teamId,member,previousRole,newRole,user);
 
     res.status(200).json({
       message: "Role updated successfully",

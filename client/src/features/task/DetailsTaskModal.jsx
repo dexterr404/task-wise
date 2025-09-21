@@ -23,12 +23,7 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: {
-          borderRadius: 3,
-          p: 2,
-          boxShadow: 3,
-          bgcolor: "background.paper",
-        },
+        sx: { borderRadius: 2, p: 1 },
       }}
     >
       <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>

@@ -1,5 +1,8 @@
 import TeamTask from "../models/TeamTask.js";
+import User from "../models/User.js"
 import mongoose from "mongoose";
+import { notifySubtaskUpdate, notifyTaskAdd, notifyTaskArchive, notifyTaskDeletes, notifyTaskUnarchive, notifyTaskUpdates, notifyTaskAssignment } from "../services/teamTaskService.js";
+
 
 export const getTeamTasks = async (req, res) => {
   try {
@@ -78,6 +81,7 @@ export const createTeamTask = async(req,res) => {
     try {
         const { title,description,priority,subtasks,deadline } = req.body;
         const { teamId } = req.params;
+        const userId = req.user._id;
 
         if(!title || !description || !teamId) {
             return res.status(400).json({ message: "Title, description and team are required" });
@@ -95,6 +99,10 @@ export const createTeamTask = async(req,res) => {
 
         await newTask.save();
 
+        const user = await User.findById(userId);
+
+        await notifyTaskAdd(newTask,user);
+
         return res.status(201).json(newTask);
     } catch (error) {
         console.error("Error creating new team task:", error);
@@ -107,6 +115,7 @@ export const updateTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
     const { title, description, priority, deadline, status, order, subtasks, assignedTo } = req.body;
+    const userId = req.user._id;
 
     if(!teamId || !taskId) {
       return res.status(400).json({ message: "Team ID and Task ID are required" });
@@ -114,6 +123,8 @@ export const updateTeamTask = async(req,res) => {
 
     const task = await TeamTask.findOne({ _id: taskId, team: teamId});
     if(!task) return res.status(404).json({ message: "Task not found" });
+
+    const previousStatus = task.status;
 
     //Update the fields provided
     if (title !== undefined) task.title = title;
@@ -129,6 +140,14 @@ export const updateTeamTask = async(req,res) => {
 
     await task.save();
 
+    // populate assignedTo with name and profileImage
+    await task.populate("assignedTo", "name profileImage");
+    
+    // then notify
+    const user = await User.findById(userId);
+    await notifyTaskAssignment(task, user);
+    await notifyTaskUpdates(task, previousStatus, user);
+
     return res.status(200).json(task);
   } catch (error) {
     console.log("Error updating team task", error);
@@ -140,14 +159,18 @@ export const updateTeamTask = async(req,res) => {
 export const deleteTeamTask = async(req,res) => {
   try {
     const { teamId,taskId } = req.params;
+    const userId = req.user._id;
 
     if(!teamId || !taskId) {
       return res.status(400).json({ message: "Team ID and Task ID are required" });
     }
 
     const task = await TeamTask.findOneAndDelete({_id:taskId, team:teamId});
+    const user = await User.findById(userId);
 
     if(!task) return res.status(404).json({ message: "Task not found" });
+
+    await notifyTaskDeletes(task,user);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -160,6 +183,7 @@ export const deleteTeamTask = async(req,res) => {
 export const toggleSubtaskStatus = async (req, res) => {
   const { teamId, taskId, subtaskId } = req.params;
   const { status } = req.body;
+  const userId = req.user._id;
 
   try {
     const task = await TeamTask.findOne({ _id: taskId, team: teamId });
@@ -170,6 +194,10 @@ export const toggleSubtaskStatus = async (req, res) => {
 
     subtask.status = status;
     await task.save();
+
+    const user = await User.findById(userId);
+
+    await notifySubtaskUpdate(task,subtask.title,subtask.status,user);
 
     res.status(200).json(task);
   } catch (error) {
@@ -182,6 +210,8 @@ export const toggleSubtaskStatus = async (req, res) => {
 export const archiveTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
+    const userId = req.user._id;
+
     const task = await TeamTask.findByIdAndUpdate(
       { _id: taskId, team: teamId},
       { isArchived: true, archivedAt: Date.now() },
@@ -190,6 +220,11 @@ export const archiveTeamTask = async(req,res) => {
     if(!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+
+    const user = await User.findById(userId);
+
+    await notifyTaskArchive(task,user);
+
     res.status(200).json({ task });
   } catch (error) {
     console.log("Error archiving task", error);
@@ -201,6 +236,8 @@ export const archiveTeamTask = async(req,res) => {
 export const unArchiveTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
+    const userId = req.user._id;
+
     const task = await TeamTask.findByIdAndUpdate(
       { _id: taskId, team: teamId},
       { isArchived: false },
@@ -209,6 +246,11 @@ export const unArchiveTeamTask = async(req,res) => {
     if(!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+
+    const user = await User.findById(userId);
+
+    await notifyTaskUnarchive(task,user);
+    
     res.status(200).json({ task });
   } catch (error) {
     console.log("Error unArchiving task", error);

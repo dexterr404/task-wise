@@ -9,6 +9,7 @@ import aiRoutes from "./routes/aiRoutes.js"
 import teamRoutes from "./routes/teamRoutes.js"
 import teamTaskRoutes from "./routes/teamTaskRoutes.js"
 import commentsRoutes from "./routes/commentsRoutes.js"
+import teamInboxRoutes from "./routes/teamInbox.js"
 import { connectDB } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js"
 
@@ -34,6 +35,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/teams", teamTaskRoutes);
 app.use("/api/teams", commentsRoutes);
+app.use("/api/teams", teamInboxRoutes);
 
 
 connectDB().then(() => {
