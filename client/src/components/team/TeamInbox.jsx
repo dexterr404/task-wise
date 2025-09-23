@@ -7,6 +7,7 @@ import { teamInboxIconColorMap } from "../../utils/teamInboxIconMap"
 import SearchTeamInbox from "./SearchTeamInbox"
 import { useState } from "react"
 import InboxTypeMenu from "./InboxTypeMenu"
+import TeamInboxSkeleton from "../skeleton/TeamInboxSkeleton"
 
 
 export function TeamInbox({ team }) {
@@ -17,7 +18,7 @@ export function TeamInbox({ team }) {
     queryFn: () => getTeamInbox(team._id,searchQuery),
   })
 
-  if (isLoading) return <p>Loading inbox...</p>
+  if (isLoading) return <div className="flex w-full h-dvh"><TeamInboxSkeleton /></div>
   if (error) return <p>Failed to load inbox</p>
 
   return (

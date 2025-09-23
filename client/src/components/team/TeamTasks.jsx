@@ -1,6 +1,6 @@
 import { useState,useEffect } from "react";
 import { useQuery} from "@tanstack/react-query";
-import { Button,IconButton, Tooltip } from "@mui/material";
+import { Button,IconButton, Tooltip, Typography } from "@mui/material";
 import { Window,TableRows,FormatListBulleted, Archive,AddBox, FilterList, Sort } from "@mui/icons-material";
 import { getTeamTasks} from "../../api/teamTaskService";
 import { useTeamTasks } from "../../hooks/useTeamTasks";
@@ -14,6 +14,7 @@ import TeamTaskList from "./TeamTaskList";
 import SearchTaskInput from "../../features/task/SearchTaskInput";
 import FilterMenu from "../dropdownMenu/FilterMenu";
 import SortMenu from "../dropdownMenu/SortMenu";
+import TeamTaskSkeleton from "../skeleton/TeamTaskSkeleton";
 
 
 export function TeamTasks({team}) {
@@ -86,8 +87,16 @@ export function TeamTasks({team}) {
 
     const handleSortChange = (option) => setSort(option);
 
-    if (isLoading) return <p>Loading tasks...</p>;
-    if (error) return <p>Error loading tasks</p>;
+    if (isLoading) return <div className="flex w-full h-dvh">
+        <TeamTaskSkeleton/>
+    </div>
+    
+
+    if (error){
+        return<main className="flex w-screen h-screen justify-center items-center">
+                <Typography variant="body3">Something went wrong while loading tasks.</Typography>
+            </main>;
+    } 
 
     return<section className="flex flex-col gap-4 h-full w-full">
         <section className="flex justify-between items-center max-sm:flex-col max-sm:items-start border-x-1 border-b-1 border-gray-200">

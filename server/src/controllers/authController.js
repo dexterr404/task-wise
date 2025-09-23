@@ -1,3 +1,4 @@
+import passport from "passport";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken"
 
@@ -51,5 +52,23 @@ export const loginUser = async(req,res) => {
         })
     } catch (error) {
         res.status(500).json({message: "Server error", error})
+    }
+}
+
+export const googleAuthCallback = (req,res) => {
+    const { token } = req.user;
+    const redirect = req.query.state || "";
+
+    res.redirect(
+        `${process.env.APP_BASE_URL2}/auth/success/?token=${token}&provider=google&redirect=${encodeURIComponent(redirect)}`
+    )
+}
+
+export const getCurrentUser = async(req,res) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password");
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
     }
 }

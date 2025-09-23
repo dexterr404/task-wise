@@ -16,3 +16,15 @@ export async function loginUser(email,password) {
     });
     return res.data
 }
+
+export async function getCurrentUser() {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}

@@ -51,7 +51,7 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
         <Tooltip title="Profile">
           <img
           src={user.profileImage || defaultImage}
-          className="w-10 h-10 rounded-full cursor-pointer object-cover"
+          className="w-9 h-9 rounded-full cursor-pointer object-cover"
           onClick={() => {
             setProfileMenuOpen((prev) => !prev);
           }}

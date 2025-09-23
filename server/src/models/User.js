@@ -9,7 +9,8 @@ const notificationSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true},
     email: { type: String, required: true},
-    password: {type: String, required: true},
+    password: {type: String },
+    googleId: { type: String, unique: true, sparse: true },
     focus: { type: mongoose.Schema.Types.ObjectId, ref: "Task", default: null },
     profileImage: {type: String, default: ""},
     insights: {

@@ -9,15 +9,18 @@ import Register from './pages/Register.jsx'
 import InvitePage from './pages/InvitePage.jsx'
 import GlobalRateLimitHandler from './components/ui/GlobalRateLimitHandler.jsx'
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query'
+import { SuccessRedirect } from './features/auth/SuccessRedirect.jsx'
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
-      console.log("Query error caught globally:", error);
-
       const status = error?.response?.status || error?.status;
+
+      if (status === 401) {
+        return console.log("Not authorized"); 
+      }
+
       if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
-        console.log("Dispatching global rate limit event...");
         window.dispatchEvent(new CustomEvent("rateLimited"));
       }
     },
@@ -25,14 +28,23 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
       console.log("Mutation error caught globally:", error);
-
       const status = error?.response?.status || error?.status;
+
+      if (status === 401) {
+        return console.log("Not authorized"); 
+      }
+
       if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
-        console.log("Dispatching global rate limit event...");
         window.dispatchEvent(new CustomEvent("rateLimited"));
       }
     },
   }),
+   defaultOptions: {
+    queries: {
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+  },
 });
 
 
@@ -46,6 +58,7 @@ function App() {
       {!hideSidebar && <SideBar />}
       <GlobalRateLimitHandler />
       <Routes>
+        <Route path="/auth/success" element={<SuccessRedirect />}/>
         <Route path='/register' element={<Register />}/>
         <Route path="/login" element={<Login />}/>
         <Route path='/dashboard/:userId' element={<Dashboard />}/>

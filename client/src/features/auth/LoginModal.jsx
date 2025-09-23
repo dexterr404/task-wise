@@ -60,7 +60,7 @@ function LoginModal() {
         if (redirect) {
             navigate(redirect, { replace: true });
         } else {
-            navigate("/dashboard", { replace: true });
+            navigate(`/dashboard/${user.id}`, { replace: true });
         }
         }
     }, [user, navigate, location.search]);
@@ -132,6 +132,11 @@ function LoginModal() {
             {isLoading ? "Signing in..." : "Sign in"}
             </Button>
             <Button
+            onClick={() => {
+                const params = new URLSearchParams(location.search);
+                const redirect = params.get("redirect");
+                window.location.href=`${import.meta.env.VITE_API_URL2}/api/auth/google?redirect=${encodeURIComponent(redirect)}`
+            }}
             variant="outlined"
             startIcon={<img src={GoogleIcon} alt="Google" style={{ width: 18, height: 18 }} />}
             sx={{ textTransform: "none", width: "100%",fontSize: "12px" }}>

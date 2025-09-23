@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Button,IconButton, Tooltip } from "@mui/material";
-import { Link,People,CalendarMonth,AssignmentOutlined,IosShare,Mail, Inbox } from "@mui/icons-material";
+import { Button,IconButton,Tooltip,Typography } from "@mui/material";
+import { People,CalendarMonth,AssignmentOutlined,IosShare,Inbox } from "@mui/icons-material";
 import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getUserRole } from "../hooks/useUserRole";
@@ -14,6 +14,8 @@ import ShareDialog from "../components/team/ShareDialog";
 import TeamTasks from "../components/team/TeamTasks";
 import TeamMembers from "../components/team/TeamMembers";
 import TeamInbox from "../components/team/TeamInbox";
+import TeamPageSkeleton from "../components/skeleton/TeamPageSkeleton";
+import ProfileAndNotif from "../components/personal/ProfileAndNotif";
 
 
 function Teams() {
@@ -53,9 +55,11 @@ function Teams() {
     }
   })
 
-  if (isLoading) return <div className="lg:ml-[300px]">Loading...</div>;
+  if (isLoading) return <div className="flex w-full h-dvh"><TeamPageSkeleton/></div>;
 
-  if (!currentTeam) return <div className="lg:ml-[300px]">No team found</div>;
+  if (!currentTeam) return <main className="flex w-screen h-screen justify-center items-center">
+                <Typography variant="body3">No team found</Typography>
+            </main>;
 
   return (
     <main className="flex flex-col h-screen bg-gray-50 px-10 pb-2 text-gray-600 lg:ml-[250px] pl-10 font-inter max-sm:p-0">
@@ -71,6 +75,7 @@ function Teams() {
               <IosShare fontSize="small" sx={{color: colors.darkerblue}}/>
             </IconButton>
           </Tooltip>
+          <ProfileAndNotif />
         </div>
         <ShareDialog inviteToken={currentTeam.inviteToken} teamId={currentTeam._id} open={shareDialog} onClose={() => setShareDialog(false)}/>
       </header>

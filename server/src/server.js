@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors";
 import dotenv from "dotenv"
-
+import passport from "./config/passport.js"
 import taskRoutes from "./routes/taskRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
@@ -26,6 +26,7 @@ app.use(
     })
 );
 app.use(express.json());
+app.use(passport.initialize());
 app.use(rateLimiter);
 
 app.use("/api/users",userRoutes);
