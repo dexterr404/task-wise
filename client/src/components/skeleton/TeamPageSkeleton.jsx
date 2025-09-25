@@ -28,7 +28,7 @@ export default function TeamPageSkeleton() {
           width: "100%",
         }}
       >
-        {/* Left side with 3 boxes */}
+        {/* Left side with 2 boxes */}
         <Box sx={{ display: "flex", gap: 0.5 }}>
           {[...Array(3)].map((_, i) => (
             <Skeleton

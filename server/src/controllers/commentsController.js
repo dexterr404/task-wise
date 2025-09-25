@@ -1,5 +1,9 @@
 import Comment from "../models/Comment.js";
 import cloudinary from "../config/cloudinary.js"
+import { notifyTaskComments } from "../services/notificationService.js";
+import TeamTask from "../models/TeamTask.js"
+import Team from "../models/Team.js"
+import User from "../models/User.js"
 
 export const fetchComments = async (req, res) => {
   try {
@@ -68,6 +72,13 @@ export const addComment = async(req,res) => {
         });
 
         await newComment.save();
+
+        const taskCommented = await TeamTask.findById(taskId);
+        const team = await Team.findById(taskCommented.team);
+        const user = await User.findById(authorId);
+
+        notifyTaskComments(taskCommented,team,user);
+        
         return res.status(201).json(newComment);
     } catch (error) {
         console.log("Error in comments controller", error);

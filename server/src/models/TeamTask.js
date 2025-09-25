@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const teamSubtaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -17,6 +17,7 @@ const teamTaskSchema = new mongoose.Schema({
     assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     subtasks: [teamSubtaskSchema],
     team: {type: mongoose.Schema.Types.ObjectId, ref: "Team"},
+    createdBy: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
 }, { timestamps: true });
 
 export default mongoose.model("TeamTask", teamTaskSchema);

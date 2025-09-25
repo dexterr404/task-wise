@@ -1,8 +1,8 @@
 import { useState,useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import {Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Tooltip, Divider,} from "@mui/material";
-import { CenterFocusStrong, TrackChanges } from "@mui/icons-material";
-import toast from "react-hot-toast";
+import { Dialog,DialogTitle,DialogActions,Button,DialogContent,Typography, Tooltip, Divider,} from "@mui/material";
+import { TrackChanges } from "@mui/icons-material";
+import { toast } from "react-hot-toast";
 import { selectPendingTasks } from "../task/taskSlice";
 import { updateFocus } from "../../api/userService";
 import { addUser } from "./userSlice";

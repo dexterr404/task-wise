@@ -23,6 +23,7 @@ function Teams() {
   const user = useSelector((state) => state.user);
 
   const [shareDialog, setShareDialog] = useState(false);
+  const [isProfileMenuOpen,setProfileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("tasks");
   const [role, setRole] = useState("Guest");
 
@@ -75,7 +76,7 @@ function Teams() {
               <IosShare fontSize="small" sx={{color: colors.darkerblue}}/>
             </IconButton>
           </Tooltip>
-          <ProfileAndNotif />
+          <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </div>
         <ShareDialog inviteToken={currentTeam.inviteToken} teamId={currentTeam._id} open={shareDialog} onClose={() => setShareDialog(false)}/>
       </header>
@@ -91,9 +92,6 @@ function Teams() {
             onClick={() => setActiveSection("members")}
             sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "members" ? colors.gray : "white"}}>
               <People fontSize="small"/>Team
-            </Button>
-            <Button  sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
-              <CalendarMonth fontSize="small"/>Calendar
             </Button>
           </div>
           <Button 

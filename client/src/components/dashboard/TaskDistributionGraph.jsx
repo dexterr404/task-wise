@@ -12,7 +12,7 @@ export default function TaskDistributiont() {
   const {data,donePercentage} = useDonutTaskData();
 
   return (
-    <div className='flex flex-col gap-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-50 active:bg-gray-50 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1 duration-200'>
+    <div className='flex flex-col gap-1 p-3 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-50 active:bg-gray-50 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1 duration-200'>
       <div className='border-gray-200 px-6'>
         <h1 className='font-semibold text-sm'>Overall Progress</h1>
       </div>

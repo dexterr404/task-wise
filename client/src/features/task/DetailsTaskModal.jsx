@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Info } from "@mui/icons-material";
 import { getUserRole } from "../../hooks/useUserRole";
+import { colors } from "../../data/colors";
 
 export function DetailsTaskModal({ open, onClose, task, team }) {
 
@@ -33,16 +34,19 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
 
       <Divider/>
 
-      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 1, py: 1 }}>
         {/* Title */}
-        <Box>
-          <Typography sx={{ color: "text.primary", fontSize: "14px" }}>Title:</Typography>
-          <Typography sx={{ color: "text.secondary", fontSize: "13px" }}>{task.title}</Typography>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+          <Typography sx={{ color: "text.primary", fontSize: "13px" }}>
+            Title:
+          </Typography>
+          <Typography sx={{ color: "text.secondary", fontSize: "13px" }}>
+            {task.title}
+          </Typography>
         </Box>
-
         {/* Assigned Users */}
-        <Box>
-          <Typography sx={{ color: "text.primary", fontSize: "14px" }}>Assigned to:</Typography>
+        <Box sx={{display: "flex", alignItems: "center"}}>
+          <Typography sx={{ color: "text.primary", fontSize: "13px" }}>Assigned to:</Typography>
           {task.assignedTo.length > 0 ? (
             <AvatarGroup sx={{ display: "flex", flexDirection: "row-reverse", justifyContent: "start",
               '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 11,backgroundColor: "gray", marginLeft: '-4px'}
@@ -67,19 +71,41 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
 
         {/* Dates */}
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
-            Created: {new Date(task.createdAt).toLocaleString()}
-          </Typography>
-          <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
-            Updated: {new Date(task.updatedAt).toLocaleString()}
-          </Typography>
+          <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+              Created:
+            </Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+             {new Date(task.createdAt).toLocaleString()}
+            </Typography>
+          </Box>
+          <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+              Updated:
+            </Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              {new Date(task.updatedAt).toLocaleString()}
+            </Typography>
+          </Box>
+          <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+              Created by:
+            </Typography>
+            <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+              <Avatar src={task.createdBy.profileImage} sx={{ width: 22, height: 22,marginLeft: 1}}/> 
+              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                {task.createdBy.name}
+              </Typography>
+            </Box>
+            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+            </Typography>
+          </Box>
         </Box>
       </DialogContent>
-
-      <DialogActions sx={{ justifyContent: "flex-end", mt: 1 }}>
+      <DialogActions sx={{ justifyContent: "flex-end"}}>
         <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray" }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "white", backgroundColor: colors.lighterblue, "&:hover": { backgroundColor: colors.darkerblue } }}
         >
           Close
         </Button>

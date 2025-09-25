@@ -10,6 +10,11 @@ export const useTeamTasks = (teamId) => {
   const { data, isLoading: isFetching, error } = useQuery({
     queryKey: ["teamTasks", teamId],
     queryFn: () => getTeamTasks(teamId),
+    staleTime: 1000 * 20,
+    retry: (failureCount, error) => {
+        if (error?.response?.status === 429 || error?.code === "ERR_BAD_REQUEST") return false;
+        return failureCount < 3;
+    },
   });
 
   // Add team task mutation

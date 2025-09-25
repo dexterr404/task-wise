@@ -10,6 +10,7 @@ import teamRoutes from "./routes/teamRoutes.js"
 import teamTaskRoutes from "./routes/teamTaskRoutes.js"
 import commentsRoutes from "./routes/commentsRoutes.js"
 import teamInboxRoutes from "./routes/teamInbox.js"
+import notificationRoutes from "./routes/notificationRoutes.js"
 import { connectDB } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js"
 
@@ -30,6 +31,7 @@ app.use(passport.initialize());
 app.use(rateLimiter);
 
 app.use("/api/users",userRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/personal",taskRoutes);
 app.use("/api/ai", aiRoutes);

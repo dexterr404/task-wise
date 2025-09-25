@@ -1,7 +1,10 @@
 import { useSelector } from "react-redux";
 
 export function useTaskGrowthRate() {
-  const tasks = useSelector((state) => state.tasks.list);
+  const tasks = useSelector((state) => [
+    ...state.tasks.personal,
+    ...state.tasks.team
+  ]);
 
   const now = new Date();
   const currentMonth = now.getMonth();

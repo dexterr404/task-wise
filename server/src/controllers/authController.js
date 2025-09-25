@@ -56,11 +56,11 @@ export const loginUser = async(req,res) => {
 }
 
 export const googleAuthCallback = (req,res) => {
-    const { token } = req.user;
+    const { token, user } = req.user;
     const redirect = req.query.state || "";
 
     res.redirect(
-        `${process.env.APP_BASE_URL2}/auth/success/?token=${token}&provider=google&redirect=${encodeURIComponent(redirect)}`
+        `${process.env.APP_BASE_URL2}/auth/success/?token=${token}&userId=${user._id}&provider=google&redirect=${encodeURIComponent(redirect)}`
     )
 }
 

@@ -2,7 +2,7 @@ import { pushInboxNotification } from "./teamInboxService.js";
 import { messageTemplates } from "../utils/messageTemplate.js";
 
 
-export const notifyTaskUpdates = async (task, previousStatus, user) => {
+export const inboxTaskUpdates = async (task, previousStatus, user) => {
 
   //Push inbox in status change
   if (task.status !== previousStatus) {
@@ -14,7 +14,7 @@ export const notifyTaskUpdates = async (task, previousStatus, user) => {
 }
 
 //Push inbox in task delete
-export const notifyTaskDeletes = async (task, user) => {
+export const inboxTaskDeletes = async (task, user) => {
 
     const variants = messageTemplates.taskRemoved(task.title, user.name);
     const description = variants[Math.floor(Math.random() * variants.length)]
@@ -23,7 +23,7 @@ export const notifyTaskDeletes = async (task, user) => {
 }
 
 //Push inbox in task addition
-export const notifyTaskAdd = async (task, user) => {
+export const inboxTaskAdd = async (task, user) => {
 
     const variants = messageTemplates.taskAdded(task.title, user.name);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -32,7 +32,7 @@ export const notifyTaskAdd = async (task, user) => {
 }
 
 //Push inbox in task archive
-export const notifyTaskArchive = async(task, user) => {
+export const inboxTaskArchive = async(task, user) => {
 
     const variants = messageTemplates.taskArchived(task.title, user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -41,7 +41,7 @@ export const notifyTaskArchive = async(task, user) => {
 }
 
 //Push inbox in task unarchive
-export const notifyTaskUnarchive = async(task, user) => {
+export const inboxTaskUnarchive = async(task, user) => {
 
     const variants = messageTemplates.taskUnarchived(task.title, user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -50,7 +50,7 @@ export const notifyTaskUnarchive = async(task, user) => {
 }
 
 //Push inbox in subtask update
-export const notifySubtaskUpdate = async(task,subtaskTitle,subtaskStatus,user) => {
+export const inboxSubtaskUpdate = async(task,subtaskTitle,subtaskStatus,user) => {
 
     const variants = messageTemplates.subtaskUpdated(task.title,subtaskTitle,subtaskStatus,user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -59,7 +59,7 @@ export const notifySubtaskUpdate = async(task,subtaskTitle,subtaskStatus,user) =
 }
 
 //Push inbox for task assignment
-export const notifyTaskAssignment = async (task, user) => {
+export const inboxTaskAssignment = async (task, user) => {
     if (!task.assignedTo || task.assignedTo.length === 0) return;
 
     // Make sure assignedTo is populated with name

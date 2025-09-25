@@ -1,8 +1,30 @@
 import TeamTask from "../models/TeamTask.js";
 import User from "../models/User.js"
+import Team from "../models/Team.js"
 import mongoose from "mongoose";
-import { notifySubtaskUpdate, notifyTaskAdd, notifyTaskArchive, notifyTaskDeletes, notifyTaskUnarchive, notifyTaskUpdates, notifyTaskAssignment } from "../services/teamTaskService.js";
+import { inboxSubtaskUpdate, inboxTaskAdd, inboxTaskArchive, inboxTaskDeletes, inboxTaskUnarchive, inboxTaskUpdates, inboxTaskAssignment } from "../services/teamTaskService.js";
+import { notifyTaskCreation, notifyTaskStatusUpdate, notifyUsersAssignment, notifyUsersUnassignment } from "../services/notificationService.js";
+import { normalizeUserId } from "../utils/normalizeUserId.js";
 
+
+export const getUserTeamTasks = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const userTeamTasks = await TeamTask.find({
+      assignedTo: userId,
+    });
+
+    res.status(200).json(userTeamTasks);
+  } catch (error) {
+    console.error("Error in fetching user team tasks:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const getTeamTasks = async (req, res) => {
   try {
@@ -33,6 +55,15 @@ export const getTeamTasks = async (req, res) => {
           as: "assignedTo",
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+      { $unwind: { path: "$createdBy", preserveNullAndEmptyArrays: true } },
     ];
 
     // apply search *after* lookup
@@ -94,14 +125,16 @@ export const createTeamTask = async(req,res) => {
             team: teamId,
             subtasks: subtasks || [],
             isArchived: false,
-            deadline
+            deadline,
+            createdBy: userId,
         });
 
         await newTask.save();
-
+        const team = await Team.findById(teamId);
         const user = await User.findById(userId);
 
-        await notifyTaskAdd(newTask,user);
+        await inboxTaskAdd(newTask,user);
+        await notifyTaskCreation(team, newTask);
 
         return res.status(201).json(newTask);
     } catch (error) {
@@ -125,6 +158,7 @@ export const updateTeamTask = async(req,res) => {
     if(!task) return res.status(404).json({ message: "Task not found" });
 
     const previousStatus = task.status;
+    const prevAssigned = task.assignedTo.map(id => id.toString());
 
     //Update the fields provided
     if (title !== undefined) task.title = title;
@@ -145,8 +179,34 @@ export const updateTeamTask = async(req,res) => {
     
     // then notify
     const user = await User.findById(userId);
-    await notifyTaskAssignment(task, user);
-    await notifyTaskUpdates(task, previousStatus, user);
+    const team = await Team.findById(teamId);
+
+    //Only run notify and inbox when task assignment changed
+    if (assignedTo !== undefined) {
+      const newAssigned = assignedTo.map(u => normalizeUserId(u));
+
+      // Who got newly assigned
+      const addedUsers = newAssigned.filter(id => !prevAssigned.includes(id));
+      const addedExcludingActor = addedUsers.filter(id => id !== normalizeUserId(user._id));
+
+      // Who got unassigned
+      const removedUsers = prevAssigned.filter(id => !newAssigned.includes(id));
+      const removedExcludingActor = removedUsers.filter(id => id !== normalizeUserId(user._id));
+
+      // Notify added users
+      if (addedExcludingActor.length > 0) {
+        await notifyUsersAssignment(task, team, user, addedExcludingActor);
+        await inboxTaskAssignment(task, user, addedUsers);
+      }
+
+      // Notify removed users
+      if (removedExcludingActor.length > 0) {
+        await notifyUsersUnassignment(task, team, user, removedExcludingActor);
+        //await notifyTaskUnassignment(task, user, removedUsers);
+      }
+    }
+    await inboxTaskUpdates(task, previousStatus, user);
+    await notifyTaskStatusUpdate(task, previousStatus, team, user);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -170,7 +230,7 @@ export const deleteTeamTask = async(req,res) => {
 
     if(!task) return res.status(404).json({ message: "Task not found" });
 
-    await notifyTaskDeletes(task,user);
+    await inboxTaskDeletes(task,user);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -197,7 +257,7 @@ export const toggleSubtaskStatus = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    await notifySubtaskUpdate(task,subtask.title,subtask.status,user);
+    await inboxSubtaskUpdate(task,subtask.title,subtask.status,user);
 
     res.status(200).json(task);
   } catch (error) {
@@ -223,7 +283,7 @@ export const archiveTeamTask = async(req,res) => {
 
     const user = await User.findById(userId);
 
-    await notifyTaskArchive(task,user);
+    await inboxTaskArchive(task,user);
 
     res.status(200).json({ task });
   } catch (error) {
@@ -249,7 +309,7 @@ export const unArchiveTeamTask = async(req,res) => {
 
     const user = await User.findById(userId);
 
-    await notifyTaskUnarchive(task,user);
+    await inboxTaskUnarchive(task,user);
     
     res.status(200).json({ task });
   } catch (error) {

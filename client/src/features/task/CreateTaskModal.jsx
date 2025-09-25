@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
 import { Button,Dialog,DialogTitle,DialogContent,DialogActions,TextField,MenuItem,IconButton, Divider } from "@mui/material";
-import { Add, AddBox } from "@mui/icons-material";
+import { Add, AddBox,Delete } from "@mui/icons-material";
 import { colors } from "../../data/colors";
 
 const priorities = [
@@ -171,7 +171,7 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
                 onChange={(e) => handleSubtaskChange(index, e.target.value)}
               />
               <IconButton color="error" onClick={() => handleRemoveSubtask(index)}>
-                <DeleteIcon />
+                <Delete />
               </IconButton>
             </div>
           ))}

@@ -2,7 +2,7 @@ import { messageTemplates } from "../utils/messageTemplate.js";
 import { pushInboxNotification } from "./teamInboxService.js";
 
 //Push inbox in user join
-export const notifyJoinUser = async(teamId,user) => {
+export const inboxJoinUser = async(teamId,user) => {
 
     const variants = messageTemplates.teamJoined(user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -11,7 +11,7 @@ export const notifyJoinUser = async(teamId,user) => {
 }
 
 //Push inbox in user remove
-export const notifyKickUser = async(teamId,user,member) => {
+export const inboxKickUser = async(teamId,user,member) => {
 
     const variants = messageTemplates.teamKicked(member.name.split(" ")[0],user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -20,7 +20,7 @@ export const notifyKickUser = async(teamId,user,member) => {
 }
 
 //Push inbox in user left
-export const notifyLeftUser = async(teamId,member) => {
+export const inboxLeftUser = async(teamId,member) => {
 
     const variants = messageTemplates.teamLeft(member.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -29,7 +29,7 @@ export const notifyLeftUser = async(teamId,member) => {
 }
 
 //Push inbox in user role change
-export const notifyUserRoleChange = async(teamId,member,previousRole,newRole,user) => {
+export const inboxUserRoleChange = async(teamId,member,previousRole,newRole,user) => {
 
     const variants = messageTemplates.userRoleUpdated(member.name.split(" ")[0],previousRole,newRole,user.name.split(" ")[0]);
     const desc = variants[Math.floor(Math.random() * variants.length)];
@@ -38,7 +38,7 @@ export const notifyUserRoleChange = async(teamId,member,previousRole,newRole,use
 }
 
 //Push inbox in team title change
-export const notifyTeamInfoChange = async(teamId,oldTitle,newTitle,oldDesc,newDesc,user) => {
+export const inboxTeamInfoChange = async(teamId,oldTitle,newTitle,oldDesc,newDesc,user) => {
 
     const variants = messageTemplates.teamInfoUpdated(user.name.split(" ")[0],oldTitle,newTitle,oldDesc,newDesc);
     const desc = variants[Math.floor(Math.random() * variants.length)];

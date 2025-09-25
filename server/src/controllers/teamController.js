@@ -1,9 +1,13 @@
 import Team from "../models/Team.js"
 import TeamTask from "../models/TeamTask.js"
 import crypto from "crypto";
-import { sendInviteEmail } from "../services/emailService.js";
-import { notifyJoinUser, notifyKickUser, notifyLeftUser, notifyTeamInfoChange, notifyUserRoleChange } from "../services/teamService.js";
 import User from "../models/User.js";
+
+import { sendInviteEmail } from "../services/emailService.js";
+import { inboxJoinUser, inboxKickUser, inboxLeftUser, inboxTeamInfoChange, inboxUserRoleChange } from "../services/teamService.js";
+import { notificationTemplates } from "../utils/notificationTemplate.js";
+import { notifyUser } from "../services/notificationService.js";
+
 
 //Create new team
 export const addTeam = async(req,res) => {
@@ -117,7 +121,7 @@ export const updateTeam = async (req, res) => {
     const user = await User.findById(userId);
 
     // Pass both old and new values
-    await notifyTeamInfoChange(teamId, oldName, updatedTeam.name, oldDescription, updatedTeam.description, user);
+    await inboxTeamInfoChange(teamId, oldName, updatedTeam.name, oldDescription, updatedTeam.description, user);
 
     res.status(200).json({ updatedTeam });
   } catch (error) {
@@ -170,7 +174,7 @@ export const joinTeamByToken = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    await notifyJoinUser(team._id,user);
+    await inboxJoinUser(team._id,user);
 
     return res.status(200).json({ message: "Joined team!", team });
   } catch (error) {
@@ -233,9 +237,10 @@ export const removeUserFromTeam = async(req,res) => {
         const user = await User.findById(userId);
 
         if(userId.toString() !== memberId.toString()) {
-          await notifyKickUser(teamId,user,member);
+          await inboxKickUser(teamId,user,member);
+          await notifyUser(memberId,notificationTemplates.teamMemberRemoved(team,user));
         } else {
-          await notifyLeftUser(teamId,member);
+          await inboxLeftUser(teamId,member);
         }
 
         res.status(200).json({ 
@@ -308,7 +313,8 @@ export const changeUserRole = async (req, res) => {
     
     await team.save();
 
-    await notifyUserRoleChange(teamId,member,previousRole,newRole,user);
+    await inboxUserRoleChange(teamId,member,previousRole,newRole,user);
+    await notifyUser(memberId,notificationTemplates.roleChanged(previousRole,newRole,team));
 
     res.status(200).json({
       message: "Role updated successfully",

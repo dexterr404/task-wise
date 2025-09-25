@@ -17,7 +17,7 @@ function MetricsCard({total,done,ongoing,pending}) {
             <div className="flex justify-between">
                 <h1 className='font-semibold flex items-center gap-2 text-sm'><Assignment className='text-blue-800' fontSize='small'/> Total Tasks</h1>
                 <div className='rounded-full bg-white'>
-                    <Link to={`/personal/${user.id}`}>
+                    <Link to={`/personal`}>
                         <IconButton>
                             <NorthEast fontSize='small'/>
                         </IconButton>
@@ -35,7 +35,7 @@ function MetricsCard({total,done,ongoing,pending}) {
         <div className="flex justify-between">
             <h1 className='font-semibold flex items-center gap-2 text-sm'><CheckCircle className='text-green-700' fontSize='small'/> Finished Tasks</h1>
             <div className='rounded-full bg-white'>
-                <Link to="/Task">
+                <Link to="/personal">
                     <IconButton>
                         <NorthEast fontSize='small'/>
                     </IconButton>
@@ -51,7 +51,7 @@ function MetricsCard({total,done,ongoing,pending}) {
         <div className="flex justify-between">
             <h1 className='font-semibold flex items-center gap-2 text-sm'><Autorenew className='text-orange-600' fontSize='small'/>Ongoing Tasks</h1>
             <div className='rounded-full bg-white'>
-                <Link to={`/personal/${user.id}`}>
+                <Link to={`/personal`}>
                     <IconButton>
                         <NorthEast fontSize='small'/>
                     </IconButton>
@@ -67,7 +67,7 @@ function MetricsCard({total,done,ongoing,pending}) {
         <div className="flex justify-between">
             <h1 className='font-semibold flex items-center gap-2 text-sm'><Pending className="text-red-700" fontSize='small' />Pending Tasks</h1>
             <div className='rounded-full bg-white'>
-                <Link to={`/personal/${user.id}`}>
+                <Link to={`/personal`}>
                     <IconButton>
                         <NorthEast fontSize='small'/>
                     </IconButton>

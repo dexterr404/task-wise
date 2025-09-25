@@ -29,18 +29,21 @@ export const getInsights = async (req, res) => {
         }
 
         Guidelines:
-        - Provide ONLY the most important 3–5 insights, not one per task.
-        - DO NOT split a single task into multiple insights (e.g., resume, cover letter, and submission should be ONE combined    insight).
-        - Keep insights BRIEF and ACTIONABLE, like reminders.
-        - Use emojis where natural for quick scanning.
-        - Show more emotion a hyper one
-        - Prioritize tasks as follows:
-          1. Critical personal tasks (health, family emergencies).
-          2. Urgent or high-priority work tasks.
-          3. Routine tasks (shopping, exercise, etc.).
-        Always return only the 3–5 most important insights.
-        - Ignore trivial or non-urgent tasks unless they are the ONLY tasks available.
-        - Do not add explanations or extra fields.`
+        - Return ONLY the most impactful insights across ALL tasks (never one per task).
+        - Keep them BRIEF, ENERGETIC, and ACTIONABLE (like a witty coach cheering you on with guidance and tips💪).
+        - Prioritize:
+          1. Critical personal/health/family tasks ❤️.
+          2. Urgent or high-priority work/projects 🚀.
+          3. Helpful or fun extras (travel tips, productivity hacks, creativity) 🌍.
+        - Adapt to context:
+          • Travel → give 1 prep step + 1 fun/local activity 🧳.
+          • Creative → suggest a momentum-building first step 🎨.
+          • Work → give a focus strategy, shortcut, or batching idea 💼.
+          • Tools to use in the context of the user task
+        - Use emojis naturally for quick scanning.
+        - Never split one task into multiple insights.
+        - Ignore trivial tasks unless nothing else exists.
+        `
         },
         {
           role: "user",

@@ -17,35 +17,50 @@ const queryClient = new QueryClient({
       const status = error?.response?.status || error?.status;
 
       if (status === 401) {
-        return console.log("Not authorized"); 
+        console.log("Not authorized");
+        return;
       }
 
+      if (status === 404) {
+        console.log("Not found");
+        return;
+      }
+      // Handle rate-limiting
       if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
+        console.warn("Rate limited! Avoiding retries.");
         window.dispatchEvent(new CustomEvent("rateLimited"));
       }
     },
   }),
   mutationCache: new MutationCache({
     onError: (error) => {
-      console.log("Mutation error caught globally:", error);
       const status = error?.response?.status || error?.status;
 
       if (status === 401) {
-        return console.log("Not authorized"); 
+        return;
+      }
+      if (status === 404) {
+        return;
       }
 
       if (status === 429 || error?.code === "ERR_BAD_REQUEST") {
+        console.warn("Rate limited! Avoiding retries.");
         window.dispatchEvent(new CustomEvent("rateLimited"));
       }
     },
   }),
-   defaultOptions: {
+  defaultOptions: {
     queries: {
-      retry: 3,
+      retry: (failureCount, error) => {
+        // Avoid retrying if rate-limited
+        if (error?.response?.status === 429 || error?.code === "ERR_BAD_REQUEST") return false;
+        return failureCount < 3; // otherwise retry up to 3 times
+      },
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
   },
 });
+
 
 
 function App() {
@@ -61,8 +76,8 @@ function App() {
         <Route path="/auth/success" element={<SuccessRedirect />}/>
         <Route path='/register' element={<Register />}/>
         <Route path="/login" element={<Login />}/>
-        <Route path='/dashboard/:userId' element={<Dashboard />}/>
-        <Route path='/personal/:userId' element={<Personal />}/>
+        <Route path='/dashboard' element={<Dashboard />}/>
+        <Route path='/personal' element={<Personal />}/>
         <Route path='/teams/:teamId' element={<Teams />}/>
         <Route path='/teams/invite/:inviteToken' element={<InvitePage />}/>
       </Routes>

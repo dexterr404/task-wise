@@ -26,7 +26,7 @@ function CountdownTimer({ deadline,focusId }) {
 
   if(!focusId) {
     return <div className="flex justify-center">
-      <span className="text-slate-800 text-sm font-semibold pb-4">No focused task. Set a new one</span>
+      <span className="text-slate-800 text-sm font-semibold py-7">No focused task. Set a new one</span>
     </div>
   }
 

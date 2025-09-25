@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { IconButton,Tooltip } from "@mui/material";
+import { fetchNotification, markAllAsRead, markAsRead } from "../../api/notificationService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
 import ProfileMenu from "../dropdownMenu/ProfileMenu";
@@ -9,8 +12,29 @@ import defaultImage from "../../assets/Default Profiles/gamer.png"
 
 function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
   const user = useSelector((state) => state.user);
+  const queryClient = useQueryClient();
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [filter, setFilter] = useState("unread");
+
+  const {data, isLoading } = useQuery({
+    queryKey: ["notifications", user.id, filter],
+    queryFn: () => fetchNotification(filter),
+  })
+
+  const markReadMutation = useMutation({
+    mutationFn: (notifId) =>
+      markAsRead(notifId),
+    onSuccess: () => queryClient.invalidateQueries(["notifications", user.id, filter])
+  })
+
+  const markAllReadMutation = useMutation({
+    mutationFn: () =>
+      markAllAsRead(),
+    onSuccess: () => queryClient.invalidateQueries(["notifications", user.id, filter])
+  })
+
+  const unreadNotifCount = data?.filter(notif => !notif.isRead).length;
 
   return (
     <div className="flex gap-3 items-center">
@@ -22,9 +46,13 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
             onClick={() => setIsNotifOpen((prev) => !prev)}
         />
         </Tooltip>
-        <div className="bg-red-500 rounded-full text-white flex justify-center items-center text-xs w-4 h-4 absolute -top-1 -right-1">
-            3
-        </div>
+        {
+          unreadNotifCount > 0 && (
+            <div className="bg-red-500 rounded-full text-white flex justify-center items-center text-xs w-4 h-4 absolute -top-1 -right-1">
+                {unreadNotifCount}
+            </div>
+          )
+        }
         </div>
 
         {isNotifOpen && (
@@ -42,7 +70,7 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
             </IconButton>
             </div>
             <div className="max-h-80 overflow-y-auto"> 
-                <Notifications className="w-full" />
+                <Notifications className="w-full" data={data} isLoading={isLoading} onRead={(notifId) => markReadMutation.mutateAsync(notifId)} setFilter={setFilter} filter={filter} onReadAll={() => markAllReadMutation.mutateAsync()}/>
             </div>
         </div>
         )}

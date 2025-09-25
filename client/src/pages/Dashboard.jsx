@@ -1,11 +1,11 @@
 import { useState,useEffect } from "react"
 import { useDispatch,useSelector } from "react-redux"
-import {toast,Toaster} from "react-hot-toast"
+import { toast,Toaster } from "react-hot-toast"
 import { fetchAllTasks } from "../api/taskService.js"
-import { setTasks,selectTaskStats } from "../features/task/taskSlice.js"
+import { getUserTeamTasks } from "../api/teamTaskService.js"
+import { setPersonalTasks,setTeamTasks,selectTaskStats } from "../features/task/taskSlice.js"
 
 import ProfileAndNotif from "../components/personal/ProfileAndNotif.jsx"
-import SearchTaskInput from "../features/task/SearchTaskInput"
 import MetricsCard from "../components/dashboard/MetricsCard.jsx"
 import TaskDistribution from "../components/dashboard/TaskDistributionGraph.jsx"
 import TaskWithCountdown from "../components/dashboard/CountdownTimer.jsx"
@@ -20,14 +20,51 @@ function Dashboard() {
     const token = localStorage.getItem("token");
     const { total, done, ongoing, pending } = useSelector(selectTaskStats);
 
-    const fetchTasks = async() => {
+    const fetchTasks = async () => {
         setIsLoading(true);
         try {
             const res = await fetchAllTasks();
-            dispatch(setTasks(res));
+            dispatch(setPersonalTasks(res));
         } catch (error) {
-            if(error.response?.status === 429) return
+            const status = error.response?.status;
+
+            if (status === 429) return; // rate-limited
+            if (status === 404) {
+            toast.error("Tasks not found.");
+            return;
+            }
+            if (status >= 500) {
+            toast.error("Server error. Please try again later.");
+            return;
+            }
             toast.error("Failed to fetch tasks");
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const fetchTeamTasks = async() => {
+        setIsLoading(true);
+        try {
+            const res = await getUserTeamTasks();
+            dispatch(setTeamTasks(res));
+        } catch (error) {
+        const status = error.response?.status;
+
+        if (status === 429) return;
+        if (status === 404) {
+            toast.error("Team tasks not found.");
+            return;
+        }
+        if (status >= 500) {
+            toast.error("Server error. Please try again later.");
+            return;
+        }
+
+        toast.error("Failed to fetch user team tasks");
+        console.log(error);
         } finally {
             setIsLoading(false);
         }
@@ -36,9 +73,9 @@ function Dashboard() {
     useEffect(() => {
         if(!token) return
         fetchTasks();
+        fetchTeamTasks();
     },[])
 
-    //<SearchTaskInput className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/> <SearchTaskInput className="relative lg:block max-md:hidden w-[300px]"/>
 
 
     return<main className="flex flex-col h-dvh bg-gray-50 py-2 text-gray-600 lg:ml-[200px] gap-4 font-inter">
@@ -54,17 +91,20 @@ function Dashboard() {
         <section className="lg:ml-[100px] mx-10">
             <MetricsCard total={total} done={done} ongoing={ongoing} pending={pending}/>
         </section>
+        <div className="lg:ml-[100px] mx-10">
+            <Insight />
+        </div>
         <section className="mx-10 pb-10 lg:ml-[100px]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-5">
-                    <Insight />
                     <TaskCalendar />
                 </div>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-1">
                     <TaskDistribution />
                     <TaskWithCountdown />
                 </div>
             </div>
+            
         </section>
     </main>
 }
