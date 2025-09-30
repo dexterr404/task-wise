@@ -30,8 +30,15 @@ export function TeamTasks({team}) {
     
     //Fetch tasks
     const { data, isLoading, error } = useQuery({
-        queryKey: ["teamTasks", team._id,searchQuery,filters,sort],
-        queryFn: () => getTeamTasks(team._id,searchQuery,filters,sort),
+        queryKey: ["teamTasks", team._id, searchQuery, filters, sort],
+        queryFn: () => getTeamTasks(team._id, searchQuery, filters, sort),
+        staleTime: 1000 * 60,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        retry: (failureCount, error) => {
+            if (error?.response?.status === 429) return false;
+            return failureCount < 3;
+        },
     });
 
     useEffect(() => {
@@ -99,32 +106,56 @@ export function TeamTasks({team}) {
     } 
 
     return<section className="flex flex-col gap-4 h-full w-full">
-        <section className="flex justify-between items-center max-sm:flex-col max-sm:items-start border-x-1 border-b-1 border-gray-200">
+        <section className="flex justify-between items-center max-sm:flex-col max-sm:items-start border-b-1 border-border">
             <div className="max-sm:flex max-sm:justify-between max-sm:w-full max-md:flex-col">
                 <div>
                     <Button
                     onClick={() => setActiveSection("card")}
-                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "card" ? colors.gray : "white"}}>
+                    sx={{
+                    fontSize: "12px",
+                    textTransform: "none",
+                    color: "var(--color-text-secondary)",
+                    backgroundColor:
+                        activeSection === "card" ? "var(--color-accent)" : "var(--color-surface)",
+                    }}>
                         <Window fontSize="small"/>Card
                     </Button>
                     <Button
                     onClick={() => setActiveSection("table")}
-                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "table" ? colors.gray : "white"}}>
+                    sx={{
+                    fontSize: "12px",
+                    textTransform: "none",
+                    color: "var(--color-text-secondary)",
+                    backgroundColor:
+                        activeSection === "table" ? "var(--color-accent)" : "var(--color-surface)",
+                    }}>
                         <TableRows fontSize="small"/>Table
                     </Button>
                     <Button
                     onClick={() => setActiveSection("list")}
-                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "list" ? colors.gray : "white"}}>
+                    sx={{
+                    fontSize: "12px",
+                    textTransform: "none",
+                    color: "var(--color-text-secondary)",
+                    backgroundColor:
+                        activeSection === "list" ? "var(--color-accent)" : "var(--color-surface)",
+                    }}>
                         <FormatListBulleted fontSize="small"/>List
                     </Button>
                     <Button
                     onClick={() => setActiveSection("archive")}
-                    sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "archive" ? colors.gray : "white"}}>
+                    sx={{
+                    fontSize: "12px",
+                    textTransform: "none",
+                    color: "var(--color-text-secondary)",
+                    backgroundColor:
+                        activeSection === "archive" ? "var(--color-accent)" : "var(--color-surface)",
+                    }}>
                         <Archive fontSize="small"/>Archive
                     </Button>
                     <Button
                     onClick={() => setIsCreateTeamTask(true)}
-                    sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+                    sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}
                     >
                         <AddBox fontSize="small"/> Create
                     </Button>
@@ -139,7 +170,7 @@ export function TeamTasks({team}) {
                         <Tooltip title="Filter">
                             <IconButton
                             onClick={() => setOpenMenu(openMenu === "filter" ? null : "filter")}
-                            sx={{ color: openMenu === "filter" ? "#1D4ED8" : "gray" }}
+                            sx={{ color: openMenu === "filter" ? "#1D4ED8" : "var(--color-text-primary)" }}
                             >
                                 <FilterList fontSize="small"/>
                             </IconButton>
@@ -147,7 +178,7 @@ export function TeamTasks({team}) {
                         <Tooltip title="Sort">
                             <IconButton
                             onClick={() => setOpenMenu(openMenu === "sort" ? null : "sort")}
-                            sx={{ color: openMenu === "sort" ? "#1D4ED8" : "gray" }}
+                            sx={{ color: openMenu === "sort" ? "#1D4ED8" : "var(--color-text-primary)" }}
                             >
                                 <Sort fontSize="small"/>
                             </IconButton>

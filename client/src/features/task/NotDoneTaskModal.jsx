@@ -40,15 +40,15 @@ function NotDoneTaskModal({open,onClose,task,onUndoneTask}) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
         <Cancel fontSize="small"  sx={{ color: colors.yellow }}/> Done with the task?
       </DialogTitle>
-      <Divider />
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
       <DialogContent>
-        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+        <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
           This will mark the task as not completed. You can mark it done again later.
         </Typography>
       </DialogContent>
@@ -56,7 +56,7 @@ function NotDoneTaskModal({open,onClose,task,onUndoneTask}) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}
         >
           Not yet
         </Button>
@@ -64,7 +64,7 @@ function NotDoneTaskModal({open,onClose,task,onUndoneTask}) {
           onClick={() => handleDone()}
           disabled={isLoading}
           variant="contained"
-          sx={{ fontSize: "12px", backgroundColor: colors.yellow, "&:hover": { backgroundColor: colors.darkerYellow }, textTransform: "none", marginRight: "14px" }}
+          sx={{ fontSize: "12px", backgroundColor: colors.orange, "&:hover": { backgroundColor: colors.darkOrange }, textTransform: "none", marginRight: "14px" }}
         >
           {isLoading ? <span>Updating</span> : <span>Not Done</span>}
         </Button>

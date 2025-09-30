@@ -7,7 +7,7 @@ import EditTeamModal from "../../features/team/EditTeamModal.jsx";
 import DetailsTeamModal from "../../features/team/DetailsTeamModal.jsx";
 import { getUserRole } from "../../hooks/useUserRole.js";
 
-function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams, onDeleteTeam, onEditTeam }) {
+function TeamsOptionsMenu({ open, anchorEl, onClose, team, onDeleteTeam, onEditTeam }) {
     const user = useSelector((state) => state.user);
     const [isDeleteOpen, SetIsDeleteOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -18,7 +18,7 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams, onDeleteTea
       if (!team || !user) return;
       const newRole = getUserRole(user, team);
       setRole(newRole);
-    }, [team, user ,setTeams]);
+    }, [team, user]);
 
   return (
     <Menu
@@ -26,7 +26,7 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams, onDeleteTea
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: { borderRadius: 2, minWidth: 130 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, minWidth: 130 },
       }}
     >
       <MenuItem 
@@ -66,7 +66,7 @@ function TeamsOptionsMenu({ open, anchorEl, onClose, team, setTeams, onDeleteTea
       }
       <EditTeamModal open={isEditOpen} closeOption={onClose} 
       onEditTeam={(teamName,teamDescription) => onEditTeam({teamId:team._id,teamName,teamDescription})}
-       onClose={() => setIsEditOpen(false)} setTeams={setTeams} team={team}/>
+       onClose={() => setIsEditOpen(false)} team={team}/>
       <DeleteTeamModal open={isDeleteOpen} closeOption={onClose} onDeleteTeam={() => onDeleteTeam({teamId:team._id})}
        onClose={() => SetIsDeleteOpen(false)}/>
     </Menu>

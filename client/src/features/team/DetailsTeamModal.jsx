@@ -12,20 +12,20 @@ export function DetailsTeamModal({ open, onClose, team }) {
       maxWidth="sm"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1},
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1},
       }}
     >
       <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
         <Info sx={{ color: colors.lighterblue, fontSize: "16px" }}/>Team Details
       </DialogTitle>
-      <Divider />
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {/* Team Name */}
         <div>
-          <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+          <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
             Name:
           </Typography>
-          <Typography sx={{ color: "text.secondary", fontSize: 13 }}>{team.name}</Typography>
+          <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>{team.name}</Typography>
         </div>
 
         {/* Owner */}
@@ -37,10 +37,10 @@ export function DetailsTeamModal({ open, onClose, team }) {
               sx={{ width: 32, height: 32 }}
             />
             <div className="flex flex-col">
-              <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
                 Leader:
               </Typography>
-              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>{team.owner.email}</Typography>
+              <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>{team.owner.email}</Typography>
             </div>
           </div>
 
@@ -57,17 +57,16 @@ export function DetailsTeamModal({ open, onClose, team }) {
                       width: 32,
                       height: 32,
                       marginLeft: '-14px',
-                      border: '2px solid white'
                     }}
                   />
                 ) : null
               )}
             </AvatarGroup>
             <div>
-              <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
                 Members:
               </Typography>
-              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                 {team.members.length-1} {team.members.length === 1 ? "member" : "members"}
               </Typography>
             </div>
@@ -77,10 +76,10 @@ export function DetailsTeamModal({ open, onClose, team }) {
         {/* Description */}
         {team.description && (
           <div>
-            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
               Description:
             </Typography>
-            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
               {team.description}
             </Typography>
           </div>
@@ -88,10 +87,10 @@ export function DetailsTeamModal({ open, onClose, team }) {
 
         {/* Date Created */}
         <div>
-            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
               Date Created:
             </Typography>
-            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
               {new Date(team.createdAt).toLocaleString()}
             </Typography>
         </div>
@@ -100,7 +99,7 @@ export function DetailsTeamModal({ open, onClose, team }) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray" }}
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)" }}
         >
           Close
         </Button>

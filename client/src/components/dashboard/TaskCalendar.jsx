@@ -6,15 +6,21 @@ import "react-calendar/dist/Calendar.css";
 import "../../styles/TaskCalendar.css";
 
 import { Box, Typography, Badge } from "@mui/material";
-import { PushPin } from "@mui/icons-material";
-
+import { EventNote } from "@mui/icons-material";
 
 export default function TaskCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
-
   const taskData = useCalendarTaskData();
 
-  // Check if a date has tasks
+  // Find earliest and latest task dates
+  const minDate = taskData.length
+    ? new Date(Math.min(...taskData.map((t) => t.date.getTime())))
+    : new Date(2000, 0, 1); // fallback if no tasks
+
+  const maxDate = taskData.length
+    ? new Date(Math.max(...taskData.map((t) => t.date.getTime())))
+    : new Date(2100, 11, 31); // fallback if no tasks
+
   const getTasksForDate = (date) => {
     return taskData.filter(
       (task) =>
@@ -24,59 +30,56 @@ export default function TaskCalendar() {
     );
   };
 
-  // Navigate months
-  const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-md py-4 hover:bg-gray-50 active:bg-gray-50 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
-      <span className="text-sm font-semibold font-inter px-10">Schedule Calendar</span>
-      <Calendar
-      value={currentDate}
-      onClickDay={(value) => setCurrentDate(value)}
-      onActiveStartDateChange={({ activeStartDate }) =>
-        setCurrentDate(activeStartDate)
-      }
-      tileContent={({ date, view }) => {
-        if (view === "month") {
-          const tasks = getTasksForDate(date);
-          if (tasks.length > 0) {
-            return (
-              <Box display="flex" justifyContent="center" mt={0.5}>
-                <Badge color="primary" variant="dot" />
-              </Box>
-            );
-          }
-        }
-        return null;
-      }}
-      className="!w-full !max-w-full font-caveat"
-      
-    />
+    <div className="bg-surface border-1 border-border rounded-lg shadow-md py-4 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
+      <span className="flex items-center gap-1 text-sm text-text-primary font-semibold font-inter px-6">
+        <EventNote fontSize="small" sx={{color: "#2563eb"}}/>Schedule Calendar
+      </span>
 
-      {/* Task list for selected date */}
-      <Box mt={2} px={4} pb={4}>
-        <span className="font-bold text-sm">
+      <Calendar
+        value={currentDate}
+        onClickDay={(value) => setCurrentDate(value)}
+        onActiveStartDateChange={({ activeStartDate }) =>
+          setCurrentDate(activeStartDate)
+        }
+        minDate={minDate}
+        maxDate={maxDate}
+        tileContent={({ date, view }) => {
+          if (view === "month") {
+            const tasks = getTasksForDate(date);
+            if (tasks.length > 0) {
+              return (
+                <Box display="flex" justifyContent="center" mt={0.5}>
+                  <Badge color="primary" variant="dot" />
+                </Box>
+              );
+            }
+          }
+          return null;
+        }}
+        className="!w-full !max-w-full font-caveat"
+      />
+
+      <Box mt={2.5} px={4} pb={4}>
+        <span className="font-bold text-text-primary text-sm">
           Tasks on {currentDate.toDateString()}:
         </span>
         <div className="flex flex-col mt-1 overflow-hidden">
           {getTasksForDate(currentDate).length > 0 ? (
             getTasksForDate(currentDate).map((task, idx) => (
-              <span key={idx} className="text-xs ml-4 flex items-center gap-1 break-words">
-                <PushPin className="text-red-700 rotate-45" sx={{fontSize: "12px"}}/> {task.title}
+              <span
+                key={idx}
+                className="text-xs ml-4 text-text-secondary flex items-center gap-1 break-words"
+              >
+                {idx+1 + `. `+task.title}
               </span>
             ))
           ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ ml: 1, mt: 0.5 }}>
+            <Typography
+              variant="body2"
+              color="var(--color-text-secondary)"
+              sx={{ ml: 1}}
+            >
               No tasks scheduled.
             </Typography>
           )}

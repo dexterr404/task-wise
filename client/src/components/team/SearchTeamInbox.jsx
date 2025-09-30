@@ -25,10 +25,10 @@ function SearchTeamInbox({ setSearchQuery, searchQuery }) {
         placeholder="Search task, name, type, or description"
         onChange={(e) => setInputValue(e.target.value)}
         value={inputValue}
-        className="w-full pl-9 pr-3 py-2 text-sm font-light rounded-full border border-gray-200 
-             bg-gray-50 text-gray-600 placeholder-gray-400 placeholder:font-light
-             shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white 
-             transition-all"
+        className="w-full pl-9 pr-3 py-2 text-sm font-light rounded-full border border-border 
+                   bg-bg text-text-primary placeholder-text-secondary
+                    shadow-sm focus:outline-none focus:ring-2 focus:text-text-primary
+                    transition-all"
       />
     </div>
   );

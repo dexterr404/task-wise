@@ -87,12 +87,12 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
   return (
     <>
       <Dialog open={open} fullWidth maxWidth="sm" PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}>
-        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
           <AddBox fontSize="small" sx={{ color: colors.darkGreen}}/>Add New Task
         </DialogTitle>
-        <Divider />
+        <Divider sx={{ borderColor: "var(--color-border)"}}/>
         <DialogContent>
           <TextField
             label="*Task Name"
@@ -100,8 +100,23 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
             fullWidth
             margin="dense"
             InputProps={{
-              style: { fontSize: 14 },
+              style: { fontSize: 14, color: "var(--color-text-secondary)" },
             }}
+            InputLabelProps={{
+              style: { color: "var(--color-text-primary)", fontSize: 14 },
+            }}
+            sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "var(--color-border)",
+              },
+              "&:hover fieldset": {
+                borderColor: "var(--color-text-secondary)",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--color-text-primary)",
+              },
+            }}}
             value={taskData.title}
             onChange={handleChange}
           />
@@ -113,8 +128,23 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
             multiline
             rows={3}
             InputProps={{
-              style: { fontSize: 14 },
+              style: { fontSize: 14, color: "var(--color-text-secondary)" },
             }}
+            InputLabelProps={{
+              style: { color: "var(--color-text-primary)", fontSize: 14 },
+            }}
+            sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "var(--color-border)",
+              },
+              "&:hover fieldset": {
+                borderColor: "var(--color-text-secondary)",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--color-text-primary)",
+              },
+            }}}
             value={taskData.description}
             onChange={handleChange}
           />
@@ -124,10 +154,27 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
             type="date"
             fullWidth
             margin="dense"
-            InputProps={{
-              style: { fontSize: 14 },
+             InputProps={
+            { min: new Date().toISOString().split("T")[0], 
+            style: { fontSize: 14, color: "var(--color-text-secondary)" } 
             }}
-            InputLabelProps={{ shrink: true }}
+            sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "var(--color-border)",
+              },
+              "&:hover fieldset": {
+                borderColor: "var(--color-text-secondary)",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--color-text-primary)",
+              },
+               "& input[type='date']::-webkit-calendar-picker-indicator": {
+                filter: "invert(0.5)",
+                cursor: "pointer",
+              },
+            }}}
+            InputLabelProps={{ shrink: true, style: { color: "var(--color-text-primary)" }}}
             value={taskData.deadline}
             onChange={handleChange}
           />
@@ -140,7 +187,40 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
             value={taskData.priority}
             onChange={handleChange}
             InputProps={{
-              style: { fontSize: 14 },
+              style: { fontSize: 14, color: "var(--color-text-secondary)"},
+            }}
+            InputLabelProps={{
+              style: { color: "var(--color-text-primary)" },
+            }}
+            sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "var(--color-border)",
+              },
+              "&:hover fieldset": {
+                borderColor: "var(--color-text-secondary)",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--color-text-primary)",
+              },
+              "& .MuiSelect-icon": {
+                color: "var(--color-text-secondary)",
+              },
+              "& .MuiSelect-select": {
+                color: "var(--color-text-primary)",
+                fontSize: 14,
+              },
+            }}}
+            SelectProps={{
+              MenuProps: {
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "var(--color-surface)",
+                    color: "var(--color-text-primary)",
+                    py: 0.5,
+                  },
+                },
+              },
             }}
           >
             {priorities.map((option) => (
@@ -164,25 +244,40 @@ export default function CreateTask({ categoryName,onClose,onAddTask,open }) {
               <TextField
                 label={`Subtask ${index + 1}`}
                 InputProps={{
-                style: { fontSize: 14 },
+                  style: { fontSize: 14, color: "var(--color-text-secondary)" },
                 }}
+                InputLabelProps={{
+                  style: { fontSize: 14, color: "var(--color-text-primary)"},
+                }}
+                sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "var(--color-border)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "var(--color-text-secondary)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--color-text-primary)",
+                  },
+                }}}
                 fullWidth
                 value={subtask.title}
                 onChange={(e) => handleSubtaskChange(index, e.target.value)}
               />
               <IconButton color="error" onClick={() => handleRemoveSubtask(index)}>
-                <Delete />
+                <Delete fontSize="small"/>
               </IconButton>
             </div>
           ))}
-          <Button size="small" onClick={handleAddSubtask} sx={{ mt: 1 }} style={ {fontWeight: "bold"} }>
-            + Add Subtask <span className="text-[8px] text-gray-500 ml-1">(Not required)</span>
+          <Button size="small" onClick={handleAddSubtask} sx={{ mt: 1, color: "var(--color-text-primary)" }} style={ {fontWeight: "bold"} }>
+            + Add Subtask <span className="text-[8px] text-text-secondary ml-1">(Not required)</span>
           </Button>
         </DialogContent>
         <DialogActions>
           <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}>
           Cancel
           </Button>     
           <Button

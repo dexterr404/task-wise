@@ -55,6 +55,8 @@ export default function FilterMenu({ onChange, options = [], selected = [] }) {
         px: 2,
         pr: 0,
         py: 1.5,
+        bgcolor: "var(--color-surface)",
+        color: "var(--color-text-primary)",
         zIndex: 50,
         borderRadius: 2,
       }}
@@ -72,7 +74,8 @@ export default function FilterMenu({ onChange, options = [], selected = [] }) {
                 size="small"
                 sx={{
                   p: 0.2,
-                  "& .MuiSvgIcon-root": { fontSize: 16 },
+                  color: "var(--color-text-primary)",
+                  "& .MuiSvgIcon-root": { fontSize: 16,color: "var(--color-text-primary)", },
                 }}
                 name={status}
                 checked={filters[status]}

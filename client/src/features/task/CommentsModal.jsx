@@ -58,13 +58,20 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{
-        sx: { borderRadius: 2, p: 2 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 2 },
       }}>
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", gap: 1, alignItems: "center"}}>
+      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", gap: 1, alignItems: "center"}}>
         <QuestionAnswerRounded fontSize="small" sx={{ color: colors.lighterblue}}/>{task.title}
       </DialogTitle>
         <form onSubmit={handleAddComment}>
-          <DialogContent dividers>
+          <DialogContent 
+          dividers
+          sx={{
+            borderColor: "var(--color-border)",
+            bgcolor: "var(--color-bg)",
+            color: "var(--color-text-primary)",
+          }}
+          >
             <div className="max-h-99 overflow-y-auto mb-4 py-10">
               {/*Show chat loading*/}
               {
@@ -86,7 +93,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                       {c.message && (
                         <div
                           className={`px-4 py-2 rounded-2xl text-sm ${
-                            isMe ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                            isMe ? "bg-blue-500 text-white" : "bg-border text-text-primary"
                           }`}
                         >
                           {c.message}
@@ -114,7 +121,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                   )
                 })
               ) : (
-                <Typography sx={{ fontSize: "14px", color: "text.secondary", py: 2, textAlign: "center" }}>No comments yet.</Typography>
+                <Typography sx={{ fontSize: "14px", color: "var(--color-text-primary)", py: 2, textAlign: "center" }}>No comments yet.</Typography>
               )}
             </div>
             {lightBoxIndex >= 0 && (
@@ -154,7 +161,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
               />
               <label htmlFor="comment-image">
                 <IconButton component="span">
-                  <AttachFile/>
+                  <AttachFile fontSize="small" sx={{ color: "var(--color-text-secondary)"}}/>
                 </IconButton>
               </label>
               <TextField
@@ -163,10 +170,32 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                 placeholder="Add a comment..."
                 fullWidth
                 size="small"
-                InputProps={{sx: {borderRadius: "14px", fontSize: "13px"}}}
+                InputProps={{
+                  sx: {
+                    borderRadius: "9999px", // fully rounded like Tailwind's rounded-full
+                    fontSize: "13px",
+                    px: 2, // padding left/right
+                    bgcolor: "var(--color-bg)",
+                    color: "var(--color-text-primary)",
+                    "&::placeholder": {
+                      color: "var(--color-text-secondary)",
+                      opacity: 1,
+                    },
+                    "& fieldset": {
+                      borderColor: "var(--color-border)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "var(--color-text-secondary)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "var(--color-text-primary)",
+                      borderWidth: "2px",
+                    },
+                  },
+                }}
               />
               <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-                <InsertEmoticon />
+                <InsertEmoticon fontSize="small" sx={{ color: "var(--color-text-primary)"}}/>
               </IconButton>
               <Popover
                 open={Boolean(anchorEl)}
@@ -175,7 +204,10 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "left" }}
               >
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                <EmojiPicker 
+                theme={document.documentElement.classList.contains("dark") ? "dark" : "light"} 
+                lazyLoadEmojis={true}
+                onEmojiClick={handleEmojiClick} />
               </Popover>
             </div>
           </DialogContent>

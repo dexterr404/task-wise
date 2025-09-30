@@ -18,16 +18,16 @@ function SearchTaskInput({ className = "", setSearchQuery, searchQuery }) {
     <div className={`relative ${className}`}>
       <SearchIcon
         fontSize="small"
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-text-primary"
       />
       <input
         type="text"
         placeholder="Search tasks"
         onChange={(e) => setInputValue(e.target.value)}
         value={inputValue}
-        className="w-full pl-9 pr-3 py-2 text-sm rounded-full border border-gray-200 
-                   bg-gray-50 text-gray-700 placeholder-gray-400 
-                   shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white 
+        className="w-full pl-9 pr-3 py-2 text-sm rounded-full border border-border 
+                   bg-bg text-text-primary placeholder-text-secondary
+                   shadow-sm focus:outline-none focus:ring-2 focus:text-text-primary
                    transition-all"
       />
     </div>

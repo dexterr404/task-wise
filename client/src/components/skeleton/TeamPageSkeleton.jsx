@@ -12,11 +12,34 @@ export default function TeamPageSkeleton() {
           width: "100%",
         }}
       >
-        <div className="flex items-center gap-1 py-2 px-2">
-            <Skeleton variant="cicular" sx={{ borderRadius: "100%", width: 27, height:27 }} />
-            <Skeleton variant="text" sx={{ borderRadius: 2, width: 120, height: 40 }} />
-        </div>
-        <Skeleton variant="rectangular" sx={{ borderRadius: 2, width: 22, height: 22 }} />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, p: 1 }}>
+          <Skeleton
+            variant="circular"
+            sx={{
+              width: 27,
+              height: 27,
+              bgcolor: "var(--color-border)",
+            }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{
+              width: 120,
+              height: 30,
+              borderRadius: 2,
+              bgcolor: "var(--color-border)",
+            }}
+          />
+        </Box>
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            borderRadius: 2,
+            width: 22,
+            height: 22,
+            bgcolor: "var(--color-border)",
+          }}
+        />
       </Box>
 
       {/* Row 2 */}
@@ -28,19 +51,32 @@ export default function TeamPageSkeleton() {
           width: "100%",
         }}
       >
-        {/* Left side with 2 boxes */}
+        {/* Left side with 3 buttons */}
         <Box sx={{ display: "flex", gap: 0.5 }}>
           {[...Array(3)].map((_, i) => (
             <Skeleton
               key={i}
               variant="rectangular"
-              sx={{ borderRadius: 2, width: 62, height: 30 }}
+              sx={{
+                borderRadius: 2,
+                width: 62,
+                height: 30,
+                bgcolor: "var(--color-border)",
+              }}
             />
           ))}
         </Box>
 
-        {/* Right side with 1 box */}
-        <Skeleton variant="rectangular" sx={{ borderRadius: 2, width: 62, height: 30 }} />
+        {/* Right side button */}
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            borderRadius: 2,
+            width: 62,
+            height: 30,
+            bgcolor: "var(--color-border)",
+          }}
+        />
       </Box>
     </section>
   );

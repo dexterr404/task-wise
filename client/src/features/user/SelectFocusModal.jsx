@@ -59,20 +59,20 @@ function SelectFocusModal({open,onClose,setFocusId}) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
       <DialogTitle component="div">
-      <div className="flex items-center gap-1">
-        <TrackChanges fontSize="small" sx={{ color: colors.darkerblue}}/> <div className="text-sm">Select Focus</div>
+      <div className="flex items-center gap-1 ">
+        <TrackChanges fontSize="small" sx={{ color: colors.darkerblue}}/> <div className="text-sm text-text-primary">Select Focus</div>
       </div>
       </DialogTitle>
-      <Divider />
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
       {/*Different ui if there is a task or no task to be focused*/}
       {
         pendingTasks.length === 0 ? (
           <DialogContent>
-            <span>No tasks to focus on</span>
+            <span className="text-text-primary">No tasks to focus on</span>
           </DialogContent>
         ) : (
            <DialogContent>
@@ -80,13 +80,13 @@ function SelectFocusModal({open,onClose,setFocusId}) {
               {pendingTasks.map((task) => (
                 <div
                   key={task._id}
-                  className="flex items-center justify-between rounded-lg border-1 border-gray-300 p-3 shadow-sm hover:shadow-md transition"
+                  className="flex items-center justify-between rounded-lg border-1 border-border p-3 shadow-sm hover:shadow-md transition"
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium text-gray-900 text-sm truncate">
+                    <span className="font-medium text-text-primary text-sm truncate">
                       {task.title}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       {new Date(task.deadline).toLocaleDateString()}
                     </span>
                   </div>
@@ -117,7 +117,7 @@ function SelectFocusModal({open,onClose,setFocusId}) {
         <Button
           onClick={onClose}
           sx={{
-             fontSize: "12px", textTransform: "none", color: "gray"
+             fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"
           }}
         >
           Cancel

@@ -60,7 +60,7 @@ function LoginModal() {
         if (redirect) {
             navigate(redirect, { replace: true });
         } else {
-            navigate(`/dashboard/${user.id}`, { replace: true });
+            navigate(`/dashboard`, { replace: true });
         }
         }
     }, [user, navigate, location.search]);

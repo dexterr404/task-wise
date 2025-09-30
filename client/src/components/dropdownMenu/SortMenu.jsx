@@ -21,6 +21,8 @@ export default function SortMenu({ sort, onChange }) {
         position: "absolute",
         top: "100%",
         left: 0,
+        bgcolor: "var(--color-surface)",
+        color: "var(--color-text-primary)",
         mt: 0.2,
         zIndex: 50,
         borderRadius: 2,
@@ -46,7 +48,8 @@ export default function SortMenu({ sort, onChange }) {
                 size="small"
                 sx={{
                   p: 0.1,
-                  "& .MuiSvgIcon-root": { fontSize: 15 },
+                  color: "var(--color-text-primary)",
+                  "& .MuiSvgIcon-root": { fontSize: 15,color: "var(--color-text-primary)", },
                 }}
               />
             }

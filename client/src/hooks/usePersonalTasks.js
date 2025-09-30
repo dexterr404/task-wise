@@ -12,7 +12,7 @@ export const usePersonalTasks = (userId,sort,filters,searchQuery) => {
         queryKey: ["personalTasks", userId, sort, JSON.stringify(filters), searchQuery],
         queryFn: () => fetchAllTasks(userId, sort, filters, searchQuery),
         keepPreviousData: true,
-        staleTime: 1000 * 20,
+        staleTime: 1000 * 60 * 5,
         retry: (failureCount, error) => {
             if (error?.response?.status === 429 || error?.code === "ERR_BAD_REQUEST") return false;
             return failureCount < 3;

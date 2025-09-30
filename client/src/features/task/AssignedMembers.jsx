@@ -10,6 +10,15 @@ export default function AssignedMembers({ assigned, onRemove }) {
           avatar={<Avatar src={member.profileImage} alt={member.name} />}
           onDelete={() => onRemove(member._id)}
           variant="outlined"
+          sx={{
+            color: "var(--color-text-primary)",
+            "& .MuiChip-deleteIcon": {
+              color: "var(--color-text-secondary)",
+              "&:hover": {
+                color: "var(--color-error)",
+              },
+            },
+          }}
         />
       ))}
     </div>

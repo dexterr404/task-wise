@@ -20,21 +20,21 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
   ];
 
   return (
-    <div className="flex flex-col gap-x-2 gap-y-6 bg-white lg:ml-[100px] p-4 sm:mx-10 border-x-1 border-gray-200">
-      <h1 className="font-semibold">Recommended Categories</h1>
+    <div className="flex flex-col gap-x-2 gap-y-6 bg-surface lg:ml-[100px] p-4 sm:mx-10 border-x-1 border-border">
+      <h1 className="font-semibold text-text-primary">Recommended Categories</h1>
       <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-x-4 gap-y-4">
         {categories.map((category, index) => (
           <div
             to={"create"}
             key={index}
-            className="border-1 border-gray-400 rounded-md p-4 cursor-pointer hover:bg-gray-50 text-xs items-center flex"
+            className="border-1 border-border bg-surface rounded-md p-4 cursor-pointer hover:bg-border text-xs items-center flex"
             onClick={() => {
               setSelectedCategory(category.name);
               setIsCreateTaskOpen(true);
             }}
           >
             {category.icon}
-            {category.name}
+            <span className="text-text-primary">{category.name}</span>
           </div>
         ))}
       </div>

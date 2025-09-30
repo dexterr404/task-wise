@@ -16,14 +16,14 @@ export function TeamTaskOptionsMenu({task,team}) {
 
     const { onArchiveTask, onEditTask } = useTeamTasks(team._id);
    
-    return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-gray-200 flex gap-2">
+    return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-border flex gap-2">
       {/*Archive Task*/}
       <Tooltip title="Archive">
         <IconButton
           onClick={() => setArchiveTask(true)}
           size="small"
           sx={{
-            color: "gray",
+            color: "var(--color-text-secondary)",
             "&:hover": { color: colors.darkOrange }
           }}
         >
@@ -36,7 +36,7 @@ export function TeamTaskOptionsMenu({task,team}) {
         <IconButton
         onClick={() => setEditTask(true)}
         sx={{
-          color: "gray",
+          color: "var(--color-text-secondary)",
           "&:hover": { color: "#e68900" }
         }} 
         size="small">
@@ -51,7 +51,7 @@ export function TeamTaskOptionsMenu({task,team}) {
         <IconButton
         onClick={() => setDetailsTask(true)}
           sx={{
-            color: "gray",
+            color: "var(--color-text-secondary)",
             "&:hover": { color: "#7CB342" }
           }}
           size="small"

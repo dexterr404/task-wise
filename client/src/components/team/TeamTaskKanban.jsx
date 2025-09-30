@@ -5,7 +5,7 @@ import { statusColors } from "../../data/status"
 import TeamTaskKanbanCard from "./TeamTaskKanbanCard"
 
 export function TeamTaskKanban({onDragEnd,columns,team}) {
-    return<section className="bg-white rounded-lg shadow-md flex min-h-[80vh] pb-40 gap-4 overflow-x-auto">
+    return<section className="bg-surface rounded-lg shadow-md flex min-h-[80vh] pb-40 gap-4 overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
             {Object.entries(columns).map(([colName, tasks]) => (
                 <Droppable key={colName} droppableId={colName}>
@@ -20,11 +20,11 @@ export function TeamTaskKanban({onDragEnd,columns,team}) {
                         <Typography
                         variant="h6"
                         component="h2"
-                        sx={{ fontWeight: 500, fontSize: "1rem", letterSpacing: 0.3, color: "#374151"}}>
+                        sx={{ fontWeight: 500, fontSize: "1rem", letterSpacing: 0.3, color: "var(--color-text-secondary)"}}>
                         {colName}
                         </Typography>
                     </div>
-                    <Divider />
+                    <Divider sx={{ borderColor: "var(--color-border)", mb: 1 }}/>
                     {
                     tasks.length > 0 ? (
                         tasks

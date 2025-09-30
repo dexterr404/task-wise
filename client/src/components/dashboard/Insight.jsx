@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { AutoAwesome, HelpOutline } from "@mui/icons-material";
+import { AutoAwesome, HelpOutline, Insights } from "@mui/icons-material";
 import { getInsights } from "../../api/aiService";
 import { useState, useEffect, useMemo } from "react";
 import { addUser } from "../../features/user/userSlice";
@@ -26,10 +26,6 @@ function DailyDigest() {
         deadline: new Date(task.deadline).toISOString().split("T")[0],
         status: task.status,
         priority: task.priority,
-        subtasks: task.subtasks.map((st) => ({
-          title: st.title,
-          status: st.status,
-        })),
       })),
     [tasks]
   );
@@ -93,13 +89,13 @@ function DailyDigest() {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-md p-4 w-full relative cursor-pointer hover:bg-gray-50 active:bg-gray-50 hover:-translate-y-1 active:-translate-y-1 transform transition-transform duration-200 ease-in-out">
+    <div className="bg-surface border-1 border-border shadow-md rounded-md p-4 w-full relative cursor-pointer  hover:-translate-y-1 active:-translate-y-1 transform transition-transform duration-200 ease-in-out">
       
       {/* Countdown Tooltip */}
       {remainingTime > 0 && (
         <Tooltip title={`Wait ${formatTime(remainingTime)}`}>
           <HelpOutline
-            sx={{ fontSize: "14px", position: "absolute", top: "14px", right: "90px" }}
+            sx={{ fontSize: "14px", position: "absolute", top: "14px", right: "90px", color: "var(--color-text-primary)" }}
           />
         </Tooltip>
       )}
@@ -127,17 +123,17 @@ function DailyDigest() {
           </Button>
       </Tooltip>
 
-      <h3 className="text-sm font-semibold mb-3 mx-6">AI Insights</h3>
+      <h3 className="flex items-center gap-1 text-sm text-text-primary font-semibold mb-3 mx-2"><Insights fontSize="small" sx={{ color: "#4f46e5"}}/> AI Insights</h3>
 
       {isLoading ? (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 animate-pulse">
+          <span className="text-xs text-text-secondary animate-pulse">
             <AutoAwesome sx={{ fontSize: "12px", marginRight: "3px" }} />
             Generating insights…
           </span>
         </div>
       ) : insights.length === 0 ? (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-text-secondary">
           Consider adding tasks today to view insights 🚀
         </p>
       ) : (
@@ -145,7 +141,7 @@ function DailyDigest() {
           {insights.map((item, index) => (
             <li
               key={index}
-              className="flex flex-col items-start gap-2 text-xs text-gray-700"
+              className="flex flex-col items-start gap-2 text-xs text-text-secondary"
             >
               <span>{item}</span>
             </li>

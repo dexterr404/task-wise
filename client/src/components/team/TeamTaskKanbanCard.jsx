@@ -27,12 +27,14 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
     queryKey: ["comments", task._id],
     queryFn: () => fetchComments(task._id,team._id),
     enabled: isTaskComments,
+    staleTime: 1000 * 60,
   });
 
   //Fetch comments count
   const { data: commentsCount = 0 } = useQuery({
     queryKey: ["comments-count", task._id],
-    queryFn: () => fetchCommentsCount(task._id,team._id)
+    queryFn: () => fetchCommentsCount(task._id,team._id),
+    staleTime: 1000 * 60,
   })
 
   //Mutate to add comment
@@ -69,7 +71,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="flex flex-col gap-2 relative px-5 pt-12 pb-3 bg-white rounded-2xl border-gray-200 shadow-xl mb-2"
+          className="flex flex-col gap-2 relative px-5 pt-12 pb-3 bg-bg rounded-2xl border-gray-200 shadow-xl mb-2"
         >
           {/* menu button */}
           <div className="absolute top-2 right-2">
@@ -77,7 +79,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
               onClick={() =>
                 setOption((prev) => !prev)
               }
-              sx={{ width: 28, height: 28, padding: "0px" }}
+              sx={{ width: 28, height: 28, padding: "0px", color: "var(--color-text-secondary)" }}
             >
               <MoreHoriz fontSize="small" />
             </IconButton>
@@ -90,17 +92,17 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
             </span>
           </div>
           <div className="flex flex-col gap-2">
-              <p className="font-medium">{task.title}</p>
-              <p className="text-xs text-gray-500">{task.description}</p>
+              <p className="font-medium text-text-primary">{task.title}</p>
+              <p className="text-xs text-text-secondary">{task.description}</p>
           </div>
-          <div className="text-xs font-semibold text-gray-500">
+          <div className="text-xs font-semibold text-text-secondary">
             {countRemainingDays(new Date(task.deadline).toLocaleDateString())}
           </div>
           <div>
             {task.subtasks.map((subtask) => (
               <div
                 key={subtask._id}
-                className="text-xs text-gray-600 flex items-center gap-2"
+                className="text-xs text-text-secondary flex items-center gap-2"
               >
                 <Checkbox
                   checked={subtask.status === "Done"}
@@ -117,8 +119,8 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
                 <span
                   className={
                     subtask.status === "Done"
-                      ? "line-through text-gray-400"
-                      : "text-gray-700"
+                      ? "line-through text-text-secondary"
+                      : "text-text-primary"
                   }
                 >
                   {subtask.title}
@@ -128,7 +130,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
           </div>
           <Divider />
           <div className="flex justify-between items-center">
-            <IconButton onClick={() => setIsTaskComments(true)} sx={{ position:"relative"}}>
+            <IconButton onClick={() => setIsTaskComments(true)} sx={{ position:"relative", color: "var(--color-text-primary)"}}>
               <Chat sx={{fontSize: "16px"}}/>
               {commentsCount > 0 && (
                 <div className="absolute -top-0.5 -right-1 flex items-center justify-center pt-0.5 px-1.5
@@ -149,7 +151,7 @@ export default function TeamTaskKanbanCard({ team, task, index, setOpenMenuId })
               ))}
               </AvatarGroup>
               <IconButton onClick={() => setAssignTask(true)}>
-                <PersonAdd sx={{fontSize: "16px"}}/>
+                <PersonAdd sx={{fontSize: "16px", color: "var(--color-text-primary)"}}/>
               </IconButton>
             </div>
           </div>

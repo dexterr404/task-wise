@@ -41,18 +41,18 @@ function TeamTaskArchive({ tasks, columns, team }) {
   return (
     <section className="flex flex-col">
       {/* Header - hide on small screens */}
-      <div className="hidden md:grid grid-cols-12 gap-4 px-3 py-2 bg-whiterounded-md">
-        <div className="col-span-3 font-medium">Title</div>
-        <div className="col-span-4 font-medium">Description</div>
-        <div className="col-span-3 font-medium">Archived At</div>
-        <div className="col-span-2 text-center font-medium">Actions</div>
+      <div className="hidden md:grid text-sm text-text-primary grid-cols-12 gap-4 px-3 py-3 bg-whiterounded-md">
+        <div className="col-span-3">Title</div>
+        <div className="col-span-4">Description</div>
+        <div className="col-span-3">Archived At</div>
+        <div className="col-span-2 text-center">Actions</div>
       </div>
 
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ borderColor: "var(--color-border)" }} />
 
       {archivedTasks.length === 0 ? (
         <div className="flex justify-center items-center py-6">
-          <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
+          <Typography sx={{ color: "var(--color-text-primary)", fontSize: 14 }}>
             No archived tasks found.
           </Typography>
         </div>
@@ -60,25 +60,25 @@ function TeamTaskArchive({ tasks, columns, team }) {
         archivedTasks.map((task) => (
           <div
             key={task._id}
-            className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-start md:items-center px-3 py-3 shadow-sm rounded-md mb-3 bg-white cursor-pointer transition"
+            className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-start md:items-center px-3 py-3 shadow-sm rounded-md mb-3 bg-bg cursor-pointer transition"
           >
             {/* Title */}
             <div className="md:col-span-3">
-              <Typography sx={{ fontSize: 13 }}>
+              <Typography sx={{ fontSize: 13, color: "var(--color-text-primary)" }}>
                 {task.title}
               </Typography>
             </div>
 
             {/* Description */}
             <div className="md:col-span-4">
-              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                 {task.description}
               </Typography>
             </div>
 
             {/* Archived At */}
             <div className="md:col-span-3">
-              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                 {task.archivedAt
                   ? new Date(task.archivedAt).toLocaleString()
                   : "—"}
@@ -88,12 +88,12 @@ function TeamTaskArchive({ tasks, columns, team }) {
             {/* Actions */}
             <div className="md:col-span-2 flex md:justify-center">
                 <Tooltip title="Unarchive">
-                    <IconButton onClick={() => {setUnarchived(true); setSelectedTask(task)}} sx={{color: "gray", "&:hover": { color: colors.darkGreen }}}>
+                    <IconButton onClick={() => {setUnarchived(true); setSelectedTask(task)}} sx={{color: "var(--color-text-secondary)", "&:hover": { color: colors.darkGreen }}}>
                         <Unarchive fontSize="small"/>
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete">
-                    <IconButton onClick={() => {setDeleteTask(true); setSelectedTask(task)}} sx={{color: "gray", "&:hover": { color: colors.darkRed }}}>
+                    <IconButton onClick={() => {setDeleteTask(true); setSelectedTask(task)}} sx={{color: "var(--color-text-secondary)", "&:hover": { color: colors.darkRed }}}>
                         <Delete fontSize="small"/>
                     </IconButton>
                 </Tooltip>    

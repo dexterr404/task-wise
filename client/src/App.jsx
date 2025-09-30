@@ -17,12 +17,10 @@ const queryClient = new QueryClient({
       const status = error?.response?.status || error?.status;
 
       if (status === 401) {
-        console.log("Not authorized");
         return;
       }
 
       if (status === 404) {
-        console.log("Not found");
         return;
       }
       // Handle rate-limiting
@@ -51,12 +49,11 @@ const queryClient = new QueryClient({
   }),
   defaultOptions: {
     queries: {
-      retry: (failureCount, error) => {
-        // Avoid retrying if rate-limited
-        if (error?.response?.status === 429 || error?.code === "ERR_BAD_REQUEST") return false;
-        return failureCount < 3; // otherwise retry up to 3 times
-      },
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchInterval: false,
+      staleTime: 1000 * 60,
     },
   },
 });

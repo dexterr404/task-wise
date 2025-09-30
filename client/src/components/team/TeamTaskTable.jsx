@@ -22,61 +22,66 @@ function TeamTaskTable({ tasks, team }) {
   return (
     <section className="w-full h-full">
       {activeTasks.length === 0 ? (
-        <Typography sx={{ color: "text.secondary", fontSize: 14, textAlign: "center", py: 4 }}>
+        <Typography sx={{ color: "var(--color-text-primary)", fontSize: 14, textAlign: "center", py: 4 }}>
           No active tasks found.
         </Typography>
       ) : (
         <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 2 }}>
           <Table size="small">
             {/* Header */}
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#f9fafb" }}>
-                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Title</Typography></TableCell>
-                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Description</Typography></TableCell>
-                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Column</Typography></TableCell>
-                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Priority</Typography></TableCell>
-                <TableCell sx={{ fontWeight: 600 }}><Typography variant="body2">Deadline</Typography></TableCell>
-                <TableCell sx={{ fontWeight: 600, textAlign: "center" }}><Typography variant="body2">Actions</Typography></TableCell>
+            <TableHead
+            sx={{
+              backgroundColor: "var(--color-surface)",
+            }}
+            >
+              <TableRow sx={{ backgroundColor: "var(--color-surface)"}}>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)"}}><Typography variant="body2">Title</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)" }}><Typography variant="body2">Description</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)" }}><Typography variant="body2">Column</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)" }}><Typography variant="body2">Priority</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)" }}><Typography variant="body2">Deadline</Typography></TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "var(--color-text-primary)", textAlign: "center" }}><Typography variant="body2">Actions</Typography></TableCell>
               </TableRow>
             </TableHead>
             {/* Body */}
             <TableBody>
               {activeTasks.map((task) => (
-                <TableRow key={task._id} hover>
+                <TableRow key={task._id} sx={{ backgroundColor: "var(--color-surface)" }}
+                >
                   <TableCell>
-                    <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                    <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
                         {task.title}
                     </Typography>
                     </TableCell>
                   <TableCell>
-                    <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                    <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                       {task.description}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                    <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                         {task.status}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                    <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                         {task.priority}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+                    <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                         {task.deadline ? new Date(task.deadline).toLocaleDateString() : "—"}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Edit">
                       <IconButton onClick={() => {setEditTask(true); setSelectedTask(task);}}>
-                        <Edit fontSize="small" sx={{ color: colors.lighterblue}}/>
+                        <Edit fontSize="small" sx={{color: "var(--color-text-secondary)", "&:hover": { color: colors.darkerblue }}}/>
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Archive">
                       <IconButton onClick={() => {setArchiveTask(true); setSelectedTask(task);}}>
-                        <Archive fontSize="small" sx={{ color: "darkorange" }} />
+                        <Archive fontSize="small" sx={{color: "var(--color-text-secondary)", "&:hover": { color: colors.darkOrange }}}/>
                       </IconButton>
                     </Tooltip>
                   </TableCell>

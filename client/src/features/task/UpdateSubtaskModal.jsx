@@ -90,13 +90,13 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
           <Flag fontSize="small"  sx={{ color: colors.darkerGreenYellow }}/> Update subtasks status here
       </DialogTitle>
-      <Divider />
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
       <DialogContent>
         <Typography sx={{ fontSize: 14 }}>
           {task.title}
@@ -104,14 +104,14 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
         <div className="flex flex-col justify-around text-sm gap-1 mt-3">
           <ul>
             {taskData.subtasks.length === 0 ? (
-              <li className="text-sm text-gray-500 italic px-2 py-1 flex justify-center">
+              <li className="text-sm text-text-primary italic px-2 py-1 flex justify-center">
                 No tasks available
               </li>
             ) : (
               taskData.subtasks.map((t, index) => (
                 <li
                   key={index}
-                  className="flex justify-between items-center border-b-2 pb-1 border-b-gray-200"
+                  className="flex justify-between items-center border-b-2 pb-1 border-b-border"
                 >
                   <div className="flex items-center gap-2 text-xs px-2 py-1">
                     <span>{index + 1}.</span>
@@ -149,7 +149,7 @@ function UpdateSubtaskModal({ open, onClose, task,onSubtaskUpdate }) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}
         >
           Cancel
         </Button>

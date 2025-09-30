@@ -35,15 +35,15 @@ function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
         <ContentCopy fontSize="small"  sx={{ color: colors.lighterblue }}/> Duplicate the task?
       </DialogTitle>
-       <Divider />
+       <Divider sx={{ borderColor: "var(--color-border)"}}/>
       <DialogContent>
-        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+        <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
           This will create a copy of the task with all its details, including subtasks and priority.
         </Typography>
       </DialogContent>
@@ -51,7 +51,7 @@ function DuplicateTaskModal({open,onClose,task,onDuplicateTask}) {
       <DialogActions sx={{ justifyContent: "flex-end" }}>
         <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}
         >
           Don't
         </Button>

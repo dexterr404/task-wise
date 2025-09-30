@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { IconButton,Tooltip } from "@mui/material";
+import { IconButton,Tooltip,Avatar } from "@mui/material";
 import { fetchNotification, markAllAsRead, markAsRead } from "../../api/notificationService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -20,6 +20,8 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
   const {data, isLoading } = useQuery({
     queryKey: ["notifications", user.id, filter],
     queryFn: () => fetchNotification(filter),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
   })
 
   const markReadMutation = useMutation({
@@ -42,7 +44,9 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
       <div className="relative">
         <Tooltip title="Notifications">
           <NotificationsIcon
+            sx={{ color: "var(--color-text-primary)"}}
             className="cursor-pointer"
+            fontSize="small"
             onClick={() => setIsNotifOpen((prev) => !prev)}
         />
         </Tooltip>
@@ -77,13 +81,11 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
       {/* Profile */}
       <div className="relative">
         <Tooltip title="Profile">
-          <img
-          src={user.profileImage || defaultImage}
-          className="w-9 h-9 rounded-full cursor-pointer object-cover"
-          onClick={() => {
-            setProfileMenuOpen((prev) => !prev);
-          }}
-        />
+          <Avatar
+            src={user?.profileImage || defaultImage}
+            sx={{ width: 36, height: 36, cursor: "pointer" }} // 9 * 4 = 36px (Tailwind w-9, h-9)
+            onClick={() => setProfileMenuOpen((prev) => !prev)}
+          />
         </Tooltip>
         {isProfileMenuOpen && (
           <div className="absolute top-full right-0 mt-2 z-100">

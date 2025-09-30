@@ -65,13 +65,13 @@ function EditProfileModal({ open, onClose }) {
       fullWidth
       maxWidth="xs"
       PaperProps={{
-        sx: { borderRadius: "16px", overflow: "hidden" },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: "16px", overflow: "hidden" },
       }}
     >
-      <div className="flex items-center justify-between bg-gray-200 px-4 py-3">
-        <span className="font-semibold text-sm">Edit Profile</span>
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon sx={{ width: "18px" }} />
+      <div className="flex items-center justify-between bg-bg px-4 py-3">
+        <span className="font-semibold text-sm text-text-primary">Edit Profile</span>
+        <IconButton onClick={onClose} size="small" sx={{ py: 0.5 }}>
+          <CloseIcon sx={{ width: "18px", color: "var(--color-text-primary)" }} />
         </IconButton>
       </div>
 
@@ -82,10 +82,10 @@ function EditProfileModal({ open, onClose }) {
             <div className="absolute bottom-[-2px] right-0">
                 <IconButton
                 size="small"
-                className="absolute bottom-0 right-2 bg-white shadow-md"
+                className="absolute -bottom-1 right-2 bg-white shadow-md"
                 component="label"
                 >
-                <PhotoCameraIcon fontSize="small" />
+                <PhotoCameraIcon fontSize="small" sx={{ color: "var(--color-text-primary)"}}/>
                 <input 
                 onChange={handleImageChange}
                 hidden 
@@ -98,15 +98,15 @@ function EditProfileModal({ open, onClose }) {
 
         <div className="flex flex-col gap-4 mt-4">
           <div className="flex flex-col gap-1">
-            <p className="text-sm">Fullname</p>
+            <p className="text-sm text-text-primary">Fullname</p>
             <input
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 px-2 py-1 rounded-lg text-sm"
+              className="border border-gray-300 px-2 text-text-secondary py-1 rounded-lg text-sm"
               placeholder={user?.name || "Your Name"}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-sm">Email</p>
+            <p className="text-sm text-text-primary">Email</p>
             <input
               disabled={true}
               className="border border-gray-300 px-2 py-1 rounded-lg text-sm"

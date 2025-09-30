@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, Button, DialogActions, DialogContent, TextField } from "@mui/material";
+import { Dialog, DialogTitle, Button, DialogActions, DialogContent, TextField, Divider } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Edit } from "@mui/icons-material";
 import { colors } from "../../data/colors";
@@ -39,12 +39,12 @@ function EditTeamModal({ open, onClose, closeOption, team, onEditTeam }) {
       maxWidth="xs"
       fullWidth
       disableEscapeKeyDown
-      PaperProps={{ sx: { borderRadius: 2, p: 1 } }}
+      PaperProps={{ sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 } }}
     >
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}><Edit sx={{ fontSize: "16px",
+      <DialogTitle variant="h8" sx={{  color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}><Edit sx={{ fontSize: "16px",
         color: colors.darkOrange
       }}/>Edit team</DialogTitle>
-
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
       <DialogContent>
         <TextField
           fullWidth
@@ -54,17 +54,24 @@ function EditTeamModal({ open, onClose, closeOption, team, onEditTeam }) {
           value={teamName}
           onKeyDown={(e) => e.stopPropagation()}
           onChange={(e) => setTeamName(e.target.value)}
-          sx={{
-            marginBottom: "10px",
-            "& .MuiInputBase-input": { fontSize: "14px", color: "black" },
-            "& .MuiInputLabel-root": { fontSize: "14px", color: "black" },
-            "& .MuiFilledInput-root": {
-              backgroundColor: "#f9f9f9",
-              "&:before": { borderBottomColor: "gray" },
-              "&:hover:before": { borderBottomColor: "black" },
-              "&.Mui-focused:after": { borderBottomColor: "black" },
-            },
+          InputProps={{
+            style: { fontSize: 13, color: "var(--color-text-secondary)" },
           }}
+          InputLabelProps={{
+            style: { fontSize: 13, color: "var(--color-text-primary)" },
+          }}
+          sx={{
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "var(--color-border)",
+            },
+            "&:hover fieldset": {
+              borderColor: "var(--color-text-secondary)",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "var(--color-text-primary)",
+            },
+          }}}
         />
         <TextField
           fullWidth
@@ -76,16 +83,24 @@ function EditTeamModal({ open, onClose, closeOption, team, onEditTeam }) {
           minRows={3}
           onKeyDown={(e) => e.stopPropagation()}
           onChange={(e) => setDescription(e.target.value)}
-          sx={{
-            "& .MuiInputBase-input": { fontSize: "14px", color: "black" },
-            "& .MuiInputLabel-root": { fontSize: "14px", color: "black" },
-            "& .MuiFilledInput-root": {
-              backgroundColor: "#f9f9f9",
-              "&:before": { borderBottomColor: "gray" },
-              "&:hover:before": { borderBottomColor: "black" },
-              "&.Mui-focused:after": { borderBottomColor: "black" },
-            },
+          InputProps={{
+            style: { fontSize: 13, color: "var(--color-text-secondary)" },
           }}
+          InputLabelProps={{
+            style: { fontSize: 13, color: "var(--color-text-primary)" },
+          }}
+          sx={{
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "var(--color-border)",
+            },
+            "&:hover fieldset": {
+              borderColor: "var(--color-text-secondary)",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "var(--color-text-primary)",
+            },
+          }}}
         />
       </DialogContent>
 

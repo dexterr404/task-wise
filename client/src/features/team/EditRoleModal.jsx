@@ -23,14 +23,14 @@ function EditRoleModal({open,onClose,onEditUser}) {
     return(
         <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth
         PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
         }} >
-        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+        <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
             <Work sx={{ color: colors.darkerblue }}/>Do you really update this user's role?
         </DialogTitle>
-        <Divider />
+        <Divider sx={{ borderColor: "var(--color-border)"}}/>
         <DialogContent >
-        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+        <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
             Changing a member’s role will immediately update their permissions in this team. This action may affect what they can manage.
         </Typography>
         </DialogContent>

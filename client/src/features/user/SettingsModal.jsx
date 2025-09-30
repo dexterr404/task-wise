@@ -1,143 +1,63 @@
 import { useState } from "react";
 import { useSelector,useDispatch } from "react-redux"
-import { updateProfile } from "../../api/userService";
-import { addUser } from "./userSlice";
-import { Button, Dialog, DialogContent, IconButton } from "@mui/material";
-import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import toast from "react-hot-toast";
-import defaultImage from "../../assets/Default Profiles/gamer.png";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
+import { Toaster } from "react-hot-toast";
+import { Autorenew, Payment, Person, Settings, Tune, Close } from "@mui/icons-material";
 
+import Account from "../settings/Account";
+import Personalization from "../settings/Personalization";
+import Subscription from "../settings/Subscription";
+import Billing from "../settings/Billing";
 
 function SettingsModal({ open, onClose }) {
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
 
-
-  const [name, setName] = useState(user.name);
-  const [imageFile, setImageFile] = useState(user.profileImage || "");
-  const [previewUrl, setPreviewUrl] = useState(user.profileImage || defaultImage );
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleImageChange = async(e) => {
-    const file = e.target.files[0];
-    if(file) {
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  }
-  
-
-  const handleSave = async() => {
-    setIsLoading(true)
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      if(imageFile) {
-        formData.append("image", imageFile);
-      }
-
-      const updatedUser = await updateProfile(user.id, formData);
-
-      dispatch(addUser(updatedUser.user));
-      localStorage.setItem("user", JSON.stringify({
-        id: updatedUser.user._id,
-        name: updatedUser.user.name,
-        email: updatedUser.user.email,
-        profileImage: updatedUser.user.profileImage
-      }));
-
-      toast.success("Profile successfully updated");
-      onClose();
-    } catch (error) {
-      toast.error("Failed to udpate profile");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
+  const [section, setSection] = useState("account");
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth="md"
       PaperProps={{
-        sx: { borderRadius: "16px", overflow: "hidden" },
+        sx: { borderRadius: "16px", overflow: "hidden", minHeight: "80vh", maxHeight: "80vh", bgcolor: "var(--color-surface)",width: { xs: "100%", sm: "auto" },m: { xs: 1, sm: "auto" } },
       }}
     >
-      <div className="flex items-center justify-between bg-gray-200 px-4 py-3">
-        <span className="font-semibold text-sm">Edit Profile</span>
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon sx={{ width: "18px" }} />
-        </IconButton>
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className="flex items-center gap-1 relative text-text-primary bg-bg px-4 py-3">
+        <Settings fontSize="small" />
+        <span className="font-semibold text-md">Settings</span>
+        <div className="absolute right-2 top-2">
+          <IconButton onClick={onClose} size="small" sx={{ py: 0.5}}>
+            <Close sx={{ width: "18px", color: "var(--color-text-primary)" }} />
+          </IconButton>
+        </div>
       </div>
-
-      <DialogContent sx={{ p: 3 }}>
-        <div className="flex justify-center py-3">
-          <div className="relative">
-            <img className="w-28 h-28 rounded-full object-cover" src={previewUrl || defaultImage} alt="Profile picture"/>
-            <div className="absolute bottom-[-2px] right-0">
-                <IconButton
-                size="small"
-                className="absolute bottom-0 right-2 bg-white shadow-md"
-                component="label"
-                >
-                <PhotoCameraIcon fontSize="small" />
-                <input 
-                onChange={handleImageChange}
-                hidden 
-                accept="image/*"
-                type="file" />
-                </IconButton>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 mt-4">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm">Fullname</p>
-            <input
-              onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 px-2 py-1 rounded-lg text-sm"
-              placeholder={user?.name || "Your Name"}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-sm">Email</p>
-            <input
-              disabled={true}
-              className="border border-gray-300 px-2 py-1 rounded-lg text-sm"
-              placeholder={user?.email || "Your Email"}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center mt-6">
-          <Button
-            variant="contained"
-            onClick={() => handleSave()}
-            startIcon={<SaveIcon />}
-            disabled={isLoading}
-            sx={{
-              textTransform: "none",
-              px: 3,
-              py: 1,
-              fontSize: "14px",
-              borderRadius: "10px",
-              backgroundColor: "#1976d2",
-              boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
-              ":hover": {
-                backgroundColor: "#1565c0",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-              },
-            }}
-          >
-            {isLoading ? <span>Saving</span> : <span>Save Changes</span>}
-          </Button>
-        </div>
+      <DialogContent sx={{ display: "flex", gap: {xs:0 ,sm:2}, py: 1, pr: 1, pl: { xs:1, sm:2}, flexDirection: { xs: "column", sm: "row"}}}>
+        <section className="flex flex-col">
+          <ul className="text-text-primary text-sm flex flex-col pt-2 max-sm:flex-row">
+            <li onClick={() => setSection("account")} className={`flex items-center gap-0.5 ${section === "account" && "bg-accent"} hover:bg-accent py-2 px-4 rounded-lg cursor-pointer`}><Person fontSize="small"/>  <span className="max-md:hidden">Account</span></li>
+            <li onClick={() => setSection("personalization")} className={`flex items-center gap-0.5 ${section === "personalization" && "bg-accent"} hover:bg-accent py-2 px-4 rounded-lg cursor-pointer`}><Tune fontSize="small"/> <span className="max-md:hidden">Personalization</span></li>
+            <li onClick={() => setSection("subscription")} className={`flex items-center gap-0.5 ${section === "subscription" && "bg-accent"} hover:bg-accent py-2 px-4 rounded-lg cursor-pointer`}><Autorenew fontSize="small"/> <span className="max-md:hidden">Subscription</span></li>
+            <li onClick={() => setSection("billing")} className={`flex items-center gap-0.5 ${section === "billing" && "bg-accent"} hover:bg-accent py-2 px-4 rounded-lg cursor-pointer`}><Payment fontSize="small"/> <span className="max-md:hidden">Billing and Payments</span></li>
+          </ul>
+        </section>
+        <section className="flex-1">
+          {
+            section === "account" && <Account />
+          }
+          {
+            section === "personalization" && <Personalization />
+          }
+          {
+            section === "subscription" && <Subscription />
+          }
+          {
+            section === "billing" && <Billing />
+          }
+        </section>
       </DialogContent>
     </Dialog>
   );

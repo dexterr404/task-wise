@@ -49,17 +49,17 @@ export function AssignTaskModal({open,onClose,team,task,onUpdateTask}) {
     return (
     <>
       <Dialog open={open} fullWidth maxWidth={false} PaperProps={{
-        sx: { borderRadius: 2, p: 1, width: "470px", maxWidth: "90%" },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1, width: "470px", maxWidth: "90%" },
       }}>
-        <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}> 
+        <DialogTitle variant="h8" sx={{ display: "flex", color: "var(--color-text-primary)", flexDirection: "row", alignItems: "center", gap: 0.5 }}> 
           <GroupAdd sx={{ color: colors.darkGreen }} fontSize="small"/>Assign task</DialogTitle>
-        <Divider />
+        <Divider sx={{ borderColor: "var(--color-border)"}}/>
         <DialogContent>
           {
             assignedUsers.length > 0 ? (
               <AssignedMembers assigned={assignedUsers} onRemove={removeUser} />
             ) : (
-              <span className="flex justify-center text-xs text-gray-400 py-5">No team members assigned yet.</span>
+              <span className="flex justify-center text-xs text-text-primary py-5">No team members assigned yet.</span>
             )
           }
            <Typography fontSize="small" sx={{marginTop: "4px"}}>
@@ -79,7 +79,7 @@ export function AssignTaskModal({open,onClose,team,task,onUpdateTask}) {
                     {member.user.name}
                   </div>
                     <IconButton onClick={() => addUser(member.user)}>
-                      <Add fontSize="small"/>
+                      <Add sx={{color: "var(--color-text-primary)"}} fontSize="small"/>
                     </IconButton>
                 </div>
               ))
@@ -89,7 +89,7 @@ export function AssignTaskModal({open,onClose,team,task,onUpdateTask}) {
         <DialogActions>
           <Button
           onClick={onClose}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray"}}>
+          sx={{ fontSize: "12px", textTransform: "none", color: "var(--color-text-secondary)"}}>
           Cancel
           </Button>     
           <Button

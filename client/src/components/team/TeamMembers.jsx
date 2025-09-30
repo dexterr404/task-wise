@@ -7,6 +7,7 @@ import { changeUserRole } from "../../api/teamService";
 
 import RemoveUserModal from "../../features/team/RemoveUserModal";
 import EditRoleModal from "../../features/team/EditRoleModal";
+import { colors } from "../../data/colors";
 
 export function TeamMembers({ team, onRemoveUser, role, accUser}) {
   const [removeUser, setRemoveUser] = useState(false);
@@ -34,22 +35,22 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
       <TableHead>
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant="subtitle2" color="var(--color-text-secondary)">
               Name
             </Typography>
           </TableCell>
           <TableCell>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant="subtitle2" color="var(--color-text-secondary)">
               Email
             </Typography>
           </TableCell>
           <TableCell>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant="subtitle2" color="var(--color-text-secondary)">
               Role
             </Typography>
           </TableCell>
           <TableCell align="right">
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant="subtitle2" color="var(--color-text-secondary)">
               Actions
             </Typography>
           </TableCell>
@@ -75,7 +76,7 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
                       sx={{ width: 32, height: 32 }}
                     />
                   </Tooltip>
-                  <Typography variant="body2" fontWeight={500}>
+                  <Typography variant="body2" fontWeight={500} color="var(--color-text-secondary)">
                     {m.user.name}
                   </Typography>
                 </div>
@@ -83,7 +84,7 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
 
               {/* ---------- Email Cell ---------- */}
               <TableCell>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="var(--color-text-secondary)">
                   {m.user.email}
                 </Typography>
               </TableCell>
@@ -92,7 +93,7 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
               <TableCell>
                 {userRole === "Leader" ? (
                   // Leader role is fixed text
-                  <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
+                  <Typography sx={{ fontSize: 13, color: "var(--color-text-secondary)" }}>
                     Leader
                   </Typography>
                 ) : isEditing ? (
@@ -108,27 +109,114 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
                     }}
                     sx={{
                       fontSize: 13,
-                      color: "text.secondary",
                       minWidth: 80,
-                      "& .MuiSelect-select": { padding: "0px" },
+                      backgroundColor: "var(--color-surface)",
+                      color: "var(--color-text-primary)",
+                      "& .MuiSelect-icon": {
+                        color: "var(--color-text-secondary)",
+                      },
+                      "& .MuiSelect-select": {
+                        padding: "0px 24px 0px 8px", // inner select padding
+                        color: "var(--color-text-primary)",
+                        fontSize: 13,
+                      },
                       "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                       "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
-                      backgroundColor: "transparent",
+                    }}
+                      MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "var(--color-surface)",
+                          "& .MuiList-root": {
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                          },
+                          "& .MuiMenuItem-root": {
+                            fontSize: 13,
+                            color: "var(--color-text-secondary)",
+                            paddingY: 0.5,
+                            "&:hover": {
+                              backgroundColor: "var(--color-accent)",
+                              color: "var(--color-text-primary)",
+                            },
+                            "&.Mui-selected": {
+                              backgroundColor: "var(--color-border)",
+                              color: "var(--color-text-primary)",
+                            },
+                          },
+                        },
+                      },
                     }}
                   >
-                    <MenuItem value="Leader" sx={{ fontSize: 13, color: "text.secondary" }}>
+                    <MenuItem
+                      value="Leader"
+                      sx={{
+                        fontSize: 13,
+                        backgroundColor: "var(--color-surface)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-border)",
+                          color: "var(--color-text-primary)",
+                        },
+                        color: "var(--color-text-secondary)",
+                        "&.Mui-selected": {
+                          backgroundColor: "var(--color-accent)", // highlight when selected
+                          color: "var(--color-text-primary)", // readable text in both modes
+                        },
+                        "&.Mui-selected:hover": {
+                          backgroundColor: "var(--color-border)", // hover effect on selected
+                        },
+                      }}
+                    >
                       Leader
                     </MenuItem>
-                    <MenuItem value="Admin" sx={{ fontSize: 13, color: "text.secondary" }}>
+
+                    <MenuItem
+                      value="Admin"
+                      sx={{
+                        fontSize: 13,
+                        backgroundColor: "var(--color-surface)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-border)",
+                          color: "var(--color-text-primary)",
+                        },
+                        color: "var(--color-text-secondary)",
+                        "&.Mui-selected": {
+                          backgroundColor: "var(--color-accent)",
+                          color: "var(--color-text-primary)",
+                        },
+                        "&.Mui-selected:hover": {
+                          backgroundColor: "var(--color-border)",
+                        },
+                      }}
+                    >
                       Admin
                     </MenuItem>
-                    <MenuItem value="Member" sx={{ fontSize: 13, color: "text.secondary" }}>
+
+                    <MenuItem
+                      value="Member"
+                      sx={{
+                        fontSize: 13,
+                        backgroundColor: "var(--color-surface)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-border)",
+                          color: "var(--color-text-primary)",
+                        },
+                        color: "var(--color-text-secondary)",
+                        "&.Mui-selected": {
+                          backgroundColor: "var(--color-accent)",
+                          color: "var(--color-text-primary)",
+                        },
+                        "&.Mui-selected:hover": {
+                          backgroundColor: "var(--color-border)",
+                        },
+                      }}
+                    >
                       Member
                     </MenuItem>
                   </Select>
                 ) : (
                   // Default text (not editing)
-                  <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
+                  <Typography sx={{ fontSize: 13, color: "var(--color-text-secondary)" }}>
                     {userRole}
                   </Typography>
                 )}
@@ -147,7 +235,13 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
                         onClick={() =>
                           setIsEditIndex((prev) => (prev === index ? null : index))
                         }
-                        color="primary"
+                        sx={{
+                          color: "var(--color-text-secondary)",
+                          "&:hover": { color: colors.darkerblue },
+                          "&.Mui-disabled": {
+                            color: "var(--color-border)",
+                          },
+                        }}
                         size="small"
                       >
                         <Edit fontSize="small" />
@@ -175,8 +269,14 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
                           setRemoveUser(true);
                           setUser(m.user);
                         }}
-                        color="error"
                         size="small"
+                        sx={{
+                          color: "var(--color-text-secondary)",
+                          "&:hover": { color: colors.darkRed },
+                          "&.Mui-disabled": {
+                            color: "var(--color-border)",
+                          },
+                        }}
                       >
                         <Delete fontSize="small" />
                       </IconButton>
@@ -193,7 +293,7 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
     {/* ================== Footer ================== */}
     <Typography
       variant="body2"
-      color="text.secondary"
+      color="var(--color-text-secondary)"
       sx={{ display: "flex", justifyContent: "center", paddingTop: "2px" }}
     >
       Nothing follows.

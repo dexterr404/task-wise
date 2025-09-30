@@ -36,14 +36,14 @@ export default function TodoOptionsMenu({task,team}) {
   const[isDuplicateModalOpen,setIsDuplicateModalOpen] = useState(false);
   const[isSubtaskModalOpen,setIsSubtaskModalOpen] = useState(false);
   const[isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
-  return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-gray-200 flex gap-2">
+  return <div className="absolute right-full lg:top-full shadow-md rounded-md px-1 bg-surface flex gap-2">
       {/*Archive Task*/}
       <Tooltip title="Archive">
         <IconButton
           onClick={() => setIsArchiveModalOpen(true)}
           size="small"
           sx={{
-            color: "gray",
+            color: "var(--color-text-secondary)",
             "&:hover": { color: colors.darkOrange }
           }}
         >
@@ -59,7 +59,7 @@ export default function TodoOptionsMenu({task,team}) {
       <Tooltip title="Edit">
         <IconButton
         sx={{
-          color: "gray",
+          color: "var(--color-text-secondary)",
           "&:hover": { color: "#e68900" }
         }} 
         size="small" onClick={() => {setIsEditTaskOpen((prev) => !prev)}}>
@@ -75,7 +75,7 @@ export default function TodoOptionsMenu({task,team}) {
       <Tooltip title="Update Subtask">
         <IconButton
           sx={{
-            color: "gray",
+            color: "var(--color-text-secondary)",
             "&:hover": { color: "#7CB342" }
           }}
           onClick={() => setIsSubtaskModalOpen(true)}
@@ -95,7 +95,7 @@ export default function TodoOptionsMenu({task,team}) {
       <Tooltip title="Mark as Done">
         <IconButton 
           sx={{
-            color: "gray",
+            color: "var(--color-text-secondary)",
             "&:hover": { color: "#2E7D32" }
           }}
           onClick={() => {setIsDoneModalOpen((prev) => !prev)}}
@@ -114,7 +114,7 @@ export default function TodoOptionsMenu({task,team}) {
       <Tooltip title="Undone">
         <IconButton 
         sx={{
-          color: "gray",
+          color: "var(--color-text-secondary)",
           "&:hover": { color: "#d4af0d" }
         }}
         onClick={() => {setIsNotDoneModalOpen((prev) => !prev)}}
@@ -132,7 +132,7 @@ export default function TodoOptionsMenu({task,team}) {
       <Tooltip title="Duplicate">
         <IconButton 
         sx={{
-          color: "gray",
+          color: "var(--color-text-secondary)",
           "&:hover": { color: "#1976D2" }
         }}
         onClick={() => setIsDuplicateModalOpen((prev) => !prev)}

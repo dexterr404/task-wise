@@ -24,29 +24,29 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
       maxWidth="xs"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 },
+        sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle variant="h8" sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
+      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 0.5 }}>
         <Info sx={{ color: "primary.main" }} fontSize="small"/>
         Task Details
       </DialogTitle>
 
-      <Divider/>
+      <Divider sx={{ borderColor: "var(--color-border)"}}/>
 
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 1, py: 1 }}>
         {/* Title */}
         <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-          <Typography sx={{ color: "text.primary", fontSize: "13px" }}>
+          <Typography sx={{ color: "var(--color-text-primary)", fontSize: "13px" }}>
             Title:
           </Typography>
-          <Typography sx={{ color: "text.secondary", fontSize: "13px" }}>
+          <Typography sx={{ color: "var(--color-text-secondary)", fontSize: "13px" }}>
             {task.title}
           </Typography>
         </Box>
         {/* Assigned Users */}
         <Box sx={{display: "flex", alignItems: "center"}}>
-          <Typography sx={{ color: "text.primary", fontSize: "13px" }}>Assigned to:</Typography>
+          <Typography sx={{ color: "var(--color-text-primary)", fontSize: "13px", mr: 1 }}>Assigned to:</Typography>
           {task.assignedTo.length > 0 ? (
             <AvatarGroup sx={{ display: "flex", flexDirection: "row-reverse", justifyContent: "start",
               '& .MuiAvatar-root': { width: 24, height: 24, fontSize: 11,backgroundColor: "gray", marginLeft: '-4px'}
@@ -65,40 +65,38 @@ export function DetailsTaskModal({ open, onClose, task, team }) {
               ))}
             </AvatarGroup>
           ) : (
-            <Typography sx={{ color: "text.secondary", fontSize: "12px" }}>None</Typography>
+            <Typography sx={{ color: "var(--color-text-secondary)", fontSize: "12px" }}>None</Typography>
           )}
         </Box>
 
         {/* Dates */}
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
               Created:
             </Typography>
-            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
              {new Date(task.createdAt).toLocaleString()}
             </Typography>
           </Box>
           <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
               Updated:
             </Typography>
-            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
               {new Date(task.updatedAt).toLocaleString()}
             </Typography>
           </Box>
           <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <Typography sx={{ color: "text.primary", fontSize: 13 }}>
+            <Typography sx={{ color: "var(--color-text-primary)", fontSize: 13 }}>
               Created by:
             </Typography>
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
               <Avatar src={task.createdBy.profileImage} sx={{ width: 22, height: 22,marginLeft: 1}}/> 
-              <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+              <Typography sx={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
                 {task.createdBy.name}
               </Typography>
             </Box>
-            <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
-            </Typography>
           </Box>
         </Box>
       </DialogContent>

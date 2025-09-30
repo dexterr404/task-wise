@@ -18,7 +18,7 @@ export function InboxTypeMenu() {
   return (
     <>
       <IconButton size="small" onClick={handleClick}>
-        <HelpOutline sx={{ fontSize: 18, color: "text.secondary" }} />
+        <HelpOutline sx={{ fontSize: 18, color: "var(--color-text-secondary)" }} />
       </IconButton>
 
       <Menu
@@ -26,7 +26,7 @@ export function InboxTypeMenu() {
         open={open}
         onClose={handleClose}
         PaperProps={{
-          sx: { borderRadius: 2, minWidth: 180,marginTop: 1},
+          sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, minWidth: 180,marginTop: 1},
         }}
       >
         <Typography
@@ -35,7 +35,7 @@ export function InboxTypeMenu() {
             py: 1,
             fontSize: 13,
             fontWeight: 600,
-            color: "text.secondary",
+            color: "var(--color-text-primary)",
           }}
         >
           Inbox Color Guide
@@ -43,21 +43,21 @@ export function InboxTypeMenu() {
         <Divider />
 
         <MenuItem
-          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset" }}
+          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset", color: "var(--color-text-secondary)" }}
         >
           <div className="w-3 h-3 bg-blue-700 rounded-full mr-1" />
           Task updates
         </MenuItem>
 
         <MenuItem
-          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset" }}
+          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset", color: "var(--color-text-secondary)" }}
         >
           <div className="w-3 h-3 bg-green-700 rounded-full mr-1" />
           Member activity
         </MenuItem>
 
         <MenuItem
-          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset" }}
+          sx={{ fontSize: "13px", padding: "2px 12px", minHeight: "unset", color: "var(--color-text-secondary)" }}
         >
           <div className="w-3 h-3 bg-orange-700 rounded-full mr-1" />
           Team updates

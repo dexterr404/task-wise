@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button,IconButton,Tooltip,Typography } from "@mui/material";
-import { People,CalendarMonth,AssignmentOutlined,IosShare,Inbox } from "@mui/icons-material";
+import { People,AssignmentOutlined,IosShare,Inbox } from "@mui/icons-material";
 import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getUserRole } from "../hooks/useUserRole";
@@ -33,6 +33,10 @@ function Teams() {
   const { data:currentTeam, isLoading } = useQuery({
     queryKey: ["team", teamId],
     queryFn: () => getTeamsById(teamId),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 429) return false;
       return failureCount < 3;
@@ -63,9 +67,9 @@ function Teams() {
             </main>;
 
   return (
-    <main className="flex flex-col h-screen bg-gray-50 px-10 pb-2 text-gray-600 lg:ml-[250px] pl-10 font-inter max-sm:p-0">
+    <main className="flex flex-col h-screen bg-bg px-10 pb-2 text-text-primary lg:ml-[250px] pl-10 font-inter max-sm:p-0">
       <Toaster position="top-center" reverseOrder={false}/>
-      <header className="flex gap-1 bg-white items-center justify-between text-sm px-2 py-4 border-1 border-gray-200">
+      <header className="flex gap-1 bg-surface items-center justify-between text-sm px-2 py-4 border-x-1 border-border">
         <div className="flex gap-1 items-center">
             <StringAvatar  name={currentTeam.name}/>
             <h1>{currentTeam.name}</h1>
@@ -73,34 +77,57 @@ function Teams() {
         <div className="flex gap-1 items-center">
           <Tooltip title="Share">
             <IconButton onClick={() => setShareDialog(true)} sx={{ color: "gray", "&:hover": {color: colors.lighterblue}}}>
-              <IosShare fontSize="small" sx={{color: colors.darkerblue}}/>
+              <IosShare fontSize="small" sx={{color: "var(--color-text-secondary)"}}/>
             </IconButton>
           </Tooltip>
           <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </div>
         <ShareDialog inviteToken={currentTeam.inviteToken} teamId={currentTeam._id} open={shareDialog} onClose={() => setShareDialog(false)}/>
       </header>
-      <section className="flex-1 bg-white">
-        <section className="flex items-center justify-between text-sm bg-white border-x-1 border-b-1 border-gray-200">
+      <section className="flex-1 bg-surface border-1 border-border">
+        <section className="flex items-center justify-between text-sm bg-surface border-b-1 border-border">
           <div className="flex">
-            <Button 
-            onClick={() => setActiveSection("tasks")}
-            sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "tasks" ? colors.gray : "white"}}>
-              <AssignmentOutlined fontSize="small"/>Task
+            <Button
+              onClick={() => setActiveSection("tasks")}
+              sx={{
+                fontSize: "12px",
+                textTransform: "none",
+                color: "var(--color-text-secondary)",
+                backgroundColor:
+                  activeSection === "tasks" ? "var(--color-accent)" : "var(--color-surface)",
+              }}
+            >
+              <AssignmentOutlined fontSize="small" />
+              Task
             </Button>
-            <Button 
-            onClick={() => setActiveSection("members")}
-            sx={{ fontSize: "12px", textTransform: "none", color: "gray", backgroundColor: activeSection === "members" ? colors.gray : "white"}}>
-              <People fontSize="small"/>Team
+
+            <Button
+              onClick={() => setActiveSection("members")}
+              sx={{
+                fontSize: "12px",
+                textTransform: "none",
+                color: "var(--color-text-secondary)",
+                backgroundColor:
+                  activeSection === "members" ? "var(--color-accent)" : "var(--color-surface)",
+              }}
+            >
+              <People fontSize="small" />
+              Team
             </Button>
           </div>
           <Button 
           onClick={() => setActiveSection("inbox")}
-          sx={{ fontSize: "12px", textTransform: "none", color: "gray", mx: "4px", backgroundColor: activeSection === "inbox" ? colors.gray : "white"}}>
+           sx={{
+              fontSize: "12px",
+              textTransform: "none",
+              color: "var(--color-text-secondary)",
+              backgroundColor:
+                activeSection === "inbox" ? "var(--color-accent)" : "var(--color-surface)",
+            }}>
             <Inbox fontSize="small"/>Inbox
           </Button>
         </section>
-        <section className="flex gap-4 text-gray-600 text-sm bg-white">
+        <section className="flex gap-4 text-sm">
           {
             activeSection === "tasks" && <TeamTasks team={currentTeam}/>
           }

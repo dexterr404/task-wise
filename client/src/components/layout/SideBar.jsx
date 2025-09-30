@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Diversity3, Dashboard, Add, MoreVert, Person, Settings} from "@mui/icons-material";
 import { getTeams, addTeam, deleteTeam, updateTeam } from "../../api/teamService";
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -10,11 +10,12 @@ import TeamsOptionsMenu from "../optionsMenu/TeamsOptionsMenu";
 import CreateTeamModal from "../../features/team/CreateTeamModal";
 import StringAvatar from "../ui/StringAvatar";
 import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import SettingsModal from "../../features/user/SettingsModal";
 
 function SideBar() {
   const [isNavOpen, setNavOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [createTeam, setCreateTeam] = useState(false);
-  const [teams, setTeams] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const location = useLocation();
@@ -28,6 +29,8 @@ function SideBar() {
   const { data: teamsList = [], isLoading } = useQuery({
     queryKey: ["teamList", user.id],
     queryFn: () => getTeams(),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
   });
 
   //Mutate when a team is added
@@ -70,7 +73,7 @@ function SideBar() {
 
   //Make sure the sidebar is able to be toggled
   return isNavOpen ? (
-    <aside className="fixed left-0 top-0 h-full w-[250px] bg-white px-12 py-20 z-100 border-r-2 border-gray-100">
+    <aside className="fixed left-0 top-0 h-full w-[250px] bg-surface px-12 py-20 z-100 border-r-1 border-border">
       <div className="relative h-full flex flex-col gap-10">
         <div
           className="absolute top-[-48px] right-[-24px] cursor-pointer block lg:hidden"
@@ -78,38 +81,38 @@ function SideBar() {
         >
           <LeftPanelCloseIcon className="text-gray-500" />
         </div>
-        <div className="font-bold text-4xl relative font-caveat">
+        <div className="font-bold text-4xl text-text-primary relative font-caveat">
           TaskWise.
           <span className="absolute top-[-8px] right-[-8px]">✏️</span>
         </div>
 
         <nav className="flex-1 flex flex-col justify-between gap-1text-sm">
           <div>
-            <span className="text-xs text-gray-400 font-semibold">Menu</span>
+            <span className="text-xs text-text-secondary font-semibold">Menu</span>
             <ul className="flex flex-col text-sm gap-3 font-semibold">
               <Link to={`/dashboard`}>
                 <li
-                  className={`cursor-pointer flex items-center gap-2 mt-1 px-2 py-1 rounded-md transition 
+                  className={`cursor-pointer flex text-text-primary items-center gap-2 mt-1 px-2 py-1 rounded-md transition 
                   ${
                     location.pathname === `/dashboard`
-                      ? "bg-gray-200 text-black"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-accent text-text-primary"
+                      : "bg-surface hover:bg-accent"
                   }`}>
                   <Dashboard fontSize="small"/>Dashboard
                 </li>
               </Link>
               <Link to={`/personal`}>
                 <li
-                  className={`cursor-pointer flex items-center gap-2 px-2 py-1 rounded-md transition 
+                  className={`cursor-pointer flex text-text-primary items-center gap-2 px-2 py-1 rounded-md transition 
                   ${
                     location.pathname ===  `/personal`
-                      ? "bg-gray-200 text-black"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-accent text-text-primary"
+                      : "bg-surface hover:bg-accent"
                   }`}>
                   <Person fontSize="small"/>Personal
                 </li>
               </Link>
-              <li className="flex items-center cursor-default gap-2 px-2 py-1 rounded-md transition text-gray-600">
+              <li className="flex items-center cursor-default gap-2 px-2 py-1 rounded-md transition text-text-primary">
                 <Diversity3 fontSize="small"/>Teams
               </li>
               <div className="text-xs text-gray-600">
@@ -119,10 +122,10 @@ function SideBar() {
                   {teamsList.map((team) => (
                     <Link to={`/teams/${team._id}`} key={team._id}>
                     <li
-                      className={`cursor-pointer flex items-center justify-between gap-2 px-2 py-1 rounded-md transition  ${
+                      className={`cursor-pointer flex text-text-primary items-center justify-between gap-2 px-2 py-1 rounded-md transition  ${
                         location.pathname === `/teams/${team._id}`
-                          ? "bg-gray-200 text-black"
-                          : "text-gray-600 hover:bg-gray-100"
+                        ? "bg-accent text-text-primary"
+                        : "bg-surface hover:bg-accent"
                       }`}>
                       <div className="flex gap-1.5 items-center ">
                         <StringAvatar fontSize="small" name={team.name} />
@@ -136,7 +139,7 @@ function SideBar() {
                             e.preventDefault();
                             handleClick(e, team);
                           }}>
-                          <MoreVert fontSize="small" />
+                          <MoreVert fontSize="small" sx={{ color: "var(--color-text-primary)"}}/>
                         </IconButton>
                       </div>
                     </li>
@@ -150,7 +153,6 @@ function SideBar() {
                     <TeamsOptionsMenu
                     onDeleteTeam={(teamId) => deleteTeamMutation.mutateAsync(teamId)}
                     onEditTeam={((teamId,teamName,teamDescription) => editTeamMutation.mutateAsync(teamId,teamName,teamDescription))}
-                    setTeams={setTeams}
                     open={Boolean(anchorEl)}
                     anchorEl={anchorEl}
                     onClose={handleClose}
@@ -160,7 +162,7 @@ function SideBar() {
                 }
                 <div 
                   onClick={() => setCreateTeam(true)}
-                  className="flex items-center gap-1 mt-2 pl-4 cursor-pointer hover:text-gray-400">
+                  className="flex items-center gap-1 mt-2 pl-4 cursor-pointer text-text-primary hover:text-text-secondary">
                     <Add 
                     sx={{fontSize: "12px"}}/>Add team
                   </div>
@@ -168,7 +170,9 @@ function SideBar() {
               
             </ul>
           </div>
-          <div className="cursor-pointer text-sm flex font-semibold items-center gap-2 mt-1 px-2 py-1 rounded-md transition hover:bg-gray-200 text-gray-600">
+          <div 
+          onClick={() => setIsSettingsOpen(true)}
+          className="cursor-pointer text-sm flex font-semibold items-center gap-2 mt-1 px-2 py-1 rounded-md transition hover:bg-accent bg-surface text-text-primary">
               <Settings fontSize="small"/> Settings
           </div>
         </nav>
@@ -176,7 +180,8 @@ function SideBar() {
       <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)} 
       onAddTeam={(teamName,teamDescription) =>
         addTeamMutation.mutateAsync(teamName,teamDescription)} 
-      setSelectedTeam={setSelectedTeam} setTeams={setTeams}/>
+      setSelectedTeam={setSelectedTeam}/>
+      <SettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </aside>
   ) : (
     <div

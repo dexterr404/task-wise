@@ -1,5 +1,5 @@
 import { Inbox } from "@mui/icons-material"
-import { Card, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { getTeamInbox } from "../../api/teamInboxService"
 import { teamInboxIconMap } from "../../utils/teamInboxIconMap"
@@ -19,14 +19,14 @@ export function TeamInbox({ team }) {
   })
 
   if (isLoading) return <div className="flex w-full h-dvh"><TeamInboxSkeleton /></div>
-  if (error) return <p>Failed to load inbox</p>
+  if (error) return <p className="flex w-full justify-center items-center h-dvh text-text-primary">Failed to load inbox</p>
 
   return (
     <main className="w-full p-4 space-y-3">
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 text-gray-500">
+      <div className="flex items-center justify-between gap-2 text-text-primary">
         <div className="flex items-center flex-1">
-          <Inbox fontSize="small" />
+          <Inbox fontSize="small"/>
           <span className="max-sm:hidden">Team Inbox</span>
         </div>
         <div className="flex items-center flex-4 justify-end">
@@ -47,7 +47,7 @@ export function TeamInbox({ team }) {
           return (
             <div
               key={i._id}
-              className={`relative border-l-4 pl-4 py-3 bg-white cursor-pointer hover:bg-gray-50 hover:-translate-y-1 transform transition-transform ease-in-out duration-100 shadow-md p-4 rounded-md ${
+              className={`relative border-l-4 pl-4 py-3 bg-bg cursor-pointer hover:-translate-y-1 transform transition-transform ease-in-out duration-100 shadow-md p-4 rounded-md ${
                 i.type === "task"
                   ? "border-blue-700"
                   : i.type === "member"
@@ -64,10 +64,10 @@ export function TeamInbox({ team }) {
                 <div className="flex flex-col">
                   <Typography
                     variant="body2"
-                    className="text-gray-500"
+                    className="text-text-secondary"
                     dangerouslySetInnerHTML={{ __html: i.description }}
                   />
-                  <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                  <div className="flex items-center gap-1 text-xs text-text-secondary mt-1">
                     <Icon fontSize="small" className={`${color}`} />
                     <span>{new Date(i.createdAt).toLocaleString()}</span>
                   </div>
@@ -79,7 +79,7 @@ export function TeamInbox({ team }) {
       ) : (
         <Typography
           sx={{
-            color: "text.secondary",
+            color: "var(--color-text-primary)",
             fontSize: 14,
             textAlign: "center",
             py: 4,

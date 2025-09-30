@@ -10,27 +10,6 @@ const taskSlice = createSlice({
         setTeamTasks: (state, action) => {
             state.team = action.payload;
         },
-        addTask: (state, action) => {
-            state.list.push(action.payload);
-        },
-        deleteTask: (state, action) => {
-            state.list = state.list.filter( t => t._id !== action.payload);
-        },
-        updateTask: (state, action) => {
-            const index = state.list.findIndex( t => t._id === action.payload);
-            if (index !== -1) state.list[index] = action.payload;
-        },
-        updateSubtask: (state, action) => {
-            const { taskId, subtaskId, status } = action.payload;
-
-            const task = state.list.find( t => t._id === taskId);
-            if (!task) return;
-
-            const subtask = task.subtasks.find( s => s._id === subtaskId);
-            if (subtask) {
-                subtask.status = status
-            }
-        }
     }
 })
 
@@ -57,7 +36,7 @@ export const selectTaskStats = createSelector([selectAllTasks], (tasks) => {
 
 export const selectPendingTasks = createSelector([selectAllTasks], (tasks) => {
     const pendingStatuses = ["Ongoing","Not Started","Doing","Review","Doing","Backlog","To Do"];
-    const pendingTasks = tasks.filter((t) => pendingStatuses.includes(t.status));
+    const pendingTasks = tasks.filter((t) => pendingStatuses.includes(t.status)&& !t.isArchived);
 
     return pendingTasks;
 })
