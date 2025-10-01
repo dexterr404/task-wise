@@ -1,12 +1,17 @@
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
+import { createClient } from "@supabase/supabase-js";
+import { isSpam } from '../utils/isSpam.js';
+import { sanitizeMessage } from '../utils/sanitizeMessage.js';
 
 dotenv.config();
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 export const getInsights = async (req, res) => {
   const { id }  = req.params;
@@ -21,29 +26,8 @@ export const getInsights = async (req, res) => {
       model: "gpt-4o-mini",
       messages: [
         {
-          role: "system",
-          content: `You are a task planning assistant. 
-        You ONLY reply in JSON format with this structure:
-        {
-        "insights": ["short actionable insight", "..."]
-        }
-
-        Guidelines:
-        - Return ONLY the most impactful insights across ALL tasks (never one per task).
-        - Keep them BRIEF, ENERGETIC, and ACTIONABLE (like a witty coach cheering you on with guidance and tips💪).
-        - Prioritize:
-          1. Critical personal/health/family tasks ❤️.
-          2. Urgent or high-priority work/projects 🚀.
-          3. Helpful or fun extras (travel tips, productivity hacks, creativity) 🌍.
-        - Adapt to context:
-          • Travel → give 1 prep step + 1 fun/local activity 🧳.
-          • Creative → suggest a momentum-building first step 🎨.
-          • Work → give a focus strategy, shortcut, or batching idea 💼.
-          • Tools to use in the context of the user task
-        - Use emojis naturally for quick scanning.
-        - Never split one task into multiple insights.
-        - Ignore trivial tasks unless nothing else exists.
-        `
+          "role": "system",
+          "content": "You are an ultra-smart task planning assistant. Reply ONLY in valid JSON with this structure:{\"insights\":[\"string\",\"string\",\"string\"]}\n\nRules:\n- Each element in \"insights\" MUST be a plain string (no objects, no keys, no labels).\n- Generate EXACTLY one unique insight for EACH task provided.\n- Each insight must be 1–3 sentences: concise, energetic, and laser-focused 💡.\n- Match each insight to its task’s context (study, work, creative, personal, etc.).\n- Always suggest a concrete micro-action, tool, or clever shortcut 🚀.\n- Prioritize tone: sharp, tactical, and fun — like a coach pointing out the exact next move.\n\nExample:\n{\"insights\":[\"🌍 Focus only on the greenhouse effect; summarize it in 3 bullet points on a sticky note, then quiz yourself once before bed.\",\"🎧 Grab 3 ambient wind samples from Freesound.org and layer them in your map — don’t worry about mixing yet, just test mood.\",\"✍️ Write 3 lines of dialogue for your character that hint at their secret — don’t edit, just get raw material down.\",\"💌 Send your mom a 1-line text to check in — it’ll take 30s but make her smile.\"]}"
         },
         {
           role: "user",
@@ -82,5 +66,73 @@ export const getInsights = async (req, res) => {
   } catch (error) {
     console.error("Error in getInsights:", error);
     res.status(500).json({ message: "OpenAI request error", error: error.message });
+  }
+};
+
+export const chatWithHelpBot = async (req, res) => {
+  try {
+    let { message, conversation = [] } = req.body;
+
+    message = sanitizeMessage(message);
+
+    if (isSpam(message)) {
+      return res.json({
+        reply: "⚠️ Your message seems invalid or spammy. Please enter a proper question.",
+        conversation,
+      });
+    }
+
+    // Generate embedding for user message
+    const embRes = await client.embeddings.create({
+      model: "text-embedding-3-small",
+      input: message
+    });
+    const queryEmbedding = embRes.data[0].embedding;
+
+    // Query Supabase RPC for top 3 most relevant chunks
+    const { data: chunks, error } = await supabase
+      .rpc("match_helpbot_vectors", { query: queryEmbedding });
+
+    if (error) {
+      console.error("Supabase RAG query error:", error);
+      return res.status(500).json({ error: "Failed to fetch relevant chunks." });
+    }
+
+    // Combine relevant chunks into a single context string
+    const contextText = chunks.map(c => c.chunk).join("\n\n");
+
+    // Build the conversation for GPT
+    const updatedConversation = [
+      { 
+        role: "system", 
+        content: `You are HelpBot, a friendly assistant that only answers questions about TaskWise. 
+              Always give concise, helpful answers using the provided FAQ/context. 
+              If the answer is not in the FAQ/context, respond with: 
+              "Sorry, I don’t know that. Please check TaskWise documentation or support."`
+      },
+      { 
+        role: "system", 
+        content: `Use the following FAQ/context to answer questions:\n${contextText}` 
+      },
+      ...conversation,
+      { role: "user", content: message }
+    ];
+
+    // Call GPT
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: updatedConversation
+    });
+
+    const reply = response.choices[0].message.content;
+
+    updatedConversation.push({ role: "assistant", content: reply });
+
+    // Return the answer and updated conversation
+    res.json({ reply, conversation: updatedConversation });
+
+  } catch (error) {
+    console.error("HelpBot Error:", error);
+    res.status(500).json({ error: "Something went wrong with HelpBot." });
   }
 };
