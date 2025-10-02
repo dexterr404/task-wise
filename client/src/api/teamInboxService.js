@@ -7,7 +7,8 @@ export async function getTeamInbox(teamId,searchQuery="") {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data;

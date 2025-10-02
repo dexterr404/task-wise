@@ -10,6 +10,7 @@ export async function fetchAllTasks(userId,sort, filters = [], searchQuery="") {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      withCredentials: true,
     });
   return res.data;
 };
@@ -29,6 +30,7 @@ export async function createTask(userId, title, description, deadline, priority,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      withCredentials: true,
     }
   );
   return res.data;
@@ -42,6 +44,7 @@ export async function deleteTask(userId,taskId) {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      withCredentials: true,
     }
   );
   return res.data;
@@ -55,6 +58,7 @@ export async function editTask(userId,taskId,updatedTask) {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      withCredentials: true,
     }
   );
   return res.data;
@@ -68,6 +72,7 @@ export async function updateUndoneTask(userId,taskId,updatedTask) {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
+    withCredentials: true,
   });
   return res.data
 }
@@ -79,6 +84,7 @@ export async function duplicateTask(userId,duplicateTask) {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
+    withCredentials: true,
   });
   return res.data
 }
@@ -91,6 +97,7 @@ export async function updateSubTask(userId, taskId, updatedTask) {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      withCredentials: true,
     }
   );
   return res.data;
@@ -104,6 +111,7 @@ export async function updateDoneTask(userId,taskId,updatedTask) {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
+    withCredentials: true,
   });
   return res.data
 }
@@ -116,7 +124,8 @@ export async function archiveTask(userId,taskId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data
@@ -129,7 +138,8 @@ export async function unArchiveTask(userId,taskId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data

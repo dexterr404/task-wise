@@ -23,7 +23,8 @@ export async function getCurrentUser() {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data

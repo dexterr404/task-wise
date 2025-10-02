@@ -7,7 +7,8 @@ export async function fetchComments(taskId,teamId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data
@@ -20,7 +21,8 @@ export async function fetchCommentsCount(taskId,teamId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data.count
@@ -37,7 +39,8 @@ export async function addComment(taskId, teamId, formData) {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data"
-      }
+      },
+      withCredentials: true,
     }
   );
 

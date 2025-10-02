@@ -6,7 +6,8 @@ export async function fetchNotification( filter="unread" ) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data;
@@ -19,7 +20,8 @@ export async function markAsRead(notifId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data
@@ -32,7 +34,8 @@ export async function markAllAsRead() {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data

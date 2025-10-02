@@ -9,7 +9,8 @@ export async function getInsights(tasks,id) {
             {
                 headers: {
                     Authorization: `Bearer ${token}`
-                }
+                },
+                withCredentials: true,
             }
         )
         return res.data;

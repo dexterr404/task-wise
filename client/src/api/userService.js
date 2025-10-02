@@ -7,7 +7,8 @@ export async function getUser(id) {
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      withCredentials: true
     }
   );
   return res.data
@@ -24,6 +25,7 @@ export async function updateProfile(id, formData) {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true
     }
   );
   return res.data;
@@ -37,7 +39,8 @@ export async function updateFocus(id, focus) {
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      withCredentials: true
     }
   );
   return res.data;

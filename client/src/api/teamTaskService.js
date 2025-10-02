@@ -9,7 +9,8 @@ export async function createTeamTask(teamId,title,description,deadline,priority,
         {
             headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data
 }
@@ -20,7 +21,8 @@ export async function getUserTeamTasks() {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data
@@ -34,7 +36,8 @@ export async function getTeamTasks(teamId, searchQuery="", filters=[], sort) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     );
     return res.data
@@ -47,7 +50,8 @@ export async function updateTeamTask(teamId,taskId,updatedTask) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data.task
@@ -59,7 +63,8 @@ export async function deleteTeamTask(teamId,taskId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data
@@ -73,7 +78,8 @@ export async function toggleSubtaskStatus(teamId,taskId,subtaskId,status) {
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data
@@ -86,7 +92,8 @@ export async function archiveTeamTask(teamId,taskId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data
@@ -99,7 +106,8 @@ export async function unArchiveTeamTask(teamId,taskId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data
@@ -112,7 +120,8 @@ export async function updateDoneTeamTask(teamId,taskId,updatedTask) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data.task
@@ -125,7 +134,8 @@ export async function updateUndoneTeamTask(teamId,taskId,updatedTask) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data.task
@@ -138,7 +148,8 @@ export async function duplicatTeamTask(teamId,duplicateTask) {
         {
             headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data
 }
@@ -150,7 +161,8 @@ export async function updateTeamSubtask(teamId,taskId,updatedTask) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true
         }
     )
     return res.data.task

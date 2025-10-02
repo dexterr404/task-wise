@@ -9,7 +9,8 @@ export async function addTeam(name,description) {
     },{
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data;
 }
@@ -20,7 +21,8 @@ export async function getTeams() {
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams`,{
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data;
 }
@@ -31,7 +33,8 @@ export async function getTeamsById(teamId) {
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}`,{
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data.team;
 }
@@ -42,7 +45,8 @@ export async function deleteTeam(teamId) {
     const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}`,{
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true
     });
     return res.data;
 }
@@ -55,7 +59,8 @@ export async function updateTeam(teamId,name,description) {
     }, {
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        withCredentials: true,
     });
     return res.data;
 }
@@ -72,7 +77,8 @@ export async function joinTeamByToken(inviteToken) {
   const res = await axios.post(
     `${import.meta.env.VITE_API_URL}/api/teams/invite/${inviteToken}/join`,
     {},
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true, }
   );
   return res.data.message;
 }
@@ -92,7 +98,8 @@ export async function removeUserFromTeam(teamId,memberId) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     );
     return res.data
@@ -106,7 +113,8 @@ export async function changeUserRole(teamId,memberId,newRole) {
         {
             headers: {
                 Authorization: `Bearer ${token}`
-            }
+            },
+            withCredentials: true,
         }
     )
     return res.data

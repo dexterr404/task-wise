@@ -23,9 +23,13 @@ const PORT = process.env.PORT || 5001;
 
 app.use(
     cors({
-        origin: ["http://localhost:5173",process.env.APP_BASE_URL]
+        origin: ["http://localhost:5173", process.env.APP_BASE_URL],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true
     })
 );
+
 app.use(express.json());
 app.use(passport.initialize());
 app.use(rateLimiter);
