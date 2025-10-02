@@ -37,6 +37,18 @@ html, body {
   --color-accent: #383838;
 }
 
+.card-container {
+  perspective: 190px;
+}
+
+.card {
+  transform: rotateX(-10deg) rotateY(15deg);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.card:hover {
+  transform: rotateX(0deg) rotateY(0deg);
+}
 
 .scrollbar-auto-hide::-webkit-scrollbar {
   width: 8px;

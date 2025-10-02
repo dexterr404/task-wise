@@ -69,7 +69,7 @@ export default function TaskCalendar() {
             getTasksForDate(currentDate).map((task, idx) => (
               <span
                 key={idx}
-                className="text-xs ml-4 text-text-secondary flex items-center gap-1 break-words"
+                className="text-sm ml-4 text-text-secondary flex items-center gap-1 break-words"
               >
                 {idx+1 + `. `+task.title}
               </span>

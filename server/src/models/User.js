@@ -12,6 +12,15 @@ const userSchema = new mongoose.Schema({
         insights: [String],
         createdAt: { type: Date, default: Date.now }
     },
+    subscription: {
+        plan: { type: String, enum: ["free", "pro"], default: "free" },
+        paypalSubscriptionId: { type: String },
+        status: { type: String, enum: ["active", "canceled", "past_due"], default: "active" },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        quotaUsed: { type: Number, default: 0 },
+        quotaLimit: { type: Number, default: 50 },
+    }
 }, { timestamps: true });
 
 //Hash the password before save

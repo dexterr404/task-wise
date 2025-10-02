@@ -31,9 +31,9 @@ function Task() {
     const handleSortChange = (option) => setSort(option);
 
 
-    return<main className="flex flex-col h-dvh bg-bg text-gray-600 lg:ml-[200px] font-inter">
+    return<main className="flex flex-col h-dvh bg-bg text-gray-600 lg:ml-[200px]">
         <Toaster position="top-center" reverseOrder={false} />
-        <section className="flex items-center justify-between bg-surface border-1 border-border lg:ml-[100px] px-4 py-2 sm:mx-10 relative">
+        <section className="flex items-center justify-between bg-surface border-1 border-border lg:ml-[100px] px-4 py-4 sm:mx-10 relative">
             <h1 className="font-semibold text-text-primary">My tasks</h1>
             <SearchTaskInput setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative lg:block max-md:hidden w-[300px]"/>
             <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>

@@ -11,6 +11,7 @@ import CreateTeamModal from "../../features/team/CreateTeamModal";
 import StringAvatar from "../ui/StringAvatar";
 import LeftPanelCloseIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import SettingsModal from "../../features/user/SettingsModal";
+import Logo from "../../assets/taskwise.svg";
 
 function SideBar() {
   const [isNavOpen, setNavOpen] = useState(true);
@@ -20,7 +21,6 @@ function SideBar() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { teamId } = useParams();
 
   const user = useSelector((state) => state.user);
   const queryClient = useQueryClient();
@@ -74,18 +74,17 @@ function SideBar() {
   //Make sure the sidebar is able to be toggled
   return isNavOpen ? (
     <aside className="fixed left-0 top-0 h-full w-[250px] bg-surface px-12 py-20 z-100 border-r-1 border-border">
-      <div className="relative h-full flex flex-col gap-10">
+      <div className="relative h-full flex flex-col items-center gap-8">
         <div
           className="absolute top-[-48px] right-[-24px] cursor-pointer block lg:hidden"
           onClick={() => setNavOpen(false)}
         >
-          <LeftPanelCloseIcon className="text-gray-500" />
+        <LeftPanelCloseIcon className="text-gray-500 mx-auto" />
         </div>
-        <div className="font-bold text-4xl text-text-primary relative font-caveat">
-          TaskWise.
-          <span className="absolute top-[-8px] right-[-8px]">✏️</span>
+        <div className="flex items-center gap-0.5">
+          <img src={Logo} alt="Logo" className="size-18"/>
+          <span className="text-text-primary text-xl">TaskWise</span>
         </div>
-
         <nav className="flex-1 flex flex-col justify-between gap-1text-sm">
           <div>
             <span className="text-xs text-text-secondary font-semibold">Menu</span>

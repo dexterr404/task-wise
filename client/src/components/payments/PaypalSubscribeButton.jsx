@@ -1,29 +1,76 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-function PayPalSubscribeButton({ planId, userId }) {
+function PayPalSubscribeButton({ planId, userId, user }) {
+  const navigate = useNavigate();
+  const paypalRef = useRef(null);
+
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_CLIENT_ID}&vault=true&intent=subscription`;
-    script.async = true;
-    script.onload = () => {
-      window.paypal.Buttons({
-        style: { shape: "rect", color: "silver", layout: "vertical", label: "subscribe" },
-        createSubscription: function (data, actions) {
-          return actions.subscription.create({ plan_id: planId });
-        },
-        onApprove: function (data) {
-          fetch(`${import.meta.env.VITE_API_URL}/api/paypal/save-subscription`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, subscriptionId: data.subscriptionID }),
-          });
-        }
-      }).render("#paypal-button-container");
-    };
-    document.body.appendChild(script);
-  }, [planId, userId]);
+    if (!user || !userId) return;
 
-  return <div id="paypal-button-container"></div>;
+    if (paypalRef.current.hasChildNodes()) return;
+
+    if (window.paypal) {
+      renderButton();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://www.paypal.com/sdk/js?client-id=${
+      import.meta.env.VITE_PAYPAL_CLIENT_ID
+    }&vault=true&intent=subscription`;
+    script.async = true;
+    script.onload = renderButton;
+    document.body.appendChild(script);
+
+    function renderButton() {
+      window.paypal
+        .Buttons({
+          style: {
+            shape: "rect",
+            color: "gold",
+            layout: "horizontal",
+            label: "subscribe",
+            tagline: false,
+          },
+          createSubscription: function (data, actions) {
+            return actions.subscription.create({
+              plan_id: planId,
+              application_context: {
+                shipping_preference: "NO_SHIPPING",
+              },
+            });
+          },
+          onApprove: function (data) {
+            fetch(
+              `${import.meta.env.VITE_API_URL}/api/paypal/save-subscription`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  userId,
+                  subscriptionId: data.subscriptionID,
+                }),
+              }
+            );
+          },
+        })
+        .render(paypalRef.current);
+    }
+  }, [planId, userId, user]);
+
+  if (!user || !userId) {
+    return (
+      <button
+        onClick={() => navigate("/login?redirect=/")}
+        className="bg-[#febd59] hover:bg-[#fbc94a] cursor-pointer text-black font-semibold px-6 py-2 rounded-md"
+      >
+        Subscribe
+      </button>
+    );
+  }
+
+  return <div ref={paypalRef}></div>;
 }
 
 export default PayPalSubscribeButton;

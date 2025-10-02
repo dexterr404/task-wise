@@ -67,10 +67,10 @@ function Teams() {
             </main>;
 
   return (
-    <main className="flex flex-col h-screen bg-bg px-10 pb-2 text-text-primary lg:ml-[250px] pl-10 font-inter max-sm:p-0">
+    <main className="flex flex-col h-screen bg-bg px-10 pb-2 text-text-primary lg:ml-[250px] pl-10 max-sm:p-0">
       <Toaster position="top-center" reverseOrder={false}/>
       <header className="flex gap-1 bg-surface items-center justify-between text-sm px-2 py-4 border-x-1 border-border">
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-1 items-center font-semibold">
             <StringAvatar  name={currentTeam.name}/>
             <h1>{currentTeam.name}</h1>
         </div>

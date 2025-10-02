@@ -9,12 +9,11 @@ export const notifyUser = async (userOrId, payload) => {
   return await Notification.create({ user: userId, ...rest });
 };
 
-export const notifyUsers = async(usersId, payload) => {
-  const notifications = usersId.map(userId => 
-    notifyUser(userId, payload)
-  );
-  return await Promise.all(notifications);
+export const notifyUsers = async (usersId, payload) => {
+  const docs = usersId.map(userId => ({ user: normalizeUserId(userId), ...payload }));
+  return await Notification.insertMany(docs);
 };
+
 
 export const notifyTeamMembers = async (team,payload,task) => {
 

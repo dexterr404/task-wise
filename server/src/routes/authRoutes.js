@@ -11,6 +11,6 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/google", saveRedirect, startGoogleAuth);
 router.get("/google/callback", passport.authenticate("google", { session: false, failureRedirect: "/login" }), googleAuthCallback);
-router.get("/me", protect, getCurrentUser); 
+router.get("/me", protect, getCurrentUser);
 
 export default router;

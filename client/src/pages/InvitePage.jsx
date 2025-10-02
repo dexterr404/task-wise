@@ -43,7 +43,7 @@ export function InvitePage() {
         toast("👑 You're the team owner");
       }
       setTimeout(() => {
-        navigate(`/dashboard/${user.id}`);
+        navigate(`/dashboard/`);
       }, 2000);
     } catch (error) {
       toast.error("Failed to join the team");
