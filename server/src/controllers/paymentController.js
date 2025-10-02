@@ -1,49 +1,58 @@
-import paypal from "@paypal/checkout-server-sdk";
+import axios from "axios";
 import User from "../models/User.js";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config();
 
-// Configure PayPal client
-//const environment = new paypal.core.LiveEnvironment(
-  //process.env.PAYPAL_CLIENT_ID,
-  //process.env.PAYPAL_CLIENT_SECRET
-//);
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
+const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID;
 
-const environment = new paypal.core.SandboxEnvironment(
-  process.env.PAYPAL_CLIENT_ID,
-  process.env.PAYPAL_CLIENT_SECRET
- );
+// PayPal API base URL
+const PAYPAL_API = process.env.NODE_ENV === "production"
+  ? "https://api-m.paypal.com"
+  : "https://api-m.sandbox.paypal.com";
 
-const client = new paypal.core.PayPalHttpClient(environment);
+// Base64 encode client ID and secret for basic auth
+const PAYPAL_AUTH = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
+
+// Verify PayPal webhook
+async function verifyWebhook(headers, body) {
+  try {
+    const res = await axios.post(
+      `${PAYPAL_API}/v1/notifications/verify-webhook-signature`,
+      {
+        auth_algo: headers["paypal-auth-algo"],
+        cert_url: headers["paypal-cert-url"],
+        transmission_id: headers["paypal-transmission-id"],
+        transmission_sig: headers["paypal-transmission-sig"],
+        transmission_time: headers["paypal-transmission-time"],
+        webhook_id: PAYPAL_WEBHOOK_ID,
+        webhook_event: body
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${PAYPAL_AUTH}`
+        }
+      }
+    );
+
+    return res.data.verification_status === "SUCCESS";
+  } catch (err) {
+    console.error("Error verifying webhook:", err.response?.data || err);
+    return false;
+  }
+}
 
 export const handlePaypalWebhook = async (req, res) => {
   const webhookEvent = req.body;
-
-  // PayPal webhook headers
-  const transmissionId = req.headers["paypal-transmission-id"];
-  const timestamp = req.headers["paypal-transmission-time"];
-  const webhookId = process.env.PAYPAL_WEBHOOK_ID;
-  const signature = req.headers["paypal-transmission-sig"];
-  const certUrl = req.headers["paypal-cert-url"];
-  const authAlgo = req.headers["paypal-auth-algo"];
+  const headers = req.headers;
 
   try {
-    // Verify webhook signature
-    const request = new paypal.notifications.VerifyWebhookSignatureRequest();
-    request.requestBody({
-      auth_algo: authAlgo,
-      cert_url: certUrl,
-      transmission_id: transmissionId,
-      transmission_sig: signature,
-      transmission_time: timestamp,
-      webhook_id: webhookId,
-      webhook_event: webhookEvent
-    });
+    const isVerified = await verifyWebhook(headers, webhookEvent);
 
-    const response = await client.execute(request);
-
-    if (response.result.verification_status !== "SUCCESS") {
+    if (!isVerified) {
       console.error("PayPal webhook verification failed");
       return res.status(400).send("Webhook verification failed");
     }
@@ -78,7 +87,6 @@ export const handlePaypalWebhook = async (req, res) => {
         console.log("Unhandled PayPal event:", webhookEvent.event_type);
     }
 
-    // Respond to PayPal
     res.sendStatus(200);
   } catch (error) {
     console.error("Error handling PayPal webhook:", error);
@@ -86,7 +94,8 @@ export const handlePaypalWebhook = async (req, res) => {
   }
 };
 
-export const paypalSaveSubscription = async(req,res) => {
+// Save subscription from frontend onApprove
+export const paypalSaveSubscription = async (req, res) => {
   const { userId, subscriptionId } = req.body;
 
   if (!userId || !subscriptionId) {
@@ -96,7 +105,11 @@ export const paypalSaveSubscription = async(req,res) => {
   try {
     const user = await User.findByIdAndUpdate(
       userId,
-      { "subscription.paypalSubscriptionId": subscriptionId, "subscription.status": "active", "subscription.startDate": new Date() },
+      {
+        "subscription.paypalSubscriptionId": subscriptionId,
+        "subscription.status": "active",
+        "subscription.startDate": new Date()
+      },
       { new: true }
     );
 
@@ -107,4 +120,4 @@ export const paypalSaveSubscription = async(req,res) => {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
