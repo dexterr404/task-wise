@@ -11,6 +11,7 @@ import teamTaskRoutes from "./routes/teamTaskRoutes.js"
 import commentsRoutes from "./routes/commentsRoutes.js"
 import teamInboxRoutes from "./routes/teamInbox.js"
 import notificationRoutes from "./routes/notificationRoutes.js"
+import paymentRoutes from "./routes/paymentRoutes.js"
 import { connectDB } from "./config/db.js"
 import rateLimiter from "./middleware/rateLimiter.js"
 
@@ -39,6 +40,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/personal",taskRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/payment", paymentRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/teams", teamTaskRoutes);
 app.use("/api/teams", commentsRoutes);

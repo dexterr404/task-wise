@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { paypalSaveSubscription } from "../../api/paymentService";
 
 function PayPalSubscribeButton({ planId, userId, user }) {
   const navigate = useNavigate();
@@ -42,17 +43,9 @@ function PayPalSubscribeButton({ planId, userId, user }) {
             });
           },
           onApprove: function (data) {
-            fetch(
-              `${import.meta.env.VITE_API_URL}/api/paypal/save-subscription`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  userId,
-                  subscriptionId: data.subscriptionID,
-                }),
-              }
-            );
+            paypalSaveSubscription(userId, data.subscriptionID)
+            .then(res => console.log("Subscription saved:", res))
+            .catch(err => console.error(err));
           },
         })
         .render(paypalRef.current);
