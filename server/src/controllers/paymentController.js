@@ -62,7 +62,11 @@ export const handlePaypalWebhook = async (req, res) => {
       case "BILLING.SUBSCRIPTION.ACTIVATED":
         await User.findOneAndUpdate(
           { "subscription.paypalSubscriptionId": webhookEvent.resource.id },
-          { "subscription.status": "active", "subscription.startDate": new Date() }
+          { "subscription.status": "active", "subscription.startDate": new Date(webhookEvent.resource.start_time), 
+            "subscription.nextBillingDate": webhookEvent.resource.billing_info?.next_billing_time
+            ? new Date(webhookEvent.resource.billing_info.next_billing_time)
+            : null 
+          }
         );
         console.log("Activated subscription:", webhookEvent.resource.id);
         break;
@@ -96,7 +100,8 @@ export const handlePaypalWebhook = async (req, res) => {
 
 // Save subscription from frontend onApprove
 export const paypalSaveSubscription = async (req, res) => {
-  const { userId, subscriptionId } = req.body;
+  const { subscriptionId } = req.body;
+  const userId = req.user._id;
 
   if (!userId || !subscriptionId) {
     return res.status(400).json({ message: "Missing userId or subscriptionId" });
@@ -108,7 +113,8 @@ export const paypalSaveSubscription = async (req, res) => {
       {
         "subscription.paypalSubscriptionId": subscriptionId,
         "subscription.status": "active",
-        "subscription.startDate": new Date()
+        "subscription.startDate": new Date(),
+        "subscription.plan": "pro"
       },
       { new: true }
     );
@@ -119,5 +125,33 @@ export const paypalSaveSubscription = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Cancel subscription
+export const cancelPaypalSubscription = async (req, res) => {
+  const { subscriptionId, reason } = req.body;
+  const userId = req.user._id;
+  try {
+    await axios.post(
+      `${PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}/cancel`,
+      { reason: reason || "User requested cancellation" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${PAYPAL_AUTH}`
+        }
+      }
+    );
+
+    await User.findOneAndUpdate(
+      { _id: userId, "subscription.paypalSubscriptionId": subscriptionId },
+      { "subscription.status": "canceled", "subscription.endDate": new Date(), "subscription.plan": "free" }
+    );
+
+    res.status(200).json({ message: "Subscription cancelled successfully" });
+  } catch (error) {
+    console.error("Error cancelling subscription:", error.response?.data || error);
+    res.status(500).json({ message: "Failed to cancel subscription" });
   }
 };

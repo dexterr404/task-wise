@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { paypalSaveSubscription } from "../../api/paymentService";
+import { paypalSaveSubscription } from "../../api/subscriptionService";
 
 function PayPalSubscribeButton({ planId, userId, user }) {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ function PayPalSubscribeButton({ planId, userId, user }) {
             });
           },
           onApprove: function (data) {
-            paypalSaveSubscription(userId, data.subscriptionID)
+            paypalSaveSubscription(data.subscriptionID)
             .then(res => console.log("Subscription saved:", res))
             .catch(err => console.error(err));
           },

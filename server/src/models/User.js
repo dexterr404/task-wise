@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
         status: { type: String, enum: ["active", "canceled", "past_due"], default: "active" },
         startDate: { type: Date },
         endDate: { type: Date },
+        nextBillingDate: { type: Date },
         quotaUsed: { type: Number, default: 0 },
         quotaLimit: { type: Number, default: 50 },
     }
