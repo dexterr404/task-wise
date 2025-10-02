@@ -1,5 +1,5 @@
 import express from "express"
-import { handlePaypalWebhook, paypalSaveSubscription } from "../controllers/paymentController";
+import { handlePaypalWebhook, paypalSaveSubscription } from "../controllers/paymentController.js";
 
 const router = express.Router();
 
