@@ -175,14 +175,14 @@ export function Landing() {
                 </div>
             </div>
         </section>
-        <section id="features" className="h-screen snap-start">
+        <section id="features" className="snap-start">
             <FeaturesSection />
         </section>
-        <section id="pricing" className="h-screen snap-start">
+        <section id="pricing" className="snap-start">
             <PricingPlans user={user} />
         </section>
         <ChatBot />
-        <section id="support" className="h-screen snap-start">
+        <section id="support" className="snap-start">
             <ContactSection />
         </section>
         <section className="snap-start">

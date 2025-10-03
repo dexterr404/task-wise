@@ -13,7 +13,7 @@ export default function PricingPlans({user}) {
       features: [
         "Basic Task Management – Create, edit, and track personal and team tasks",
         "Visual Dashboard – Get a clear overview of tasks, progress, and deadlines",
-        "Limited Tasks & Teams – Organize simple projects or workflows",
+        "Unlimited Tasks but Limited Teams – Organize simple projects or workflows",
         "AI Insights – Longer duration between requests",
       ],
       cta: "Get for free",
@@ -25,8 +25,7 @@ export default function PricingPlans({user}) {
         "Basic Task Management – Create, edit, and track personal and team tasks",
         "Visual Dashboard – Get a clear overview of tasks, progress, and deadlines",
         "Unlimited Tasks & Teams – Scale up without limits",
-        "AI Insights – Short duration between requests",
-        "Customization & Themes – Advanced layouts & colors",
+        "AI Insights – Shorter duration between requests",
       ],
       cta: "Purchase",
     },
