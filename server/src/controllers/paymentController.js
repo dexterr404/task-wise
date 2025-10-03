@@ -59,17 +59,34 @@ export const handlePaypalWebhook = async (req, res) => {
 
     // Handle subscription events
     switch (webhookEvent.event_type) {
-      case "BILLING.SUBSCRIPTION.ACTIVATED":
+      case "BILLING.SUBSCRIPTION.ACTIVATED": {
+        const subscriptionId = webhookEvent.resource.id;
+        const startDate = new Date(webhookEvent.resource.start_time);
+        const nextBillingDate = webhookEvent.resource.billing_info?.next_billing_time
+          ? new Date(webhookEvent.resource.billing_info.next_billing_time)
+          : null;
+
         await User.findOneAndUpdate(
-          { "subscription.paypalSubscriptionId": webhookEvent.resource.id },
-          { "subscription.status": "active", "subscription.startDate": new Date(webhookEvent.resource.start_time), 
-            "subscription.nextBillingDate": webhookEvent.resource.billing_info?.next_billing_time
-            ? new Date(webhookEvent.resource.billing_info.next_billing_time)
-            : null 
+          { "subscription.paypalSubscriptionId": subscriptionId },
+          {
+            "subscription.status": "active",
+            "subscription.startDate": startDate,
+            "subscription.nextBillingDate": nextBillingDate,
+            $push: {
+              invoices: {
+                subscriptionId,
+                amount: 5,
+                currency: "USD",
+                paidAt: startDate,
+                paypalPaymentId: `init-${subscriptionId}`,
+              },
+            },
           }
         );
-        console.log("Activated subscription:", webhookEvent.resource.id);
+
+        console.log("Activated subscription + initial invoice:", subscriptionId);
         break;
+      }
 
       case "BILLING.SUBSCRIPTION.CANCELLED":
         await User.findOneAndUpdate(
@@ -78,6 +95,35 @@ export const handlePaypalWebhook = async (req, res) => {
         );
         console.log("Cancelled subscription:", webhookEvent.resource.id);
         break;
+
+      case "BILLING.SUBSCRIPTION.PAYMENT.SUCCEEDED": {
+        const subscriptionId = webhookEvent.resource.billing_agreement_id || webhookEvent.resource.id;
+        const amount = webhookEvent.resource.amount?.value
+          ? parseFloat(webhookEvent.resource.amount.value)
+          : 0;
+        const currency = webhookEvent.resource.amount?.currency_code || "USD";
+        const paidAt = new Date(webhookEvent.resource.time || webhookEvent.resource.create_time);
+        const paypalPaymentId = webhookEvent.resource.id;
+
+        await User.findOneAndUpdate(
+          { "subscription.paypalSubscriptionId": subscriptionId },
+          {
+            $set: { "subscription.status": "active" },
+            $push: {
+              invoices: {
+                subscriptionId,
+                amount,
+                currency,
+                paidAt,
+                paypalPaymentId,
+              },
+            },
+          }
+        );
+
+        console.log("Payment succeeded, invoice saved:", paypalPaymentId);
+        break;
+      }
 
       case "BILLING.SUBSCRIPTION.PAYMENT.FAILED":
         await User.findOneAndUpdate(
@@ -156,68 +202,36 @@ export const cancelPaypalSubscription = async (req, res) => {
   }
 };
 
-export const getBilling = async(req,res) => {
+export const getBilling = async (req, res) => {
   const userId = req.user._id;
 
   try {
     const user = await User.findById(userId);
-    if(!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    let paymentMethod = null;
-    let invoices = [];
-    let price = 0;
-    let nextBillingDate = null;
+    const subscription = {
+      plan: user.subscription.plan,
+      status: user.subscription.status,
+      nextBillingDate: user.subscription.nextBillingDate,
+    };
 
-    if(user.subscription.paypalSubscriptionId) {
-      const subscriptionId = user.subscription.paypalSubscriptionId;
-
-      //Fetch subscription info from Paypal
-      const response = await axios.get(`${process.env.PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}`,
-        {
-          headers: {
-            Authorization: `Basic ${Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64")}`,
-          },
-        }
-      );
-
-      nextBillingDate = subscriptionData.billing_info?.next_billing_time
-        ? new Date(subscriptionData.billing_info.next_billing_time)
-        : null;
-
-      const subscriptionData = response.data;
-
-      //Card info
-      const card = subscriptionData.billing_info?.last_payment_source?.card;
-      if(card) {
-        paymentMethod = {
-          brand: card.brand,
-          last4: card.last_digits,
-          expMonth: card.exp_month,
-          expYear: card.exp_year,
-        }
-      }
-      
-
-      //Price per billing cycle
-      price = subscriptionData.billing_info?.cycle_executions?.[0]?.amount?.value || 0;
-
-      res.json({
-      subscription: {
-        plan: user.subscription.plan,
-        status: user.subscription.status,
-        nextBillingDate,
-        price,
-      },
-      paymentMethod,
-      billingInfo: {
-        company: user.billingInfo?.company || "Acme Corp",
-        taxId: user.billingInfo?.taxId || "PH-1234567",
-        address: user.billingInfo?.address || "123 Main St, Manila, PH",
-      },
-    });
+    // Latest invoice = last payment
+    const latestInvoice = user.invoices[user.invoices.length - 1] || null;
+    if (latestInvoice) {
+      subscription.price = latestInvoice.amount;
+      subscription.currency = latestInvoice.currency;
+    } else {
+      subscription.price = user.subscription.plan === "pro" ? 5 : 0;
+      subscription.currency = "USD";
     }
+    console.log(subscription);
+
+    res.json({
+      subscription,
+      invoices: user.invoices,
+    });
   } catch (error) {
-    console.log("Error fetching billing details");
+    console.error("Error fetching billing details:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};

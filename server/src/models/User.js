@@ -19,7 +19,16 @@ const userSchema = new mongoose.Schema({
         startDate: { type: Date },
         endDate: { type: Date },
         nextBillingDate: { type: Date },
+    },
+    invoices: [
+    {
+        subscriptionId: String,
+        amount: Number,
+        currency: String,
+        paidAt: Date,
+        paypalPaymentId: String
     }
+    ]
 }, { timestamps: true });
 
 //Hash the password before save
