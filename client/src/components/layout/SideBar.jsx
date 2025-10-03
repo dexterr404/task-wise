@@ -176,10 +176,16 @@ function SideBar() {
           </div>
         </nav>
       </div>
-      <CreateTeamModal open={createTeam} onClose={() => setCreateTeam(false)} 
+      <CreateTeamModal 
+      open={createTeam} 
+      onClose={() => setCreateTeam(false)} 
       onAddTeam={(teamName,teamDescription) =>
-        addTeamMutation.mutateAsync(teamName,teamDescription)} 
-      setSelectedTeam={setSelectedTeam}/>
+        addTeamMutation.mutateAsync(teamName,teamDescription)
+      } 
+      setSelectedTeam={setSelectedTeam} 
+      teams={teamsList}
+      user={user}
+      />
       <SettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </aside>
   ) : (

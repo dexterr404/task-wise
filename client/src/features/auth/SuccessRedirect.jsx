@@ -49,6 +49,7 @@ export function SuccessRedirect() {
               profileImage: currentUser.profileImage,
               focus: currentUser.focus,
               insights: currentUser.insights,
+              subscription: currentUser.subscription
             })
           );
           localStorage.setItem("user", JSON.stringify({
@@ -58,6 +59,7 @@ export function SuccessRedirect() {
               profileImage: currentUser.profileImage,
               focus: currentUser.focus,
               insights: currentUser.insights,
+              subscription: currentUser.subscription
             }));
         }
 

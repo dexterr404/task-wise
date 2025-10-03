@@ -15,7 +15,7 @@ function CancelSubscriptionModal({open,onClose,onCancel,isLoading}) {
         sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 1 },
       }}
     >
-      <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 1, py: 1 }}>
+      <DialogTitle sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", alignItems: "center", gap: 1, py: 1, fontSize: 14 }}>
         <NotInterested sx={{ color: colors.darkerblue }}/>Are you sure you want to cancel your subscription?
       </DialogTitle>
       <Divider sx={{ borderColor: "var(--color-border)"}}/>
@@ -29,7 +29,10 @@ function CancelSubscriptionModal({open,onClose,onCancel,isLoading}) {
             Back
           </Button>  
           <Button
-            onClick={onCancel}
+            onClick={() => {
+              onCancel();
+              onClose();
+            }}
             disabled={isLoading}
             variant="contained"
             sx={{ fontSize: "12px", backgroundColor: colors.lighterblue, "&:hover": { backgroundColor: colors.darkerblue }, textTransform: "none", marginRight: "14px" }}

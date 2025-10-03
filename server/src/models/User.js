@@ -19,8 +19,6 @@ const userSchema = new mongoose.Schema({
         startDate: { type: Date },
         endDate: { type: Date },
         nextBillingDate: { type: Date },
-        quotaUsed: { type: Number, default: 0 },
-        quotaLimit: { type: Number, default: 50 },
     }
 }, { timestamps: true });
 

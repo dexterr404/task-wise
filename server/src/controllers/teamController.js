@@ -13,6 +13,20 @@ import { notifyUser } from "../services/notificationService.js";
 export const addTeam = async(req,res) => {
     try {
         const { name,description } = req.body;
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+
+        const teams = await Team.find({
+          $or: [
+            { owner: userId },
+            { "members.user": userId }
+          ]
+        });
+
+        if(user?.subscription?.plan === "free" && teams.length >=3) {
+          return res.status(403).json({ message: "Quota exceeded"});
+        }
         const inviteToken = crypto.randomBytes(16).toString("hex");
         const newTeam = new Team({ name, description, owner: req.user._id,
             members: [{ user: req.user._id, role: "Leader", joinedAt: new Date() }],
@@ -208,9 +222,6 @@ export const removeUserFromTeam = async(req,res) => {
         const { memberId, teamId } = req.params;
         const userId =  req.user._id;
         const member = await User.findById(memberId);
-
-        console.log("userId:", userId.toString());
-        console.log("memberId:", member._id.toString());
         
         const team = await Team.findById(teamId);
         if(!team) {

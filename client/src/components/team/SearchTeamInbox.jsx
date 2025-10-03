@@ -27,7 +27,7 @@ function SearchTeamInbox({ setSearchQuery, searchQuery }) {
         value={inputValue}
         className="w-full pl-9 pr-3 py-2 text-sm font-light rounded-full border border-border 
                    bg-bg text-text-primary placeholder-text-secondary
-                    shadow-sm focus:outline-none focus:ring-2 focus:text-text-primary
+                    shadow-sm focus:outline-none focus:ring-1 focus:text-text-secondary
                     transition-all"
       />
     </div>

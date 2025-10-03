@@ -67,9 +67,9 @@ function Teams() {
             </main>;
 
   return (
-    <main className="flex flex-col h-screen bg-bg px-10 pb-2 text-text-primary lg:ml-[250px] pl-10 max-sm:p-0">
+    <main className="flex flex-col min-h-screen  bg-bg/90 shadow-xl backdrop-blur-md border border-accent/20 transition-colors duration-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-indigo-200/10 before:to-purple-400/10 before:pointer-events-none px-10 pb-2 text-text-primary lg:ml-[250px] pl-10 max-sm:p-0">
       <Toaster position="top-center" reverseOrder={false}/>
-      <header className="flex gap-1 bg-surface items-center justify-between text-sm px-2 py-4 border-x-1 border-border">
+      <header className="flex gap-1 items-center justify-between text-sm z-50 px-2 py-4 ">
         <div className="flex gap-1 items-center font-semibold">
             <StringAvatar  name={currentTeam.name}/>
             <h1>{currentTeam.name}</h1>
@@ -84,7 +84,7 @@ function Teams() {
         </div>
         <ShareDialog inviteToken={currentTeam.inviteToken} teamId={currentTeam._id} open={shareDialog} onClose={() => setShareDialog(false)}/>
       </header>
-      <section className="flex-1 bg-surface border-1 border-border">
+      <section className="flex-1 bg-surface border-1 z-40 border-border rounded-2xl p-2">
         <section className="flex items-center justify-between text-sm bg-surface border-b-1 border-border">
           <div className="flex">
             <Button

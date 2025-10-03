@@ -155,3 +155,69 @@ export const cancelPaypalSubscription = async (req, res) => {
     res.status(500).json({ message: "Failed to cancel subscription" });
   }
 };
+
+export const getBilling = async(req,res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if(!user) return res.status(404).json({ message: "User not found" });
+
+    let paymentMethod = null;
+    let invoices = [];
+    let price = 0;
+    let nextBillingDate = null;
+
+    if(user.subscription.paypalSubscriptionId) {
+      const subscriptionId = user.subscription.paypalSubscriptionId;
+
+      //Fetch subscription info from Paypal
+      const response = await axios.get(`${process.env.PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}`,
+        {
+          headers: {
+            Authorization: `Basic ${Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64")}`,
+          },
+        }
+      );
+
+      nextBillingDate = subscriptionData.billing_info?.next_billing_time
+        ? new Date(subscriptionData.billing_info.next_billing_time)
+        : null;
+
+      const subscriptionData = response.data;
+
+      //Card info
+      const card = subscriptionData.billing_info?.last_payment_source?.card;
+      if(card) {
+        paymentMethod = {
+          brand: card.brand,
+          last4: card.last_digits,
+          expMonth: card.exp_month,
+          expYear: card.exp_year,
+        }
+      }
+      
+
+      //Price per billing cycle
+      price = subscriptionData.billing_info?.cycle_executions?.[0]?.amount?.value || 0;
+
+      res.json({
+      subscription: {
+        plan: user.subscription.plan,
+        status: user.subscription.status,
+        nextBillingDate,
+        price,
+      },
+      paymentMethod,
+      billingInfo: {
+        company: user.billingInfo?.company || "Acme Corp",
+        taxId: user.billingInfo?.taxId || "PH-1234567",
+        address: user.billingInfo?.address || "123 Main St, Manila, PH",
+      },
+    });
+    }
+  } catch (error) {
+    console.log("Error fetching billing details");
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

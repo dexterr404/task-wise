@@ -31,18 +31,24 @@ function Task() {
     const handleSortChange = (option) => setSort(option);
 
 
-    return<main className="flex flex-col h-dvh bg-bg text-gray-600 lg:ml-[200px]">
+    return<main className="flex flex-col h-dvh bg-bg/90
+  rounded-2xl
+  shadow-xl
+  backdrop-blur-md
+  border border-accent/20
+  transition-colors duration-300
+  before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-indigo-200/10 before:to-purple-400/10 before:pointer-events-none lg:ml-[200px]">
         <Toaster position="top-center" reverseOrder={false} />
-        <section className="flex items-center justify-between bg-surface border-1 border-border lg:ml-[100px] px-4 py-4 sm:mx-10 relative">
+        <section className="flex items-center justify-between lg:ml-[100px] px-4 py-4 sm:mx-10 relative">
             <h1 className="font-semibold text-text-primary">My tasks</h1>
             <SearchTaskInput setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative lg:block max-md:hidden w-[300px]"/>
             <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </section>
-        <section className="flex justify-center bg-surface border-x-1 border-border sm:mx-10 ">
+        <section className="flex justify-center border-x-1 border-border sm:mx-10 ">
             <SearchTaskInput  setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
         </section>
         <Recommended setIsCreateTaskOpen={setIsCreateTaskOpen} setSelectedCategory={setSelectedCategory}/>
-        <section className="flex justify-between bg-surface border-1 border-border items-center sm:mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2">
+        <section className="flex justify-between bg-surface border-1 border-border items-center sm:mx-10 lg:ml-[100px] max-sm:flex-col-reverse max-sm:gap-2 z-50">
             <div className="flex gap-6">
                 <div className={`relative ${activeSection === "archive" && "hidden"} px-4`}>
                     <Tooltip title="Filter">
@@ -92,7 +98,7 @@ function Task() {
             <CreateTask open={isCreateTaskOpen} categoryName={selectedCategory} onClose={()=>setIsCreateTaskOpen(false)} 
              onAddTask={(taskData) => onAddTask({...taskData})}/> 
         </section>
-        <section className="flex flex-col lg:ml-[100px] sm:mx-10 flex-1">
+        <section className="flex flex-col lg:ml-[100px] sm:mx-10 flex-1 z-50">
             <div className="flex justify-stretch flex-col gap-2 h-full bg-surface border-x border-border">
                 {
                     activeSection === "tasks" && <TasksList isLoading={isQueryLoading} tasks={tasks}/>

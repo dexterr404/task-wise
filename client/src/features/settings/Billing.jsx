@@ -1,4 +1,4 @@
-export function Billing() {
+export function Billing({billingData}) {
     return<section className="bg-bg rounded-2xl p-6 shadow-md sm:w-100 lg:w-120">
       {/* Header */}
       <h1 className="text-lg font-semibold text-text-primary mb-6">
@@ -9,7 +9,7 @@ export function Billing() {
       <div className="mb-6">
         <h2 className="text-sm font-medium text-text-primary mb-2">Payment Method</h2>
         <div className="flex justify-between items-center border border-border p-3 rounded-lg">
-          <p className="text-sm text-text-secondary">Visa •••• 4242 (exp 12/26)</p>
+          <p className="text-sm text-text-secondary">{`${billingData?.paymentMethod?.brand} •••• 4242 (exp 12/26)`}</p>
           <button className="text-text-secondary text-sm hover:underline">
             Update
           </button>

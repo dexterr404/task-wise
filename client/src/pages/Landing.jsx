@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { demo } from "../data/card";
-import { Menu, People, Person } from "@mui/icons-material";
+import { Menu, Person } from "@mui/icons-material";
 import { useEffect,useState } from "react";
 import { getCurrentUser } from "../api/authService";
+import { useQuery } from "@tanstack/react-query";
 
 import Logo from "../assets/taskwise.svg";
 import StaticTaskCard from "../components/ui/StaticCard";
@@ -16,21 +17,14 @@ import Footer from "../components/layout/Footer";
 
 
 export function Landing() {
-  const [user, setUser] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const navigate = useNavigate();
 
-    useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getCurrentUser();
-        setUser(data);
-      } catch (err) {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
+  const {data: user,} = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+    retry: false,
+  });
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -49,6 +43,14 @@ export function Landing() {
     sections.forEach((sec) => observer.observe(sec));
     return () => observer.disconnect();
   }, []);
+
+   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (section) {
+      scrollTo(section);
+    }
+  }, [location]);
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);

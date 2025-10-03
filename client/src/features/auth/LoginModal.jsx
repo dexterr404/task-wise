@@ -37,10 +37,10 @@ function LoginModal() {
         const data = await loginUser(email, password);
 
         dispatch(loginSuccess({ token: data.token }));
-        dispatch(addUser({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus, insights: data.insights}));
+        dispatch(addUser({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus, insights: data.insights, subscription: data.subscription}));
 
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus, insights: data.insights }));
+        localStorage.setItem("user", JSON.stringify({ id: data._id, name: data.name, email: data.email, profileImage: data.profileImage, focus: data.focus, insights: data.insights, subscription: data.subscription }));
     } catch (error) {
         console.log(error);
         if (error.response?.data?.message) {

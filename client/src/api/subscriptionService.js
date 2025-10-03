@@ -42,3 +42,16 @@ export async function paypalCancelSubscription(subscriptionId) {
   }
 }
 
+export async function getBillingDetails() {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/payment/billing`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  );
+  return res.data
+}
+

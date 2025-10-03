@@ -20,7 +20,7 @@ function Recommended({ setIsCreateTaskOpen, setSelectedCategory }) {
   ];
 
   return (
-    <div className="flex flex-col gap-x-2 gap-y-6 bg-surface lg:ml-[100px] p-4 sm:mx-10 border-x-1 border-border">
+    <div className="flex flex-col gap-x-2 gap-y-6 mt-0.5 bg-surface lg:ml-[100px] p-4 sm:mx-10 border-x-1 border-border rounded-t-2xl z-50">
       <h1 className="font-semibold text-text-primary">Recommended Categories</h1>
       <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-x-4 gap-y-4">
         {categories.map((category, index) => (

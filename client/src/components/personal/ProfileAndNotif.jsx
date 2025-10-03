@@ -39,7 +39,7 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
   const unreadNotifCount = data?.filter(notif => !notif.isRead).length;
 
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-3 items-center z-60">
       {/* Notifications */}
       <div className="relative">
         <Tooltip title="Notifications">

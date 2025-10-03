@@ -17,6 +17,11 @@ function DailyDigest() {
   const [generate, setGenerate] = useState(true);
   const [remainingTime, setRemainingTime] = useState(0);
 
+  const getCooldownDuration = () => {
+    if (!user?.subscription) return 12 * 60 * 60 * 1000;
+    return user?.subscription?.plan === "pro" ? 30 * 60 * 1000 : 12 * 60 * 60 * 1000;
+  };
+
   // Format tasks for AI prompt
   const formattedTasks = useMemo(
     () =>
@@ -37,9 +42,10 @@ function DailyDigest() {
     if (!user?.insights?.createdAt || !user?.insights?.insights?.length)
       return 0;
     const now = new Date();
-    const createdAt = new Date(user.insights.createdAt);
-    const diff = 12 * 60 * 60 * 1000 - (now - createdAt);
-    return diff > 0 ? diff : 0;
+    const lastCreated = new Date(user.insights.createdAt).getTime();
+    const cooldown = getCooldownDuration();
+    const remaining = cooldown - (now - lastCreated);
+    return remaining > 0 ? remaining : 0;
   };
 
   // Format milliseconds into hh:mm:ss
@@ -79,7 +85,7 @@ function DailyDigest() {
       dispatch(addUser(updatedUser));
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      setRemainingTime(12 * 60 * 60 * 1000); // start new 12-hour countdown
+      setRemainingTime(getCooldownDuration());
       setGenerate(false);
     } catch (error) {
       toast.error("Failed to generate insights");

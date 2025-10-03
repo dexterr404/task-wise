@@ -5,12 +5,16 @@ import { colors } from "../../data/colors";
 import toast from "react-hot-toast";
 
 
-function CreateTeamModal({ open, onClose, onAddTeam }) {
+function CreateTeamModal({ open, onClose, onAddTeam, teams, user }) {
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateTeam = async() => {
+    if (user?.subscription?.plan === "free" && teams.length >= 3) {
+      return toast.error("Free plan allows up to 3 teams. Upgrade to Pro for more.");
+    }
+
     if (!teamName.trim() || !description.trim()){
         return toast.error("Please enter all the fields");
     }
@@ -115,7 +119,7 @@ function CreateTeamModal({ open, onClose, onAddTeam }) {
         </Button>
         <Button
           onClick={handleCreateTeam}
-          disabled={isLoading}
+          disabled={isLoading || (user?.subscription?.plan === "free" && teams.length >= 3)}
           variant="contained"
           sx={{ fontSize: "12px", backgroundColor: "#2E7D32", "&:hover": { backgroundColor: "#388E3C" }, textTransform: "none", marginRight: "14px" }}
         >

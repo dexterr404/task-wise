@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { useSelector,useDispatch } from "react-redux"
+import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query"
 import { Dialog, DialogContent, IconButton } from "@mui/material";
-import { Toaster } from "react-hot-toast";
 import { Autorenew, Payment, Person, Settings, Tune, Close } from "@mui/icons-material";
+import { getCurrentUser } from "../../api/authService";
+import { toast, Toaster } from "react-hot-toast"
+import { getBillingDetails, paypalCancelSubscription } from "../../api/subscriptionService";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../api/userService";
+import { addUser } from "./userSlice";
 
 import Account from "../settings/Account";
 import Personalization from "../settings/Personalization";
@@ -10,10 +15,39 @@ import Subscription from "../settings/Subscription";
 import Billing from "../settings/Billing";
 
 function SettingsModal({ open, onClose }) {
+  const queryClient = useQueryClient();
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const [section, setSection] = useState("account");
+
+  const { data } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+    enabled: open,
+  });
+
+  const { data:billing } = useQuery({
+    queryKey: ["billingDetails"],
+    queryFn: () => getBillingDetails(),
+    enabled: open,
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: () => paypalCancelSubscription(data?.subscription?.paypalSubscriptionId),
+    onSuccess: async() => {
+      toast.success("Subscription successfully canceled");
+      const updatedUser = await getUser(user.id);
+      dispatch(addUser(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      queryClient.invalidateQueries(["currentUser"]);
+    },
+    onError: (error) => {
+      console.error("Failed to cancel subscription", error);
+      toast.error("Failed to cancel subscription");
+    },
+  });
+
 
   return (
     <Dialog
@@ -52,10 +86,10 @@ function SettingsModal({ open, onClose }) {
             section === "personalization" && <Personalization />
           }
           {
-            section === "subscription" && <Subscription />
+            section === "subscription" && <Subscription data={data} onCancel={() => cancelMutation.mutateAsync()} isLoading={cancelMutation.isLoading}/>
           }
           {
-            section === "billing" && <Billing />
+            section === "billing" && <Billing billingData={billing}/>
           }
         </section>
       </DialogContent>

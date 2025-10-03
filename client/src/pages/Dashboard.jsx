@@ -81,9 +81,9 @@ function Dashboard() {
 
 
 
-    return<main className="flex flex-col h-dvh bg-bg py-2 text-gray-600 lg:ml-[200px] gap-1 font-inter">
+    return<main className="flex flex-col min-h-screen py-2 gap-2 text-primary font-inter lg:ml-[200px] relative bg-bg/90 rounded-2xl shadow-xl backdrop-blur-md border border-accent/20 transition-colors duration-300 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-indigo-200/10 before:to-purple-400/10 before:pointer-events-none">
         <Toaster position="top-center" reverseOrder={false} />
-        <section className="flex items-start justify-between lg:ml-[100px] p-4 mx-10 max-sm:mx-1 relative">
+        <section className="flex items-start justify-between lg:ml-[100px] py-2 px-4 mx-10 max-sm:mx-1 relative">
             <div className="flex flex-col gap-0">
                 <h1 className="p-0 font-bold text-text-primary">Dashboard</h1>
                 <Greeting user={user} />
@@ -93,13 +93,13 @@ function Dashboard() {
         <section className="flex justify-center">
             
         </section>
-        <section className="lg:ml-[100px] mx-10 max-sm:mx-1">
+        <section className="lg:ml-[100px] mx-10 max-sm:mx-1 z-50">
             <MetricsCard total={total} done={done} ongoing={ongoing} pending={pending}/>
         </section>
         <div className="lg:ml-[100px] mx-10 max-sm:mx-1">
             <Insight />
         </div>
-        <section className="mx-10 pb-10 lg:ml-[100px] max-sm:mx-1">
+        <section className="mx-10 pb-10 lg:ml-[100px] max-sm:mx-1 z-50">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-5">
                     <TaskCalendar />
