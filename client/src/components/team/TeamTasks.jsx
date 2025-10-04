@@ -1,10 +1,9 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect,useRef } from "react";
 import { useQuery} from "@tanstack/react-query";
 import { Button,IconButton, Tooltip, Typography } from "@mui/material";
 import { Window,TableRows,FormatListBulleted, Archive,AddBox, FilterList, Sort } from "@mui/icons-material";
 import { getTeamTasks} from "../../api/teamTaskService";
 import { useTeamTasks } from "../../hooks/useTeamTasks";
-import { colors } from "../../data/colors";
 
 import CreateTask from "../../features/task/CreateTaskModal";
 import TeamTaskKanban from "./TeamTaskKanban";
@@ -18,7 +17,7 @@ import TeamTaskSkeleton from "../skeleton/TeamTaskSkeleton";
 
 
 export function TeamTasks({team}) {
-    const { onAddTask,onEditTask } = useTeamTasks(team._id);
+    const { onAddTask,onEditTasksBatch } = useTeamTasks(team._id);
 
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
     const [columns, setColumns] = useState({});
@@ -54,6 +53,8 @@ export function TeamTasks({team}) {
         if (data?.columns) setColumns(data.columns);
     }, [data]);
 
+    const debounceRef = useRef(null);
+
     const handleDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -65,31 +66,36 @@ export function TeamTasks({team}) {
     const sourceItems = Array.from(newColumns[sourceCol]);
     const destItems = sourceCol === destCol ? sourceItems : Array.from(newColumns[destCol]);
 
-    // 1. Remove from source
+    // Remove from source
     const [movedTask] = sourceItems.splice(source.index, 1);
 
-    // 2. Insert into destination
+    // Insert into destination
     destItems.splice(destination.index, 0, movedTask);
 
-    // 3. Update columns locally
+    // Update columns locally
     newColumns[sourceCol] = sourceCol === destCol ? destItems : sourceItems;
-    newColumns[destCol] = destCol !== sourceCol ? destItems : newColumns[destCol];
+    newColumns[destCol] = sourceCol !== destCol ? destItems : newColumns[destCol];
 
     setColumns(newColumns);
 
-    // 4. Helper to update only tasks that actually changed
-    const updateTasks = (tasks, columnId) => {
+    // Collect all tasks that actually changed
+    const tasksToUpdate = [];
+    Object.entries(newColumns).forEach(([colId, tasks]) => {
         tasks.forEach((task, index) => {
-            // Only update if order or column changed
-            if (task.order !== index || task.status !== columnId) {
-                onEditTask({ taskId: task._id, order: index, status: columnId });
-            }
+        if (task.order !== index || task.status !== colId) {
+            tasksToUpdate.push({ taskId: task._id, order: index, status: colId });
+        }
         });
-    };
+    });
 
-    // 5. Update source and destination
-    updateTasks(newColumns[sourceCol], sourceCol);
-        if (sourceCol !== destCol) updateTasks(newColumns[destCol], destCol);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    // Call batch update
+    debounceRef.current = setTimeout(() => {
+      if (tasksToUpdate.length > 0) {
+        onEditTasksBatch(tasksToUpdate);
+      }
+    }, 5000);
     };
 
     const handleSortChange = (option) => setSort(option);

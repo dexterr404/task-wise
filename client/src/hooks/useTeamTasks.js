@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTeamTasks, updateTeamTask, archiveTeamTask, unArchiveTeamTask, deleteTeamTask, createTeamTask, updateDoneTeamTask, updateUndoneTeamTask, duplicatTeamTask, updateTeamSubtask } 
+import { getTeamTasks, updateTeamTask, editMultipleTeamTask, archiveTeamTask, unArchiveTeamTask, deleteTeamTask, createTeamTask, updateDoneTeamTask, updateUndoneTeamTask, duplicatTeamTask, updateTeamSubtask } 
 from "../api/teamTaskService";
 import { toast } from "react-hot-toast";
 
@@ -45,6 +45,17 @@ export const useTeamTasks = (teamId) => {
         if (error?.response?.status === 429) return;
         toast.error("Failed update task");
     }
+  });
+
+  const batchUpdateMutation = useMutation({
+    mutationFn: (tasks) => editMultipleTeamTask(teamId, tasks),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['teamTasks', teamId]);
+    },
+    onError: (error) => {
+      if (error?.response?.status === 429) return;
+      toast.error("Failed to update tasks");
+    },
   });
 
   // Delete team task mutation
@@ -148,6 +159,7 @@ export const useTeamTasks = (teamId) => {
     error,
     onAddTask: (taskData) => addMutation.mutateAsync(taskData),
     onEditTask: (taskData) => updateMutation.mutateAsync(taskData),
+    onEditTasksBatch: (tasks) => batchUpdateMutation.mutateAsync(tasks),
     onArchiveTask: archiveMutation.mutateAsync,
     onUnArchiveTask: unArchiveMutation.mutateAsync,
     onDeleteTask: deleteMutation.mutateAsync,

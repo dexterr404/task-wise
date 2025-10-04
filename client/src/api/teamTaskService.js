@@ -57,6 +57,19 @@ export async function updateTeamTask(teamId,taskId,updatedTask) {
     return res.data.task
 }
 
+export async function editMultipleTeamTask(teamId,tasks) {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/batch-update`,
+        { tasks },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+    return res.data
+}
+
 export async function deleteTeamTask(teamId,taskId) {
     const token = localStorage.getItem("token");
     const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/teams/${teamId}/tasks/${taskId}`,

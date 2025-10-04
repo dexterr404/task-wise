@@ -1,6 +1,6 @@
 import express from "express"
 import { protect } from "../middleware/authMiddleware.js";
-import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask, toggleSubtaskStatus, archiveTeamTask, unArchiveTeamTask, getUserTeamTasks } from "../controllers/teamTaskController.js";
+import { getTeamTasks,createTeamTask,updateTeamTask,deleteTeamTask, toggleSubtaskStatus, archiveTeamTask, unArchiveTeamTask, getUserTeamTasks, updateMultipleTasks } from "../controllers/teamTaskController.js";
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ router.patch("/:teamId/tasks/:taskId/subtask/:subtaskId", protect, toggleSubtask
 router.delete("/:teamId/tasks/:taskId", protect, deleteTeamTask);
 router.put("/:teamId/tasks/:taskId/archive", protect, archiveTeamTask);
 router.put("/:teamId/tasks/:taskId/unArchive", protect, unArchiveTeamTask);
+router.put("/:teamId/tasks/batch-update", protect, updateMultipleTasks);
 
 export default router;

@@ -7,6 +7,8 @@ import { sendInviteEmail } from "../services/emailService.js";
 import { inboxJoinUser, inboxKickUser, inboxLeftUser, inboxTeamInfoChange, inboxUserRoleChange } from "../services/teamService.js";
 import { notificationTemplates } from "../utils/notificationTemplate.js";
 import { notifyUser } from "../services/notificationService.js";
+import { isProActive } from "../utils/isProActive.js"
+import { PLAN_TEAM_LIMITS } from "../data/planLimits.js";
 
 
 //Create new team
@@ -166,36 +168,60 @@ export const joinTeamByToken = async (req, res) => {
     const { inviteToken } = req.params;
     const userId = req.user._id;
 
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get plan and pro status
+    const plan = user.subscription?.plan || "free";
+    const isPro = isProActive(user.subscription);
+
+    // Count how many teams the user is in (as owner or member)
+    const teamCount = await Team.countDocuments({
+      $or: [{ owner: userId }, { "members.user": userId }],
+    });
+
+    // Get team limit based on plan
+    const maxTeams = PLAN_TEAM_LIMITS[plan]?.maxTeams ?? 0;
+    console.log(!isPro && teamCount >= maxTeams);
+
+    // Restrict free plan users only
+    if (!isPro && teamCount >= maxTeams) {
+      return res.status(403).json({
+        message: `Free plan users can only join up to ${maxTeams} teams. Upgrade to Pro for more.`,
+      });
+    }
+
+    // Find team by invite token
     const team = await Team.findOne({ inviteToken });
     if (!team) {
       return res.status(404).json({ message: "Invalid Link" });
     }
 
-    // owner check
+    // Owner check
     if (team.owner.toString() === userId.toString()) {
       return res.status(200).json({ message: "You're already the owner", team });
     }
 
-    // already a member check
+    // Already a member check
     const isMember = team.members.find(m => m.user.toString() === userId.toString());
     if (isMember) {
-      return res.status(200).json({ message: "Already a member", team });
+      return res.status(400).json({ message: "Already a member" });
     }
 
-    // add new member
+    // Add new member
     team.members.push({ user: userId, role: "Member" });
     await team.save();
 
-    const user = await User.findById(userId);
+    // Notify inbox
+    await inboxJoinUser(team._id, user);
 
-    await inboxJoinUser(team._id,user);
-
-    return res.status(200).json({ message: "Joined team!", team });
+    return res.status(200).json({ message: "Joined team!" });
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("Error joining team:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 //Send a team email invitation
 export const sendTeamInviteEmail = async(req,res) => {
