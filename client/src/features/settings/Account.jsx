@@ -4,10 +4,8 @@ import { Button,IconButton } from "@mui/material";
 import { Save,PhotoCamera, Warning } from "@mui/icons-material";
 import { toast } from "react-hot-toast"
 import { updateProfile } from "../../api/userService";
-import { colors } from "../../data/colors";
 import { addUser } from "../user/userSlice";
 import defaultImage from "../../assets/Default Profiles/gamer.png"
-import { DeactivateModal } from "../user/DeactivateModal";
 
 export function Account() {
     const user = useSelector((state) => state.user);
@@ -96,13 +94,6 @@ export function Account() {
                     placeholder={user?.email || "Your Email"}
                     />
                 </div>
-                <span className="flex items-center border-b-1 border-gray-300 text-text-primary text-sm font-semibold"><Warning  sx={{ color: colors.darkRed, fontSize: 16}}/>Danger Zone</span>
-                <div className="flex gap-2 items-center max-sm:flex-col text-text-secondary text-xs">
-                    <Button 
-                    onClick={() => setDeactivate(true)}
-                    variant="filled" sx={{ bgcolor: colors.red, color: "white", "&:hover": { backgroundColor: colors.darkRed }, textTransform: "none", fontSize: 11, ml: 2, borderRadius: "4px",}}>Deactivate Account</Button>
-                    <span>This will permanently delete your account.</span>
-                </div>
                 </div>
             </div>
             <div className="flex justify-center mt-6">
@@ -128,9 +119,7 @@ export function Account() {
                 {isLoading ? <span>Saving</span> : <span>Save Changes</span>}
             </Button>
             </div>
-           
         </div>
-         <DeactivateModal open={isDeactive} onClose={() => setDeactivate(false)} />
     </section>
 }
 

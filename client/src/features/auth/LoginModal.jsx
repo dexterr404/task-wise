@@ -7,7 +7,7 @@ import { Button,IconButton } from "@mui/material";
 import { useState,useEffect } from "react";
 import { useNavigate,useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Visibility,VisibilityOff } from "@mui/icons-material";
+import { Visibility,VisibilityOff, West } from "@mui/icons-material";
 import  GoogleIcon  from "../../assets/google-icon.svg"
 import TaskIcon from "../../assets/task-icon.png"
 import { toast, Toaster } from "react-hot-toast";
@@ -68,7 +68,13 @@ function LoginModal() {
     return (
     <div className="flex flex-col h-dvh items-center justify-center">
         <Toaster position="top-center" reverseOrder={false} />
-        <div className="flex flex-col bg-white max-sm:px-4 px-24 py-18 shadow-lg rounded-lg items-center gap-4">
+        <div className="relative flex flex-col bg-white max-sm:px-4 px-24 py-18 shadow-lg rounded-lg items-center gap-4">
+            <IconButton
+            onClick={() => navigate("/")}
+            sx={{ position: "absolute", left: 14, top: 14, cursor: "pointer"}}
+            >
+                <West fontSize="small"/>
+            </IconButton>
             <div className="flex flex-col justify-center items-center mb-6">
                 <img width="24" height="24" src={TaskIcon} alt="task-icon"/>
                 <h1 className="text-2xl font-semibold">Let's Get Started</h1>

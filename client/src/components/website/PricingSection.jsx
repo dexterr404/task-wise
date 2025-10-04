@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
-import PayPalSubscribeButton from "./PaypalSubscribeButton";
 import { useNavigate } from "react-router-dom";
 
-export default function PricingPlans({user}) {
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
+import PayPalSubscribeButton from "../payments/PaypalSubscribeButton";
+
+
+export default function PricingSection({user}) {
   const navigate = useNavigate();
 
   const plans = [

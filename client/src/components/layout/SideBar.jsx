@@ -82,7 +82,7 @@ function SideBar() {
         <LeftPanelCloseIcon className="text-gray-500 mx-auto" />
         </div>
         <div className="flex items-center gap-0.5">
-          <img src={Logo} alt="Logo" className="size-18"/>
+          <img onClick={() => navigate("/")} src={Logo} alt="Logo" className="size-18 cursor-pointer"/>
           <span className="text-text-primary text-xl">TaskWise</span>
         </div>
         <nav className="flex-1 flex flex-col justify-between gap-1text-sm">
@@ -190,7 +190,7 @@ function SideBar() {
     </aside>
   ) : (
     <div
-      className="fixed top-3 left-3 cursor-pointer"
+      className="fixed top-3 left-3 cursor-pointer z-100"
       onClick={() => setNavOpen(true)}
     >
       <LeftPanelCloseIcon className="text-gray-500 rotate-180" />

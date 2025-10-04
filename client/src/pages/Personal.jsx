@@ -31,13 +31,7 @@ function Task() {
     const handleSortChange = (option) => setSort(option);
 
 
-    return<main className="flex flex-col h-dvh bg-bg/90
-  rounded-2xl
-  shadow-xl
-  backdrop-blur-md
-  border border-accent/20
-  transition-colors duration-300
-  before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-indigo-200/10 before:to-purple-400/10 before:pointer-events-none lg:ml-[200px]">
+    return<main className="flex flex-col h-dvh bg-bg/90 rounded-2xl shadow-xl backdrop-blur-md border border-accent/20 transition-colors duration-300 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-indigo-200/10 before:to-purple-400/10 before:pointer-events-none lg:ml-[200px]">
         <Toaster position="top-center" reverseOrder={false} />
         <section className="flex items-center justify-between lg:ml-[100px] px-4 py-4 sm:mx-10 relative">
             <h1 className="font-semibold text-text-primary">My tasks</h1>

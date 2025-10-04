@@ -20,8 +20,7 @@ export default function RegisterModal() {
      const navigate = useNavigate();
 
      const handleRegister = async(name,email,password) => {
-        setIsLoading(true);
-
+        
         if ( !name || !email || !password || !confirmPassword) {
             toast.error("Please fill in all fields");
             return;
