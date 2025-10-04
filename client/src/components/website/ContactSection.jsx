@@ -5,10 +5,14 @@ export default function ContactSection() {
   const [value, setValue] = useState("");
 
   return (
-    <section className="relative bg-gradient-to-r from-indigo-500 to-purple-600 text-white snap-start flex flex-col lg:flex-row items-start justify-between gap-8 px-8 py-40 overflow-hidden">
-      {/* Background Shapes */}
-      <div className="absolute top-20 left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-10 right-20 w-60 h-60 bg-purple-400/20 rounded-full blur-2xl"></div>
+<section className="relative min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-r from-white via-gray-50 to-white overflow-hidden py-40 px-8 gap-8">
+  {/* Background Blobs */}
+  <div className="absolute top-20 left-10 w-60 h-60 bg-purple-400/30 rounded-full blur-3xl"></div>
+  <div className="absolute bottom-20 right-20 w-72 h-72 bg-yellow-400/40 rounded-full blur-3xl"></div>
+  <div className="absolute top-40 right-1/3 w-56 h-56 bg-indigo-400/30 rounded-full blur-3xl"></div>
+  <div className="absolute bottom-32 left-1/4 w-48 h-48 bg-pink-400/30 rounded-full blur-3xl"></div>
+  
+
 
       {/* Info Side */}
       <motion.div

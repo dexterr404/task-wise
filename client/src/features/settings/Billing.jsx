@@ -1,64 +1,83 @@
-export function Billing({billingData}) {
-    return<section className="bg-bg rounded-2xl p-6 shadow-md sm:w-100 lg:w-120">
+export function Billing({ billingData }) {
+  const subscription = billingData?.subscription;
+  const invoices = billingData?.invoices || []; // <-- from backend
+
+  return (
+    <section className="bg-bg min-h-full rounded-2xl p-6 shadow-md sm:w-100 lg:w-120">
       {/* Header */}
       <h1 className="text-lg font-semibold text-text-primary mb-6">
         Billing & Payments
       </h1>
 
-      {/* Payment Method */}
-      <div className="mb-6">
-        <h2 className="text-sm font-medium text-text-primary mb-2">Payment Method</h2>
-        <div className="flex justify-between items-center border border-border p-3 rounded-lg">
-          <p className="text-sm text-text-secondary">{`${billingData?.paymentMethod?.brand} •••• 4242 (exp 12/26)`}</p>
-          <button className="text-text-secondary text-sm hover:underline">
-            Update
-          </button>
-        </div>
-      </div>
-
-      {/* Billing Info */}
-      <div className="mb-6">
-        <h2 className="text-sm font-medium text-text-primary mb-2">Billing Info</h2>
-        <div className="space-y-1 text-sm text-text-primary">
-          <p>Company: Acme Corp</p>
-          <p>Tax ID: PH-1234567</p>
-          <p>Address: 123 Main St, Manila, PH</p>
-        </div>
-        <button className="mt-2 text-text-secondary cursor-pointer text-sm hover:underline">
-          Edit
-        </button>
-      </div>
-
-      {/* Invoices */}
-      <div className="mb-6">
-        <h2 className="text-sm font-medium text-text-primary mb-2">Invoices</h2>
-        <div className="divide-y text-text-secondary divide-border text-sm">
-          <div className="flex justify-between py-2">
-            <span>Sep 25, 2025 — $29.00</span>
-            <button className="text-text-secondary hover:underline text-xs">
-              Download
-            </button>
-          </div>
-          <div className="flex justify-between py-2">
-            <span>Aug 25, 2025 — $29.00</span>
-            <button className="text-text-secondary hover:underline text-xs">
-              Download
-            </button>
-          </div>
-          <div className="flex justify-between py-2">
-            <span>Jul 25, 2025 — $29.00</span>
-            <button className="text-text-secondary hover:underline text-xs">
-              Download
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Next Payment */}
-      <div className="p-3 border border-border rounded-lg bg-bg text-sm text-text-secondary">
-        Next Payment: <span className="font-medium">$29.00</span> on Oct 25, 2025
+      <div className="p-3 border border-border rounded-lg bg-bg text-sm text-text-secondary mb-6">
+        Next Payment:{" "}
+        {billingData?.subscription?.plan === "pro" && billingData?.subscription?.status === "active" ? (
+          <>
+            <span className="font-medium">
+              {subscription?.price} {subscription?.currency || "USD"}
+            </span>{" "}
+            on{" "}
+            {subscription?.nextBillingDate
+              ? new Date(subscription.nextBillingDate).toLocaleDateString()
+              : "N/A"}
+          </>
+        ) : (
+          "N/A"
+        )}
+      </div>
+
+      {/* Invoices List */}
+      <div className="mt-4">
+        <h2 className="text-md font-semibold text-text-primary mb-3">
+          Invoices
+        </h2>
+        {invoices.length > 0 ? (
+          <div className="max-h-64 overflow-y-auto scrollbar-auto-hide border border-border rounded-lg">
+            <ul className="divide-y divide-border">
+              {/* Header row (sticky on desktop) */}
+              <li className="hidden sm:flex justify-between items-center font-medium text-text-primary bg-bg sticky top-0 p-3 z-10">
+                <span className="w-1/3">Amount</span>
+                <span className="w-1/3 text-center">Date</span>
+                <span className="w-1/3 text-right">Payment ID</span>
+              </li>
+
+              {invoices.map((invoice, idx) => (
+                <li
+                  key={idx}
+                  className="p-3 text-sm text-text-secondary flex flex-col sm:flex-row sm:items-center sm:justify-between"
+                >
+                  {/* Mobile stacked view */}
+                  <div className="flex flex-col sm:flex-row sm:w-1/3">
+                    <span className="font-medium sm:hidden">Amount: </span>
+                    <span>
+                      {invoice.amount} {invoice.currency}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:w-1/3 sm:justify-center">
+                    <span className="font-medium sm:hidden">Date: </span>
+                    <span>
+                      {new Date(invoice.paidAt).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:w-1/3 sm:justify-end">
+                    <span className="font-medium sm:hidden">Payment ID: </span>
+                    <span className="text-xs break-all">
+                      {invoice.paypalPaymentId}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="text-sm text-text-secondary flex justify-center">No invoices yet.</p>
+        )}
       </div>
     </section>
+  );
 }
 
-export default Billing
+export default Billing;

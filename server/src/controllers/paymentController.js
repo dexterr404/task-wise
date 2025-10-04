@@ -125,14 +125,33 @@ export const handlePaypalWebhook = async (req, res) => {
         break;
       }
 
-      case "BILLING.SUBSCRIPTION.PAYMENT.FAILED":
-        await User.findOneAndUpdate(
-          { "subscription.paypalSubscriptionId": webhookEvent.resource.id },
-          { "subscription.status": "past_due" }
-        );
-        console.log("Payment failed:", webhookEvent.resource.id);
-        break;
+      case "BILLING.SUBSCRIPTION.PAYMENT.FAILED": {
+        const subscriptionId = webhookEvent.resource.billing_agreement_id || webhookEvent.resource.id;
 
+        const user = await User.findOneAndUpdate(
+          {
+            "subscription.paypalSubscriptionId": subscriptionId,
+            "subscription.status": { $ne: "canceled" }
+          },
+          {
+            $set: {
+              "subscription.status": "past_due",
+              "subscription.endDate": new Date(),
+              "subscription.plan": "free"
+            }
+          },
+          { new: true }
+        );
+
+        if (user) {
+          console.log(`Payment failed → downgraded ${user.email} to free plan.`);
+        } else {
+          console.log(`Payment failed for subscriptionId ${subscriptionId}, but no active user found.`);
+        }
+
+        break;
+      }
+      
       default:
         console.log("Unhandled PayPal event:", webhookEvent.event_type);
     }
@@ -174,31 +193,53 @@ export const paypalSaveSubscription = async (req, res) => {
   }
 };
 
-// Cancel subscription
+//Cancel subscription but keep pro access until the end of the billing cycle
 export const cancelPaypalSubscription = async (req, res) => {
   const { subscriptionId, reason } = req.body;
   const userId = req.user._id;
+
   try {
+    //Get subscription details before cancellation
+    const { data: subscriptionDetails } = await axios.get(
+      `${PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${PAYPAL_AUTH}`,
+        },
+      }
+    );
+
+    const nextBillingDate = subscriptionDetails.billing_info?.next_billing_time
+      ? new Date(subscriptionDetails.billing_info.next_billing_time)
+      : null;
+
+    //Cancel subscription on PayPal
     await axios.post(
       `${PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}/cancel`,
       { reason: reason || "User requested cancellation" },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Basic ${PAYPAL_AUTH}`
-        }
+          Authorization: `Basic ${PAYPAL_AUTH}`,
+        },
       }
     );
 
+    //Update local user
     await User.findOneAndUpdate(
       { _id: userId, "subscription.paypalSubscriptionId": subscriptionId },
-      { "subscription.status": "canceled", "subscription.endDate": new Date(), "subscription.plan": "free" }
+      {
+        "subscription.status": "canceled",
+        "subscription.plan": "pro",
+        "subscription.endDate": nextBillingDate,
+      }
     );
 
-    res.status(200).json({ message: "Subscription cancelled successfully" });
+    res.status(200).json({ message: "Subscription canceled but Pro access active until next billing date." });
   } catch (error) {
-    console.error("Error cancelling subscription:", error.response?.data || error);
-    res.status(500).json({ message: "Failed to cancel subscription" });
+    console.error("Error canceling subscription:", error);
+    res.status(500).json({ message: "Failed to cancel PayPal subscription." });
   }
 };
 

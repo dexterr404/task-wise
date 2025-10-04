@@ -8,6 +8,8 @@ import { getBillingDetails, paypalCancelSubscription } from "../../api/subscript
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../api/userService";
 import { addUser } from "./userSlice";
+import { getTeams } from "../../api/teamService";
+import { isProActive } from "../../utils/isProActive";
 
 import Account from "../settings/Account";
 import Personalization from "../settings/Personalization";
@@ -26,6 +28,14 @@ function SettingsModal({ open, onClose }) {
     queryFn: getCurrentUser,
     enabled: open,
   });
+
+  const proActive = isProActive(data?.subscription);
+
+  const { data:teams } = useQuery({
+    queryKey: ["getTeams"],
+    queryFn: () => getTeams(),
+    enabled: open
+  })
 
   const { data:billing } = useQuery({
     queryKey: ["billingDetails"],
@@ -86,7 +96,7 @@ function SettingsModal({ open, onClose }) {
             section === "personalization" && <Personalization />
           }
           {
-            section === "subscription" && <Subscription data={data} onCancel={() => cancelMutation.mutateAsync()} isLoading={cancelMutation.isLoading}/>
+            section === "subscription" && <Subscription teams={teams} data={data} onCancel={() => cancelMutation.mutateAsync()} isLoading={cancelMutation.isLoading} proActive={proActive}/>
           }
           {
             section === "billing" && <Billing billingData={billing}/>

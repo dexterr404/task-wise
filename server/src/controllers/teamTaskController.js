@@ -147,7 +147,7 @@ export const createTeamTask = async(req,res) => {
 export const updateTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
-    const { title, description, priority, deadline, status, order, subtasks, assignedTo } = req.body;
+    const { title, description, priority, deadline, subtasks, assignedTo } = req.body;
     const userId = req.user._id;
 
     if(!teamId || !taskId) {
@@ -168,9 +168,6 @@ export const updateTeamTask = async(req,res) => {
     if(subtasks !== undefined && subtasks.length > 0) task.subtasks = subtasks;
     if (assignedTo !== undefined) task.assignedTo = assignedTo;
 
-    //Update the column and order for drag and drop
-    if (status !== undefined) task.status = status;
-    if (order !== undefined) task.order = order;
 
     await task.save();
 
@@ -214,6 +211,21 @@ export const updateTeamTask = async(req,res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+
+//Update team task status and order from dragging
+export const updateMultipleTasks = async (req, res) => {
+  const { tasks } = req.body;
+  const results = [];
+  for (const t of tasks) {
+    const task = await TeamTask.findOne({ _id: t.taskId, team: req.params.teamId });
+    if (!task) continue;
+    task.status = t.status;
+    task.order = t.order;
+    await task.save();
+    results.push(task);
+  }
+  return res.status(200).json(results);
+};
 
 //Delete team task
 export const deleteTeamTask = async(req,res) => {

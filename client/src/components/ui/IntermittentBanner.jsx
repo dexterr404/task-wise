@@ -25,6 +25,7 @@ function IntermittentBanner({text}) {
             position: "fixed",
             bottom: 90,
             right: 30,
+            zIndex: 100,
             background: "#6366f1",
             color: "white",
             padding: "10px 16px",

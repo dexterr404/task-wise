@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBillingDetails } from "../../api/subscriptionService";
 
-export function Subscription({data,onCancel,isLoading}) {
+export function Subscription({data,onCancel,isLoading,teams,proActive}) {
     const navigate = useNavigate();
     const [isCancel, setIsCancel] = useState(false);
+    const maxTeams = proActive ? Infinity : 3;
+    const teamCount = teams?.length || 0;
     
     return<section className="bg-bg rounded-2xl h-full p-6 shadow-md sm:w-100 lg:w-120">
         <div className="flex flex-col h-full gap-14 justify-between">
@@ -28,14 +30,22 @@ export function Subscription({data,onCancel,isLoading}) {
             {/* Current Plan */}
             <div className="mb-6">
                 <p className="text-sm text-text-secondary">Current Plan</p>
-                <p className="text-lg font-medium text-text-primary capitalize">{data?.subscription.plan || "Free"}</p>
+                <div className="text-sm">
+                {proActive ? (
+                    <p className="text-green-600 font-medium">
+                    Pro plan active until {new Date(data?.subscription?.nextBillingDate).toLocaleDateString()}
+                    </p>
+                ) : (
+                    <p className="text-text-secondary">Free plan</p>
+                )}
+                </div>
                 <p className="text-xs text-text-secondary">
                 Next renewal: {
-                    data?.subscription?.plan === "free"
-                    ? "N/A"
-                    : data?.subscription?.nextBillingDate
+                    data?.subscription?.status === "active"
+                    ? data?.subscription?.nextBillingDate
                         ? new Date(data.subscription.nextBillingDate).toLocaleDateString()
                         : "Not available"
+                    : "N/A"
                 }
                 </p>
             </div>
@@ -44,16 +54,20 @@ export function Subscription({data,onCancel,isLoading}) {
             <div className="space-y-4 mb-6">
                 <div>
                 <p className="text-sm font-medium text-text-secondary">
-                    Tasks <span className="text-xs text-text-secondary">(2,350 / 5,000)</span>
+                Teams{" "}
+                <span className="text-xs text-text-secondary">
+                    {proActive ? "Unlimited" : `${teamCount}/${maxTeams}`}
+                </span>
                 </p>
+
                 <div className="w-full bg-gray-200 h-2 rounded-full">
-                    <div className="bg-blue-600 h-2 rounded-full w-[47%]" />
+                <div
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{
+                    width: proActive ? "0%" : `${Math.min((teamCount / maxTeams) * 100, 100)}%`,
+                    }}
+                />
                 </div>
-                </div>
-                <div>
-                <p className="text-sm font-medium text-text-secondary">
-                    Team Members <span className="text-xs text-text-secondary">(18 / 25)</span>
-                </p>
                 </div>
             </div>
         </div>
@@ -61,7 +75,9 @@ export function Subscription({data,onCancel,isLoading}) {
       {/* Upgrade Options */}
       <div className="flex max-sm:flex-col gap-3">
         {(data?.subscription?.plan !== "pro" || data?.subscription?.status !== "active") && (
-            <button className="flex-1 px-3 py-2 bg-blue-600 text-white cursor-pointer text-sm rounded-lg hover:bg-blue-700">
+            <button
+            onClick={() => navigate("/?section=pricing")}
+            className="flex-1 px-3 py-2 bg-blue-600 text-white cursor-pointer text-sm rounded-lg hover:bg-blue-700">
                 Upgrade Plan
             </button>
         )}

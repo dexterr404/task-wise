@@ -34,21 +34,26 @@ export function InvitePage() {
   const handleAccept = async () => {
     setIsLoading(true);
     try {
-      const res = await joinTeamByToken(inviteToken);
-      if (res === "Joined team!") {
+      const message = await joinTeamByToken(inviteToken);
+
+      if (message === "Joined team!") {
         toast.success("🎉 You joined the team!");
-      } else if (res === "Already a member") {
+      } else if (message === "Already a member") {
         toast("✅ You're already in this team");
-      } else if (res === "You're already the owner") {
+      } else if (message === "You're the team owner") {
         toast("👑 You're the team owner");
+      } else if (message.includes("Free plan")) {
+        toast.error(message); // <-- free plan restriction
+      } else {
+        toast(message); // fallback
       }
+
       setTimeout(() => {
         navigate(`/dashboard/`);
       }, 2000);
     } catch (error) {
-      toast.error("Failed to join the team");
+      toast.error(error.response?.data?.message || "Failed to join the team");
       console.log("Error:", error);
-      setIsLoading(false);
     } finally {
       setTimeout(() => {
         setIsLoading(false);

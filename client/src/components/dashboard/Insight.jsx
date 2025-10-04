@@ -6,6 +6,7 @@ import { addUser } from "../../features/user/userSlice";
 import toast from "react-hot-toast";
 import { selectPendingTasks } from "../../features/task/taskSlice";
 import { Button, Tooltip } from "@mui/material";
+import { isProActive } from "../../utils/isProActive";
 
 function DailyDigest() {
   const tasks = useSelector(selectPendingTasks);
@@ -18,8 +19,11 @@ function DailyDigest() {
   const [remainingTime, setRemainingTime] = useState(0);
 
   const getCooldownDuration = () => {
-    if (!user?.subscription) return 12 * 60 * 60 * 1000;
-    return user?.subscription?.plan === "pro" ? 30 * 60 * 1000 : 12 * 60 * 60 * 1000;
+    if (!user?.subscription) return 12 * 60 * 60 * 1000; // fallback for no subscription
+
+    return isProActive(user.subscription)
+      ? 30 * 60 * 1000 // Pro active cooldown
+      : 12 * 60 * 60 * 1000; // Free cooldown
   };
 
   // Format tasks for AI prompt

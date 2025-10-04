@@ -27,7 +27,7 @@ function PayPalSubscribeButton({ planId, userId, user }) {
 
   useEffect(() => {
     if (!user || !userId) return;
-    if (user?.subscription?.plan === "pro") return;
+    if (user?.subscription?.plan === "pro" && user?.subscription?.status === "active") return;
 
     if (!paypalRef.current || paypalRef.current.hasChildNodes()) return;
 
@@ -90,7 +90,7 @@ function PayPalSubscribeButton({ planId, userId, user }) {
     );
   }
 
-  if (user?.subscription?.plan === "pro") {
+  if (user?.subscription?.plan === "pro" && user?.subscription?.status === "active") {
     return (
       <button
         disabled
