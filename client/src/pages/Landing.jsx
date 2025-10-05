@@ -1,19 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { demo } from "../data/card";
 import { useEffect,useState } from "react";
 import { getCurrentUser } from "../api/authService";
 import { useQuery } from "@tanstack/react-query";
 
-import Logo from "../assets/taskwise.svg";
-import StaticTaskCard from "../components/ui/StaticCard";
 import PricingSection from "../components/website/PricingSection";
 import ContactSection from "../components/website/ContactSection";
 import FeaturesSection from "../components/website/FeaturesSection";
-import ChatBot from "../components/ui/ChatBot";
 import Footer from "../components/layout/Footer";
 import WebsiteNavBar from "../components/layout/WebsiteNavBar";
 import HomeSection from "../components/website/HomeSection";
+import HelpBot from "../components/ui/HelpBot";
 
 export function Landing() {
   const [activeSection, setActiveSection] = useState("home");
@@ -76,7 +72,7 @@ export function Landing() {
         <section>
             <Footer />
         </section>
-        <ChatBot />
+        <HelpBot />
     </main>
     
   );

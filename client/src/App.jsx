@@ -13,6 +13,8 @@ import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@ta
 import { SuccessRedirect } from './features/auth/SuccessRedirect.jsx'
 import { useSelector } from 'react-redux'
 import ProtectedRoute from './components/ui/ProtectedRoute.jsx'
+import AssistantBot from './components/ui/AssistantBot.jsx'
+import { isProActive } from './utils/isProActive.js'
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -68,6 +70,7 @@ function App() {
   const user = useSelector((state) => state.user);
 
   const hideSidebar = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register" || matchPath("/teams/invite/:inviteToken", location.pathname);
+  const showAssistantBot = location.pathname === "/dashboard" || location.pathname === "/personal" || location.pathname.startsWith("/teams/");
   return (
     <QueryClientProvider client={queryClient}>
       <main className='relative'>
@@ -86,6 +89,7 @@ function App() {
 
         <Route path='/teams/invite/:inviteToken' element={<InvitePage />}/>
       </Routes>
+      {showAssistantBot&&isProActive(user.subscription) && <AssistantBot />}
       </main>
     </QueryClientProvider>
   )

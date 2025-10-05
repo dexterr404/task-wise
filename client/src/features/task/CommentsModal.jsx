@@ -59,7 +59,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{
         sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 2 },
-      }}>
+      }} sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } } }}>
       <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", gap: 1, alignItems: "center"}}>
         <QuestionAnswerRounded fontSize="small" sx={{ color: colors.lighterblue}}/>{task.title}
       </DialogTitle>

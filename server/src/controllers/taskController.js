@@ -1,4 +1,5 @@
 import Task from "../models/Task.js";
+import { deleteTaskVector, embedTask } from "../services/taskEmbeddingService.js";
 
 export const getAllTasks = async (req, res) => {
   try {
@@ -57,6 +58,9 @@ export const createTask = async(req,res) => {
         const newTask = new Task({title, description, deadline, status, priority, isArchived:false, subtasks, user: req.user._id})
 
         await newTask.save();
+
+        console.log(newTask.title);
+        await embedTask(newTask, [req.user._id]);
         res.status(201).json({message: "Task created successfully"})
     }
     catch (error) {
@@ -75,6 +79,7 @@ export const updateTask = async (req, res) => {
       { new: true }
     );
     if (!updatedTask) return res.status(404).json({ message: "Task not found" });
+    await embedTask(updatedTask, [req.user._id]);
 
     res.status(200).json({ message: "Task updated successfully" });
   } catch (error) {
@@ -87,6 +92,7 @@ export const deleteTask = async (req, res) => {
   try {
     const deletedTask = await Task.findOneAndDelete({ _id: req.params.id, user: req.user._id });
     if (!deletedTask) return res.status(404).json({ message: "Task not found" });
+    await deleteTaskVector(deletedTask._id);
 
     res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
@@ -109,6 +115,7 @@ export const archiveTask = async(req,res) => {
     if(!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+    await deleteTaskVector(task._id);
     res.status(200).json({ task });
   } catch (error) {
     console.log("Error archiving task", error);
@@ -128,6 +135,7 @@ export const unArchiveTask = async(req,res) => {
     if(!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+    embedTask(task, [req.user._id]);
     res.status(200).json({ task });
   } catch (error) {
     console.log("Error archiving task", error);

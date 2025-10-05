@@ -28,6 +28,7 @@ export default function PricingSection({user}) {
         "Visual Dashboard – Get a clear overview of tasks, progress, and deadlines",
         "Unlimited Tasks & Teams – Scale up without limits",
         "AI Insights – Shorter duration between requests",
+        "AI Assistant – Get task guidance and suggestions from your AI assistant",
       ],
       cta: "Purchase",
     },

@@ -2,9 +2,11 @@ import TeamTask from "../models/TeamTask.js";
 import User from "../models/User.js"
 import Team from "../models/Team.js"
 import mongoose from "mongoose";
+
 import { inboxSubtaskUpdate, inboxTaskAdd, inboxTaskArchive, inboxTaskDeletes, inboxTaskUnarchive, inboxTaskUpdates, inboxTaskAssignment } from "../services/teamTaskService.js";
 import { notifyTaskCreation, notifyTaskStatusUpdate, notifyUsersAssignment, notifyUsersUnassignment } from "../services/notificationService.js";
 import { normalizeUserId } from "../utils/normalizeUserId.js";
+import { deleteTaskVector, deleteTeamTaskVector, embedTask } from "../services/taskEmbeddingService.js";
 
 
 export const getUserTeamTasks = async (req, res) => {
@@ -133,6 +135,7 @@ export const createTeamTask = async(req,res) => {
         const team = await Team.findById(teamId);
         const user = await User.findById(userId);
 
+        await embedTask(newTask,userId,team);
         await inboxTaskAdd(newTask,user);
         await notifyTaskCreation(team, newTask);
 
@@ -178,30 +181,37 @@ export const updateTeamTask = async(req,res) => {
     const user = await User.findById(userId);
     const team = await Team.findById(teamId);
 
-    //Only run notify and inbox when task assignment changed
     if (assignedTo !== undefined) {
-      const newAssigned = assignedTo.map(u => normalizeUserId(u));
+      const newAssigned = (assignedTo || []).map(u => normalizeUserId(u));
 
-      // Who got newly assigned
+      // find added + removed users
       const addedUsers = newAssigned.filter(id => !prevAssigned.includes(id));
-      const addedExcludingActor = addedUsers.filter(id => id !== normalizeUserId(user._id));
-
-      // Who got unassigned
       const removedUsers = prevAssigned.filter(id => !newAssigned.includes(id));
-      const removedExcludingActor = removedUsers.filter(id => id !== normalizeUserId(user._id));
 
-      // Notify added users
-      if (addedExcludingActor.length > 0) {
-        await notifyUsersAssignment(task, team, user, addedExcludingActor);
+      // Notify and cleanup
+      if (addedUsers.length > 0) {
+        await notifyUsersAssignment(task, team, user, addedUsers);
         await inboxTaskAssignment(task, user, addedUsers);
       }
 
-      // Notify removed users
-      if (removedExcludingActor.length > 0) {
-        await notifyUsersUnassignment(task, team, user, removedExcludingActor);
-        //await notifyTaskUnassignment(task, user, removedUsers);
+      if (removedUsers.length > 0) {
+        await notifyUsersUnassignment(task, team, user, removedUsers);
+        for (const uid of removedUsers) {
+          await deleteTeamTaskVector(task._id, uid);
+        }
+      }
+
+      // Only re-embed when assignedTo changed
+      await embedTask(task, newAssigned, team);
+    } else {
+      // assignedTo did NOT change → re-embed only for existing assignees
+      const assignees = task.assignedTo.map(id => normalizeUserId(id));
+      if (assignees.length > 0) {
+        await embedTask(task, assignees, team);
       }
     }
+
+
     await inboxTaskUpdates(task, previousStatus, user);
     await notifyTaskStatusUpdate(task, previousStatus, team, user);
 
@@ -215,13 +225,24 @@ export const updateTeamTask = async(req,res) => {
 //Update team task status and order from dragging
 export const updateMultipleTasks = async (req, res) => {
   const { tasks } = req.body;
+  const { teamId } = req.params;
+
   const results = [];
   for (const t of tasks) {
-    const task = await TeamTask.findOne({ _id: t.taskId, team: req.params.teamId });
+    const task = await TeamTask.findOne({ _id: t.taskId, team: teamId });
+    
     if (!task) continue;
     task.status = t.status;
     task.order = t.order;
+
     await task.save();
+
+    const team = await Team.findById(teamId);
+
+    const assignees = task.assignedTo?.map(u => normalizeUserId(u)) || [];
+    if (assignees.length > 0) {
+      await embedTask(task, assignees, team);
+    }
     results.push(task);
   }
   return res.status(200).json(results);
@@ -242,6 +263,7 @@ export const deleteTeamTask = async(req,res) => {
 
     if(!task) return res.status(404).json({ message: "Task not found" });
 
+    await deleteTaskVector(task._id);
     await inboxTaskDeletes(task,user);
 
     return res.status(200).json(task);
@@ -268,6 +290,12 @@ export const toggleSubtaskStatus = async (req, res) => {
     await task.save();
 
     const user = await User.findById(userId);
+    const team = await Team.findById(teamId);
+
+    const assignees = task.assignedTo?.map(u => normalizeUserId(u)) || [];
+    if (assignees.length > 0) {
+      await embedTask(task, assignees, team);
+    }
 
     await inboxSubtaskUpdate(task,subtask.title,subtask.status,user);
 
@@ -292,6 +320,7 @@ export const archiveTeamTask = async(req,res) => {
     if(!task) {
       return res.status(404).json({ message: "Task not found" });
     }
+    await deleteTaskVector(task._id);
 
     const user = await User.findById(userId);
 
@@ -320,7 +349,12 @@ export const unArchiveTeamTask = async(req,res) => {
     }
 
     const user = await User.findById(userId);
+    const team = await Team.findById(teamId);
 
+    const assignees = task.assignedTo?.map(u => normalizeUserId(u)) || [];
+    if (assignees.length > 0) {
+      await embedTask(task, assignees, team);
+    }
     await inboxTaskUnarchive(task,user);
     
     res.status(200).json({ task });

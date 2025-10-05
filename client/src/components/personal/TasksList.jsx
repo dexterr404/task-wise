@@ -7,7 +7,7 @@ const TasksList = ( {tasks,isLoading}) => {
     //Show loading if fetching
     if(isLoading) {
         return (
-            <div className="w-full h-full flex gap-3 py-15 justify-center items-center">
+            <div className="w-full h-full flex gap-3 py-15 text-text-secondary justify-center items-center">
                 Loading Tasks...
                 <CircularProgress size={20} />
             </div>
@@ -17,8 +17,8 @@ const TasksList = ( {tasks,isLoading}) => {
     //UI for no task
     if(!tasks || tasks.length === 0 ) {
         return (
-            <div className="flex flex-col items-center justify-center h-full py-10 gap-2">
-                <SentimentDissatisfiedIcon fontSize="large" color="disabled" />
+            <div className="flex flex-col items-center text-text-secondary justify-center h-full py-10 gap-2">
+                <SentimentDissatisfiedIcon fontSize="large" />
                 <h2 className="text-lg font-semibold">No Tasks Yet</h2>
                 <p className="text-gray-500 text-center">
                 Add a new task to get started!
@@ -32,8 +32,8 @@ const TasksList = ( {tasks,isLoading}) => {
     // UI for no active task
     if (activeTasks.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center h-full py-10 gap-2">
-        <SentimentDissatisfiedIcon fontSize="large" color="disabled" />
+        <div className="flex flex-col items-center justify-center text-text-secondary h-full py-10 gap-2">
+        <SentimentDissatisfiedIcon fontSize="large"/>
         <h2 className="text-lg font-semibold">No Active Tasks</h2>
         <p className="text-gray-500 text-center">
             Add a new task to get started!

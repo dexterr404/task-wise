@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Fab,Dialog,DialogTitle,DialogContent,TextField,IconButton,Box,Typography,Avatar, } from "@mui/material";
-import { SmartToy, Send, Close, ChatBubbleOutline } from "@mui/icons-material";
-import { chatWithHelpBot } from "../../api/aiService";
-import IntermittentBanner from "./IntermittentBanner";
+import { SmartToy, Send, Close, RocketLaunch } from "@mui/icons-material";
+import { chatWithAssistantBot } from "../../api/aiService";
 
-function ChatBot() {
+function AssistantBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi! 👋 I'm WiseBot. How can I help you today?" },
@@ -27,7 +26,7 @@ function ChatBot() {
     setIsTyping(true);
 
   try {
-    const reply = await chatWithHelpBot(input);
+    const reply = await chatWithAssistantBot(input);
     setIsTyping(false);
 
     setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
@@ -54,14 +53,11 @@ function ChatBot() {
           zIndex: 1000,
         }}
       >
-        <ChatBubbleOutline />
+        <SmartToy />
       </Fab>
-      {
-        !open && <IntermittentBanner text={"Need some help? Ask our AI HelpBot 👋"}/>
-      }
 
       {/* Chat Window */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } } }}>
         <DialogTitle
         variant="h8"
           sx={{
@@ -123,6 +119,7 @@ function ChatBot() {
                       maxWidth: "70%",
                       wordBreak: "break-word",
                       boxShadow: 1,
+                      whiteSpace: "pre-line",
                     }}
                   >
                     <Typography variant="body2">{m.content}</Typography>
@@ -138,7 +135,7 @@ function ChatBot() {
                   variant="body2"
                   sx={{ fontStyle: "italic", color: "gray" }}
                 >
-                  TaskWise Bot is typing...
+                  WiseBot is typing...
                 </Typography>
               </Box>
             )}
@@ -169,7 +166,7 @@ function ChatBot() {
                 }}
                 inputProps={{
                     maxLength: 200,
-                    style: { fontSize: "0.85rem", padding: "0px" }, // smaller font & padding
+                    style: { fontSize: "0.85rem", padding: "0px" },
                 }}
                 sx={{
                     "& .MuiOutlinedInput-root": {
@@ -191,4 +188,4 @@ function ChatBot() {
   );
 }
 
-export default ChatBot;
+export default AssistantBot;

@@ -3,7 +3,8 @@ export const isProActive = (subscription) => {
 
   const now = new Date();
 
-  // Use nextBillingDate if exists, otherwise fallback to endDate
+  // For canceled subscriptions, use nextBillingDate (they're paid until then)
+  // For active subscriptions, also use nextBillingDate
   const end = subscription.nextBillingDate
     ? new Date(subscription.nextBillingDate)
     : subscription.endDate
@@ -12,9 +13,8 @@ export const isProActive = (subscription) => {
 
   if (!end) return false;
 
-  const stillActive = now < end;
+  const stillActive = now.getTime() < end.getTime();
+  const isProPlan = subscription.plan === "pro";
 
-  const wasPro = subscription.plan === "pro" || subscription.status === "canceled";
-
-  return wasPro && stillActive;
+  return isProPlan && stillActive;
 };
