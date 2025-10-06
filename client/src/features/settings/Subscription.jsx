@@ -82,7 +82,7 @@ export function Subscription({data,onCancel,isLoading,teams,proActive}) {
             </button>
         )}
         <button 
-        onClick={() => navigate("/?section=pricing")}
+        onClick={() => navigate("/?redirect&section=pricing")}
         className="flex-1 px-3 py-2 border bg-surface text-text-secondary cursor-pointer border-border text-sm rounded-lg hover:bg-accent">
           Compare Plans
         </button>

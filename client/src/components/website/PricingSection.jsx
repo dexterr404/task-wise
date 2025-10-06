@@ -86,7 +86,7 @@ export default function PricingSection({user}) {
             </div>
             {
               plan.title === "Pro" ? (
-                <PayPalSubscribeButton planId={"P-7TC84785A47398338NDNKOZQ"} user={user} userId={user?._id}/>
+                <PayPalSubscribeButton planId={"P-9UJ42873WH578064CNDR6PRA"} user={user} userId={user?._id}/>
               ) : (
               <motion.button
               onClick={() => navigate(user || user?._id ? "/dashboard" : "/login?redirect=/")}
