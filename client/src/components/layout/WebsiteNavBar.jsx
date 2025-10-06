@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import Logo from "../../assets/taskwise.svg"
 
-export default function WebsiteNavBar({activeSection,mobileOpen,setMobileOpen,user,scrollTo}) {
+export default function WebsiteNavBar({activeSection,mobileOpen,setMobileOpen,user,scrollTo,setActiveSection}) {
     const navigate = useNavigate();
 
     return(
