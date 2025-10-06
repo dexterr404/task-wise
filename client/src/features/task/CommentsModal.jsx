@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useSelector } from "react-redux"
+import { motion } from "framer-motion";
 import { AddComment, AttachFile,InsertEmoticon, QuestionAnswerRounded } from "@mui/icons-material";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button,
-Typography, TextField, Avatar, IconButton,Popover } from "@mui/material";
+Typography, TextField, Avatar, IconButton,Popover, Tooltip } from "@mui/material";
 import { colors } from "../../data/colors.js"
 
 import formatCommentDate from "../../utils/formatCommentDate.js"
@@ -59,7 +60,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{
         sx: { bgcolor: "var(--color-surface)", color: "var(--color-text-secondary)", borderRadius: 2, p: 2 },
-      }} sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } } }}>
+      }} sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } },"& .MuiDialogContent-root": {p: { xs: 0, sm: 2 },},"& .MuiDialogTitle-root": {p: { xs: 1, sm: 2 },pb: { xs: 0.5, sm: 1.5 }}, }}>
       <DialogTitle variant="h8" sx={{ color: "var(--color-text-primary)", display: "flex", flexDirection: "row", gap: 1, alignItems: "center"}}>
         <QuestionAnswerRounded fontSize="small" sx={{ color: colors.lighterblue}}/>{task.title}
       </DialogTitle>
@@ -72,7 +73,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
             color: "var(--color-text-primary)",
           }}
           >
-            <div className="max-h-99 overflow-y-auto mb-4 py-10">
+            <div className="max-h-99 overflow-y-auto scrollbar-auto-hide mb-4 py-10">
               {/*Show chat loading*/}
               {
                 isLoading ?(
@@ -83,7 +84,33 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                   return (
                     <div key={c._id} className={`flex mb-2 ${isMe ? "justify-end" : "justify-start"}`}>
                       {!isMe && (
-                        <Avatar src={c.author.profileImage} sx={{ width: 24, height: 24 }} className="mr-2"/>
+                        <div className="relative inline-block mr-2">
+                          <Avatar
+                            src={c.author.profileImage}
+                            alt={c.author.name}
+                            sx={{ width: 24, height: 24 }}
+                          />
+                          {c.author.isOnline && (
+                            <Tooltip title="Online">
+                              <div className="absolute top-4 -right-0.5">
+                                <motion.div
+                                  className="size-2 rounded-full bg-green-400 border-1 border-white"
+                                  animate={{
+                                    boxShadow: [
+                                      "0 0 0 0 rgba(74, 222, 128, 0.7)",
+                                      "0 0 0 3px rgba(74, 222, 128, 0)",
+                                    ]
+                                  }}
+                                  transition={{
+                                    duration: 1.5,
+                                    repeat: Infinity,
+                                    ease: "easeOut"
+                                  }}
+                                />
+                              </div>
+                            </Tooltip>
+                          )}
+                        </div>
                       )}
                     <div className={`flex flex-col max-w-xs ${isMe && "items-end"}`}>
                       <div className="text-[10px]">
@@ -93,7 +120,7 @@ function CommentsModal({ open, onClose, task, team, addCommentMutation,comments,
                       {c.message && (
                         <div
                           className={`px-4 py-2 rounded-2xl text-sm ${
-                            isMe ? "bg-blue-500 text-white" : "bg-border text-text-primary"
+                            isMe ? "bg-blue-500 text-white self-end" : "bg-border text-text-primary self-start"
                           }`}
                         >
                           {c.message}

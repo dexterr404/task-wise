@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect,useState } from "react";
 import { getCurrentUser } from "../api/authService";
 import { useQuery } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 import PricingSection from "../components/website/PricingSection";
 import ContactSection from "../components/website/ContactSection";
@@ -14,7 +14,6 @@ import HelpBot from "../components/ui/HelpBot";
 export function Landing() {
   const [activeSection, setActiveSection] = useState("home");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate();
 
   const {data: user,} = useQuery({
     queryKey: ["currentUser"],
@@ -56,6 +55,7 @@ export function Landing() {
 
   return (
     <main className=" h-screen overflow-y-scroll overflow-x-hidden scrollbar-auto-hide">
+        <Toaster position="top-center" reverseOrder={false} />
         <WebsiteNavBar activeSection={activeSection} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} setActiveSection={setActiveSection} user={user} scrollTo={scrollTo}/>
         <section id="home">
             <HomeSection user={user} />

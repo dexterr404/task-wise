@@ -4,7 +4,6 @@ import { toast,Toaster } from "react-hot-toast"
 import { fetchAllTasks } from "../api/taskService.js"
 import { getUserTeamTasks } from "../api/teamTaskService.js"
 import { setPersonalTasks,setTeamTasks,selectTaskStats } from "../features/task/taskSlice.js"
-import { motion } from "framer-motion"
 
 import ProfileAndNotif from "../components/personal/ProfileAndNotif.jsx"
 import MetricsCard from "../components/dashboard/MetricsCard.jsx"

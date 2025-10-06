@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { AutoAwesome, HelpOutline, Insights } from "@mui/icons-material";
+import { AutoAwesome, HelpOutline } from "@mui/icons-material";
 import { getInsights } from "../../api/aiService";
 import { useState, useEffect, useMemo } from "react";
 import { addUser } from "../../features/user/userSlice";
@@ -133,7 +133,7 @@ function DailyDigest() {
           </Button>
       </Tooltip>
 
-      <h3 className="flex items-center gap-1 text-sm text-text-primary font-semibold mb-3 mx-2"><Insights fontSize="small" sx={{ color: "#4f46e5"}}/> AI Insights</h3>
+      <h3 className="flex items-center gap-1 text-sm text-text-primary font-semibold mb-3 mx-2">AI Insights</h3>
 
       {isLoading ? (
         <div className="flex items-center gap-2">

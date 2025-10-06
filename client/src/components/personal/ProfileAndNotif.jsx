@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { IconButton,Tooltip,Avatar } from "@mui/material";
 import { fetchNotification, markAllAsRead, markAsRead } from "../../api/notificationService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion"
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Notifications from "./Notifications";
@@ -92,6 +93,24 @@ function ProfileAndNotif({setProfileMenuOpen, isProfileMenuOpen }) {
             <ProfileMenu/>
           </div>
         )}
+        <Tooltip title="Online">
+          <div className="absolute bottom-0 right-0">
+            <motion.div
+              className="size-2.5 rounded-full bg-green-400 border-1 border-white"
+              animate={{
+                boxShadow: [
+                  "0 0 0 0 rgba(74, 222, 128, 0.7)",
+                  "0 0 0 3px rgba(74, 222, 128, 0)",
+                ]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+            />
+          </div>
+        </Tooltip>
       </div>
     </div>
   );

@@ -74,8 +74,8 @@ export const getTeamsById = async(req,res) => {
                 { "members.user": userId}
             ]
         })
-        .populate("owner", "name email profileImage")
-        .populate("members.user", "name email profileImage");
+        .populate("owner", "name email profileImage isOnline")
+        .populate("members.user", "name email profileImage isOnline");
 
         if(!team) {
             return res.status(404).json({ message: "Team not found"});

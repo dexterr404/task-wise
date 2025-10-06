@@ -14,7 +14,7 @@ export const fetchComments = async (req, res) => {
     }
 
     const comments = await Comment.find({ task: taskId })
-    .populate("author", "name profileImage")
+    .populate("author", "name profileImage isOnline")
     .sort({ createdAt: 1 });;
 
     res.status(200).json(comments);

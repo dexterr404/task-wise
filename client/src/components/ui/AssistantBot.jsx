@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Fab,Dialog,DialogTitle,DialogContent,TextField,IconButton,Box,Typography,Avatar, } from "@mui/material";
-import { SmartToy, Send, Close, RocketLaunch } from "@mui/icons-material";
+import { SmartToy, Send, Close } from "@mui/icons-material";
 import { chatWithAssistantBot } from "../../api/aiService";
+
+import ReactMarkdown from "react-markdown"
 
 function AssistantBot() {
   const [open, setOpen] = useState(false);
@@ -57,7 +59,7 @@ function AssistantBot() {
       </Fab>
 
       {/* Chat Window */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } } }}>
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" sx={{ '& .MuiDialog-paper': { width: '100%', height: { sm: 'auto' }, margin: 0, maxWidth: { xs: '100%', sm: 'sm' } },"& .MuiDialogTitle-root": {p: { xs: 1, sm: 2 },pb: { xs: 0.5, sm: 1.5 }},"& .MuiDialogContent-root": {p: { xs: 0, sm: 2 },} }}>
         <DialogTitle
         variant="h8"
           sx={{
@@ -119,10 +121,23 @@ function AssistantBot() {
                       maxWidth: "70%",
                       wordBreak: "break-word",
                       boxShadow: 1,
-                      whiteSpace: "pre-line",
                     }}
                   >
-                    <Typography variant="body2">{m.content}</Typography>
+                    <ReactMarkdown
+                      children={m.content
+                        // remove multiple consecutive newlines
+                        .replace(/\n{2,}/g, "\n")
+                        .trim()
+                      }
+                      components={{
+                        p: ({ node, ...props }) => <p style={{ margin: "0 0 4px 0" }} {...props} />,
+                        h1: ({ node, ...props }) => <h1 style={{ margin: "6px 0" }} {...props} />,
+                        h2: ({ node, ...props }) => <h2 style={{ margin: "6px 0" }} {...props} />,
+                        h3: ({ node, ...props }) => <h3 style={{ margin: "6px 0" }} {...props} />,
+                        h4: ({ node, ...props }) => <h4 style={{ margin: "6px 0" }} {...props} />,
+                        li: ({ node, ...props }) => <li style={{ margin: "2px 0" }} {...props} />,
+                      }}
+                    />
                   </Box>
                 </Box>
               );

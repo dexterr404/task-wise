@@ -1,6 +1,5 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDonutTaskData } from '../../hooks/useDonutTaskData';
-import { DonutSmall } from '@mui/icons-material';
 
 const settings = {
   margin: { right: 5 },
@@ -15,7 +14,7 @@ export default function TaskDistributiont() {
   return (
     <div className='flex flex-col gap-1 p-5 bg-surface border-1 border-border shadow-md rounded-lg cursor-pointer transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1 duration-200'>
       <div className='border-gray-200 px-2'>
-        <h1 className='flex items-center gap-1 font-semibold text-sm text-text-primary'><DonutSmall fontSize='small' sx={{color: "orangered"}}/>Overall Progress</h1>
+        <h1 className='flex items-center gap-1 font-semibold text-sm text-text-primary'>Overall Progress</h1>
       </div>
       <div className='relative flex justify-center items-center'>
         <PieChart

@@ -1,5 +1,5 @@
 import { useState,useEffect,useRef } from "react";
-import { useQuery} from "@tanstack/react-query";
+import { useQuery, useQueryClient} from "@tanstack/react-query";
 import { Button,IconButton, Tooltip, Typography } from "@mui/material";
 import { Window,TableRows,FormatListBulleted, Archive,AddBox, FilterList, Sort } from "@mui/icons-material";
 import { getTeamTasks} from "../../api/teamTaskService";
@@ -17,10 +17,10 @@ import TeamTaskSkeleton from "../skeleton/TeamTaskSkeleton";
 
 
 export function TeamTasks({team}) {
+    const queryClient = useQueryClient();
     const { onAddTask,onEditTasksBatch } = useTeamTasks(team._id);
 
     const [isCreateTeamTask, setIsCreateTeamTask] = useState(false);
-    const [columns, setColumns] = useState({});
     const [activeSection, setActiveSection] = useState("card")
     const [searchQuery, setSearchQuery] = useState("");
     const [filters, setFilters] = useState([]);
@@ -48,11 +48,6 @@ export function TeamTasks({team}) {
     }
     }, [activeSection]);
 
-    //Set columns for tasks
-    useEffect(() => {
-        if (data?.columns) setColumns(data.columns);
-    }, [data]);
-
     const debounceRef = useRef(null);
 
     const handleDragEnd = (result) => {
@@ -62,7 +57,7 @@ export function TeamTasks({team}) {
     const sourceCol = source.droppableId;
     const destCol = destination.droppableId;
 
-    const newColumns = { ...columns };
+    const newColumns = { ...data.columns };
     const sourceItems = Array.from(newColumns[sourceCol]);
     const destItems = sourceCol === destCol ? sourceItems : Array.from(newColumns[destCol]);
 
@@ -76,7 +71,10 @@ export function TeamTasks({team}) {
     newColumns[sourceCol] = sourceCol === destCol ? destItems : sourceItems;
     newColumns[destCol] = sourceCol !== destCol ? destItems : newColumns[destCol];
 
-    setColumns(newColumns);
+    queryClient.setQueryData(['teamTasks', team._id, searchQuery, filters, sort], (old) => ({
+        ...old,
+        columns: newColumns
+    }));
 
     // Collect all tasks that actually changed
     const tasksToUpdate = [];
@@ -199,22 +197,22 @@ export function TeamTasks({team}) {
             {/*Change view depending on user choice*/}
             {
                 activeSection === "card" && (
-                    <TeamTaskKanban onDragEnd={handleDragEnd} columns={columns} team={team} />
+                    <TeamTaskKanban onDragEnd={handleDragEnd} columns={data?.columns} team={team} />
                 )
             }
             {
                 activeSection === "archive" && (
-                    <TeamTaskArchive columns={columns} team={team}/>
+                    <TeamTaskArchive columns={data?.columns} team={team}/>
                 )
             }
             {
                 activeSection === "table" && (
-                    <TeamTaskTable tasks={data.tasks} team={team}/>
+                    <TeamTaskTable tasks={data?.tasks} team={team}/>
                 )
             }
             {
                 activeSection === "list" && (
-                    <TeamTaskList tasks={data.tasks} team={team}/>
+                    <TeamTaskList tasks={data?.tasks} team={team}/>
                 )
             }
         </section>

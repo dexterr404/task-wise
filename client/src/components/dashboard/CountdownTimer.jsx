@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { SwapHoriz,AccessTime, TrackChanges } from "@mui/icons-material";
+import { SwapHoriz,AccessTime } from "@mui/icons-material";
 import SelectFocusModal from "../../features/user/SelectFocusModal";
 import { useTaskDeadline } from "../../hooks/useTaskDeadline";
 
@@ -65,7 +65,7 @@ export default function TaskWithCountdown() {
 
   return (
     <div className="flex flex-col w-full bg-surface border-1 border-border rounded-xl px-8 py-4 relative shadow-lg cursor-pointer transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
-      <span className="text-sm flex items-center gap-1 font-semibold text-text-primary"><TrackChanges fontSize="small" sx={{ color: "darkblue"}}/>Focus deadline</span>
+      <span className="text-sm flex items-center gap-1 font-semibold text-text-primary">Focus deadline</span>
       <CountdownTimer deadline={deadline} focusId={focusId} />
       <div className="absolute top-1 right-4">
         <Tooltip title="Change focus">

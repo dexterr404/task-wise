@@ -1,8 +1,20 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function ContactSection() {
-  const [value, setValue] = useState("");
+  const [message, setMessage] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleSend = () => {
+    toast.success("Message submitted! (demo only)");
+    setMessage("");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+  }
 
   return (
 <section className="relative min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-r from-white via-gray-50 to-white overflow-hidden py-40 px-8 gap-8">
@@ -60,7 +72,11 @@ export default function ContactSection() {
       </motion.div>
 
       {/* Contact Form */}
-      <motion.div
+      <motion.form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSend();
+        }}
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, type: "spring" }}
@@ -75,11 +91,15 @@ export default function ContactSection() {
         <div className="flex flex-col md:flex-row gap-4 mb-4">
           <input
             type="text"
+            onChange={(e) => setFirstName(e.target.value)}
+            value={firstName}
             placeholder="First name"
             className="rounded-lg border border-gray-300 px-4 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg focus:shadow-blue-500/20"
           />
           <input
             type="text"
+            onChange={(e) => setLastName(e.target.value)}
+            value={lastName}
             placeholder="Last name"
             className="rounded-lg border border-gray-300 px-4 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg focus:shadow-blue-500/20"
           />
@@ -88,6 +108,8 @@ export default function ContactSection() {
         {/* Email */}
         <input
           type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
           placeholder="Your email"
           className="rounded-lg border border-gray-300 px-4 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg focus:shadow-blue-500/20"
         />
@@ -96,18 +118,19 @@ export default function ContactSection() {
         <div className="relative">
           <textarea
             placeholder="How can we help?"
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
             maxLength={100}
             rows={5}
             className="rounded-lg border border-gray-300 px-4 py-2 w-full mb-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg focus:shadow-blue-500/20"
           ></textarea>
           <span className="absolute bottom-3 right-5 text-xs text-gray-500 mb-4">
-            {value.length}/100
+            {message.length}/100
           </span>
         </div>
         {/* Submit Button */}
         <motion.button
+          type="onSubmit"
           whileTap={{ scale: 0.95 }}
           className="py-3 cursor-pointer bg-blue-600 hover:bg-blue-700 transition-colors duration-300 text-white rounded-xl font-semibold shadow-md"
         >
@@ -126,7 +149,7 @@ export default function ContactSection() {
           </a>
           .
         </span>
-      </motion.div>
+      </motion.form>
     </section>
   );
 }

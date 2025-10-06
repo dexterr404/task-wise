@@ -6,7 +6,6 @@ import "react-calendar/dist/Calendar.css";
 import "../../styles/TaskCalendar.css";
 
 import { Box, Typography, Badge } from "@mui/material";
-import { EventNote } from "@mui/icons-material";
 
 export default function TaskCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -33,7 +32,7 @@ export default function TaskCalendar() {
   return (
     <div className="bg-surface border-1 border-border rounded-lg shadow-md py-4 transform transition-transform easin-out hover:-translate-y-1 active:-translate-y-1">
       <span className="flex items-center gap-1 text-sm text-text-primary font-semibold font-inter px-6">
-        <EventNote fontSize="small" sx={{color: "#2563eb"}}/>Schedule Calendar
+        Schedule Calendar
       </span>
 
       <Calendar

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Table,TableHead,TableBody,TableRow,TableCell,Avatar,IconButton,Typography,Tooltip,Box,Select,MenuItem } from "@mui/material";
-import { getUserRole } from "../../hooks/useUserRole";
 import { Edit,Delete } from "@mui/icons-material";
+import { motion } from "framer-motion";
 import { useQueryClient,useMutation} from "@tanstack/react-query";
 import { changeUserRole } from "../../api/teamService";
+import { colors } from "../../data/colors";
+import { getUserRole } from "../../hooks/useUserRole";
 
 import RemoveUserModal from "../../features/team/RemoveUserModal";
 import EditRoleModal from "../../features/team/EditRoleModal";
-import { colors } from "../../data/colors";
 
 export function TeamMembers({ team, onRemoveUser, role, accUser}) {
   const [removeUser, setRemoveUser] = useState(false);
@@ -69,13 +70,35 @@ export function TeamMembers({ team, onRemoveUser, role, accUser}) {
               {/* ---------- Name Cell ---------- */}
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <Tooltip title={m.user.name}>
+                  <div className="relative inline-block">
+                    <Tooltip title={m.user.name}>
                     <Avatar
                       src={m.user.profileImage}
                       alt={m.user.name}
                       sx={{ width: 32, height: 32 }}
                     />
-                  </Tooltip>
+                    </Tooltip>
+                    {m.user.isOnline && (
+                      <Tooltip title="Online">
+                        <div className="absolute bottom-0 right-0">
+                          <motion.div
+                            className="size-2.5 rounded-full bg-green-400 border-1 border-white"
+                            animate={{
+                              boxShadow: [
+                                "0 0 0 0 rgba(74, 222, 128, 0.7)",
+                                "0 0 0 3px rgba(74, 222, 128, 0)",
+                              ]
+                            }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              ease: "easeOut"
+                            }}
+                          />
+                        </div>
+                      </Tooltip>
+                    )}
+                  </div>
                   <Typography variant="body2" fontWeight={500} color="var(--color-text-secondary)">
                     {m.user.name}
                   </Typography>

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Diversity3, Dashboard, Add, MoreVert, Person, Settings} from "@mui/icons-material";
 import { getTeams, addTeam, deleteTeam, updateTeam } from "../../api/teamService";
 import { IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 import TeamsOptionsMenu from "../optionsMenu/TeamsOptionsMenu";
 import CreateTeamModal from "../../features/team/CreateTeamModal";
@@ -14,11 +15,26 @@ import SettingsModal from "../../features/user/SettingsModal";
 import Logo from "../../assets/taskwise.svg";
 
 function SideBar() {
-  const [isNavOpen, setNavOpen] = useState(true);
+  const [isNavOpen, setNavOpen] = useState(window.innerWidth >= 1024);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [createTeam, setCreateTeam] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setNavOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -70,10 +86,15 @@ function SideBar() {
     setAnchorEl(null);
     setSelectedTeam(null);
   };
+  
 
   //Make sure the sidebar is able to be toggled
   return isNavOpen ? (
-    <aside className="fixed left-0 top-0 h-full w-[250px] bg-surface px-12 py-20 z-100 border-r-1 border-border">
+    <motion.aside
+     initial={{ x: -250 }}
+    animate={{ x: isNavOpen ? 0 : -250 }}
+    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+     className="fixed left-0 top-0 h-full w-[250px] bg-surface px-12 py-20 z-100 border-r-1 border-border">
       <div className="relative h-full flex flex-col items-center gap-8">
         <div
           className="absolute top-[-48px] right-[-24px] cursor-pointer block lg:hidden"
@@ -187,7 +208,7 @@ function SideBar() {
       user={user}
       />
       <SettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-    </aside>
+    </motion.aside>
   ) : (
     <div
       className="fixed top-3 left-3 cursor-pointer z-100"

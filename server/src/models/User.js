@@ -12,13 +12,18 @@ const userSchema = new mongoose.Schema({
         insights: [String],
         createdAt: { type: Date, default: Date.now }
     },
+    isOnline: { type: Boolean, default: false },
+    socketId: { type: String },
     subscription: {
         plan: { type: String, enum: ["free", "pro"], default: "free" },
         paypalSubscriptionId: { type: String },
         status: { type: String, enum: ["active", "canceled", "past_due"], default: "active" },
         startDate: { type: Date },
         endDate: { type: Date },
+        canceledAt: { type: Date },
         nextBillingDate: { type: Date },
+        paymentFailedAt: { type: Date },
+        failedPaymentAttempts: { type: Number, default: 0}
     },
     invoices: [
     {

@@ -66,7 +66,12 @@ function LoginModal() {
     }, [user, navigate, location.search]);
 
     return (
-    <div className="flex flex-col h-dvh items-center justify-center">
+    <form 
+    onSubmit={(e) => {
+        e.preventDefault();
+        handleLogin(email,password);
+    }}
+    className="flex flex-col h-dvh items-center justify-center">
         <Toaster position="top-center" reverseOrder={false} />
         <div className="relative flex flex-col bg-white max-sm:px-4 px-24 py-18 shadow-lg rounded-lg items-center gap-4">
             <IconButton
@@ -113,8 +118,8 @@ function LoginModal() {
                 </div>
             </div>
             <Button
+            type="submit"
             disabled={isLoading}
-            onClick={() => handleLogin(email, password)}
             fullWidth
             size="small"
             variant="contained"
@@ -141,7 +146,7 @@ function LoginModal() {
             onClick={() => {
                 const params = new URLSearchParams(location.search);
                 const redirect = params.get("redirect");
-                window.location.href=`${import.meta.env.VITE_API_URL2}/api/auth/google?redirect=${encodeURIComponent(redirect)}`
+                window.location.href=`${import.meta.env.VITE_API_URL}/api/auth/google?redirect=${encodeURIComponent(redirect)}`
             }}
             variant="outlined"
             startIcon={<img src={GoogleIcon} alt="Google" style={{ width: 18, height: 18 }} />}
@@ -155,7 +160,7 @@ function LoginModal() {
                 </Link>
             </div>
         </div>
-    </div>
+    </form>
     )
 }
 

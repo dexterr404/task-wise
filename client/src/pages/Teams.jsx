@@ -63,7 +63,7 @@ function Teams() {
   if (isLoading) return <div className="flex w-full h-dvh"><TeamPageSkeleton/></div>;
 
   if (!currentTeam) return <main className="flex w-screen h-screen justify-center items-center">
-                <Typography variant="body3">No team found</Typography>
+                <Typography variant="body3" color="var(--text-primary)">No team found</Typography>
             </main>;
 
  return (

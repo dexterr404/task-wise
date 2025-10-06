@@ -38,7 +38,7 @@ function Task() {
             <SearchTaskInput setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative lg:block max-md:hidden w-[300px]"/>
             <ProfileAndNotif setProfileMenuOpen={setProfileMenuOpen} isProfileMenuOpen={isProfileMenuOpen}/>
         </section>
-        <section className="flex justify-center border-x-1 border-border sm:mx-10 ">
+        <section className="flex justify-center border-border sm:mx-10 ">
             <SearchTaskInput  setSearchQuery={setSearchQuery} searchQuery={searchQuery} className="relative md:hidden max-md:block w-[300px] mt-2 z-0"/>
         </section>
         <Recommended setIsCreateTaskOpen={setIsCreateTaskOpen} setSelectedCategory={setSelectedCategory}/>

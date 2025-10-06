@@ -3,6 +3,7 @@ import User from "../models/User.js"
 import Team from "../models/Team.js"
 import mongoose from "mongoose";
 
+import { emitToTeam, emitToUser } from "../services/socket/socketServer.js";
 import { inboxSubtaskUpdate, inboxTaskAdd, inboxTaskArchive, inboxTaskDeletes, inboxTaskUnarchive, inboxTaskUpdates, inboxTaskAssignment } from "../services/teamTaskService.js";
 import { notifyTaskCreation, notifyTaskStatusUpdate, notifyUsersAssignment, notifyUsersUnassignment } from "../services/notificationService.js";
 import { normalizeUserId } from "../utils/normalizeUserId.js";
@@ -135,9 +136,18 @@ export const createTeamTask = async(req,res) => {
         const team = await Team.findById(teamId);
         const user = await User.findById(userId);
 
-        await embedTask(newTask,userId,team);
+        await embedTask(newTask,[userId],team);
         await inboxTaskAdd(newTask,user);
         await notifyTaskCreation(team, newTask);
+
+        emitToTeam(teamId, 'task:created', {
+          task: newTask,
+          createdBy: {
+            id: user._id,
+            name: user.name,
+            profileImage: user.profileImage,
+          }
+        });
 
         return res.status(201).json(newTask);
     } catch (error) {
@@ -150,7 +160,7 @@ export const createTeamTask = async(req,res) => {
 export const updateTeamTask = async(req,res) => {
   try {
     const { teamId, taskId } = req.params;
-    const { title, description, priority, deadline, subtasks, assignedTo } = req.body;
+    const { title, description, status, priority, deadline, subtasks, assignedTo } = req.body;
     const userId = req.user._id;
 
     if(!teamId || !taskId) {
@@ -166,6 +176,7 @@ export const updateTeamTask = async(req,res) => {
     //Update the fields provided
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
+    if (status !== undefined) task.status = status;
     if (priority !== undefined) task.priority = priority;
     if (deadline !== undefined) task.deadline = deadline;
     if(subtasks !== undefined && subtasks.length > 0) task.subtasks = subtasks;
@@ -215,6 +226,15 @@ export const updateTeamTask = async(req,res) => {
     await inboxTaskUpdates(task, previousStatus, user);
     await notifyTaskStatusUpdate(task, previousStatus, team, user);
 
+    emitToTeam(teamId, 'task:updated', {
+      task,
+      updatedBy: {
+        id: user._id,
+        name: user.name,
+        profileImage: user.profileImage,
+      }
+    });
+
     return res.status(200).json(task);
   } catch (error) {
     console.log("Error updating team task", error);
@@ -245,6 +265,9 @@ export const updateMultipleTasks = async (req, res) => {
     }
     results.push(task);
   }
+
+  emitToTeam(teamId, 'tasks:reordered', { tasks: results });
+
   return res.status(200).json(results);
 };
 
@@ -265,6 +288,11 @@ export const deleteTeamTask = async(req,res) => {
 
     await deleteTaskVector(task._id);
     await inboxTaskDeletes(task,user);
+
+    emitToTeam(teamId, 'task:deleted', { 
+      taskId, 
+      deletedBy: { id: user._id, name: user.name } 
+    });
 
     return res.status(200).json(task);
   } catch (error) {
@@ -299,6 +327,13 @@ export const toggleSubtaskStatus = async (req, res) => {
 
     await inboxSubtaskUpdate(task,subtask.title,subtask.status,user);
 
+    emitToTeam(teamId, 'subtask:updated', {
+      taskId,
+      subtaskId,
+      status,
+      updatedBy: user.name,
+    });
+
     res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ message: "Failed to toggle subtask status" });
@@ -325,6 +360,8 @@ export const archiveTeamTask = async(req,res) => {
     const user = await User.findById(userId);
 
     await inboxTaskArchive(task,user);
+
+    emitToTeam(teamId, 'task:archived', { task, archivedBy: user.name });
 
     res.status(200).json({ task });
   } catch (error) {
@@ -356,6 +393,8 @@ export const unArchiveTeamTask = async(req,res) => {
       await embedTask(task, assignees, team);
     }
     await inboxTaskUnarchive(task,user);
+
+    emitToTeam(teamId, 'task:unarchived', { task, unarchivedBy: user.name });
     
     res.status(200).json({ task });
   } catch (error) {
