@@ -62,16 +62,25 @@ Built with **React**, **Node.js**, **Express**, **MongoDB**, and **Socket.io**, 
 
 ---
 
-## 🤖 AI-Powered Features
+## 🤖 AI-Powered Features (RAG Implementation)
 
-- **OpenAI Integration**
+TaskWise implements **RAG (Retrieval-Augmented Generation)** to deliver intelligent, context-aware assistance:
+
+- **OpenAI + Supabase Vector Store Integration**
   - Personalized **Task Insights** (ongoing tasks, deadlines, and trends)
   - Intelligent summaries and progress recommendations  
-- **AI Assistant Chatbot**
-  - Context-aware conversation powered by **vector embeddings** stored in **Supabase**
-  - Understands team data and tasks for contextual suggestions  
+- **AI Assistant Chatbot (RAG-Powered)**
+  - **Context-aware conversations** using full RAG pipeline
+  - Retrieves relevant tasks, team members, and activity logs via vector search
+  - Understands natural language queries like:
+    - "What tasks are due this week?"
+    - "Summarize our team's progress this month"
+  - Combines retrieved context with OpenAI's language model for accurate, personalized responses
 - **FAQ Helpbot (on the promo website)**
-  - Uses **Supabase vector embeddings** for dynamic FAQ retrieval  
+  - RAG-based semantic FAQ search using **Supabase vector embeddings**
+  - Returns the most relevant answers even when questions are phrased differently
+  - Dynamic retrieval ensures up-to-date information delivery  
+
 
 ---
 
