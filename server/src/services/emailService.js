@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendInviteEmail = async (to, inviteUrl, teamName) => {
   try {
     const data = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "TaskWise <onboarding@send.taskwise.dexterr404.dev>",
       to,
       subject: `You’ve been invited to join ${teamName}!`,
       html: `
