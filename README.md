@@ -132,7 +132,7 @@ TaskWise implements **RAG (Retrieval-Augmented Generation)** to deliver intellig
 
 **Infrastructure**
 - ☁️ Cloudinary (Image uploads)
-- 📮 Resend (Email service) (I don't have my own domain😭)
+- 📮 Resend (Email service)
 - 🚀 Upstash Redis (Caching & rate limiting)
 
 ---
