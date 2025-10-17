@@ -1,6 +1,6 @@
 # 🧠 TaskWise — Multi-Tenant SaaS Task Management Platform (MERN Stack)
 
-![License](https://img.shields.io/badge/license-MIT-blue) ![Node](https://img.shields.io/badge/node-v18+-green) ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![License](https://img.shields.io/badge/license-MIT-blue) ![Node](https://img.shields.io/badge/node-v18+-green) ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB) ![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=white)
 
 ![TaskWise Banner](https://raw.githubusercontent.com/dexterr404/task-wise/main/client/src/assets/taskwise.svg)
 
