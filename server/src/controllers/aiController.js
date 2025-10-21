@@ -116,7 +116,8 @@ export const chatWithHelpBot = async (req, res) => {
     // Call GPT
     const response = await client.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: updatedConversation
+      messages: updatedConversation,
+      temperature: 0.7,
     });
 
     const reply = response.choices[0].message.content;
