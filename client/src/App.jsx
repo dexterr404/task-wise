@@ -116,12 +116,17 @@ function App() {
     rehydrateUser();
   }, [dispatch]);
 
-  const hideSidebar = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register" || matchPath("/teams/invite/:inviteToken", location.pathname);
+   const showSidebar = 
+    location.pathname === "/dashboard" || 
+    location.pathname === "/personal" || 
+    location.pathname.startsWith("/teams/") ||
+    location.pathname.startsWith("/tasks/");
+  
   const showAssistantBot = location.pathname === "/dashboard" || location.pathname === "/personal" || location.pathname.startsWith("/teams/");
   return (
     <QueryClientProvider client={queryClient}>
       <main className='relative'>
-      {!hideSidebar && <SideBar />}
+      {showSidebar && <SideBar />}
       <GlobalRateLimitHandler />
       <Routes>
         <Route path='/' element={<Landing />}/>
