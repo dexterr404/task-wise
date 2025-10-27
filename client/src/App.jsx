@@ -20,6 +20,7 @@ import InvitePage from './pages/InvitePage.jsx'
 import GlobalRateLimitHandler from './components/ui/GlobalRateLimitHandler.jsx'
 import ProtectedRoute from './components/ui/ProtectedRoute.jsx'
 import AssistantBot from './components/ui/AssistantBot.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 
 const queryClient = new QueryClient({
@@ -133,6 +134,7 @@ function App() {
         <Route path="/auth/success" element={<SuccessRedirect />}/>
         <Route path='/register' element={<Register />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path='*' element={<NotFound />}/>
 
         {/*Protected Routes*/}
         <Route path='/dashboard'element={<ProtectedRoute user={user}><Dashboard/></ProtectedRoute>}/>
